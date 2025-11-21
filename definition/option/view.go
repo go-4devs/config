@@ -19,7 +19,6 @@ import (
 //go:embed tpl/*
 var tpls embed.FS
 
-//nolint:gochecknoglobals
 var tpl = template.Must(template.New("tpls").ParseFS(tpls, "tpl/*.tmpl"))
 
 //nolint:gochecknoinits
@@ -141,7 +140,6 @@ func (v View) Parse(valName string, value string, keys []string) string {
 	return data
 }
 
-//nolint:gochecknoglobals
 var parses = map[string]func(data ParseData) (string, error){
 	typesIntreface[0].Name(): func(data ParseData) (string, error) {
 		var b bytes.Buffer
@@ -192,7 +190,6 @@ func internal(data ParseData) (string, error) {
 	return b.String(), nil
 }
 
-//nolint:gochecknoglobals
 var typesIntreface = [...]reflect.Type{
 	reflect.TypeOf((*encoding.TextUnmarshaler)(nil)).Elem(),
 	reflect.TypeOf((*json.Unmarshaler)(nil)).Elem(),

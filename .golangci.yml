@@ -5,6 +5,7 @@ linters:
     - noinlineerr
     - depguard
     - ireturn
+    - gochecknoglobals
     # deprecated
     - wsl
   settings:

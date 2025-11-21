@@ -73,7 +73,6 @@ func (v View) StructName() string {
 	return generate.FuncName(v.Prefix + v.Name + v.Suffix)
 }
 
-//nolint:gochecknoglobals
 var (
 	tpl           = template.Must(template.New("tpls").Parse(gpoupTemplate))
 	gpoupTemplate = `type {{.StructName}} struct {

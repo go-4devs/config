@@ -8,7 +8,6 @@ import (
 	"gitoa.ru/go-4devs/config/definition"
 )
 
-//nolint:gochecknoglobals
 var handlers = sync.Map{}
 
 func Add(kind string, h Handle) error {

@@ -40,7 +40,6 @@ func handle(w io.Writer, data generate.Handler, opt definition.Option) error {
 	return fmt.Errorf("%w:%T", generate.ErrWrongType, opt)
 }
 
-//nolint:gochecknoglobals
 var (
 	tpl            = template.Must(template.New("tpls").Funcs(template.FuncMap{"join": strings.Join}).Parse(templateOption))
 	templateOption = `// read{{.FuncName}} {{.Description}}.

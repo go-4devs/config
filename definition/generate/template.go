@@ -2,7 +2,6 @@ package generate
 
 import "text/template"
 
-//nolint:gochecknoglobals
 var (
 	tpl          = template.Must(template.New("tpls").Parse(baseTemplate))
 	baseTemplate = `// Code generated gitoa.ru/go-4devs/config DO NOT EDIT.
