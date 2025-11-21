@@ -25,7 +25,7 @@ func Add(kind string, h Handle) error {
 func get(kind string) Handle {
 	handler, ok := handlers.Load(kind)
 	if !ok {
-		return func(w io.Writer, h Handler, o definition.Option) error {
+		return func(_ io.Writer, _ Handler, _ definition.Option) error {
 			return fmt.Errorf("handler by %v:%w", kind, ErrNotFound)
 		}
 	}

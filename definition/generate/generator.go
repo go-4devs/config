@@ -8,50 +8,51 @@ import (
 )
 
 type Generator struct {
-	pkg string
 	ViewOption
+
+	pkg           string
 	Imp           Imports
 	errs          []error
 	defaultErrors []string
 }
 
-func (g Generator) Pkg() string {
+func (g *Generator) Pkg() string {
 	return g.pkg
 }
 
-func (g Generator) Imports() []Import {
+func (g *Generator) Imports() []Import {
 	return g.Imp.Imports()
 }
 
-func (g Generator) Handle(w io.Writer, data Handler, opt definition.Option) error {
+func (g *Generator) Handle(w io.Writer, data Handler, opt definition.Option) error {
 	handle := get(opt.Kind())
 
 	return handle(w, data, opt)
 }
 
-func (g Generator) StructName() string {
+func (g *Generator) StructName() string {
 	return FuncName(g.Prefix + "_" + g.Struct + "_" + g.Suffix)
 }
 
-func (g Generator) Options() ViewOption {
+func (g *Generator) Options() ViewOption {
 	return g.ViewOption
 }
 
-func (g Generator) Keys() []string {
+func (g *Generator) Keys() []string {
 	return nil
 }
 
-func (g Generator) DefaultErrors() []string {
+func (g *Generator) DefaultErrors() []string {
 	if len(g.defaultErrors) > 0 {
 		return g.defaultErrors
 	}
 
-	if len(g.ViewOption.Errors.Default) > 0 {
+	if len(g.Errors.Default) > 0 {
 		g.Imp.Adds("errors")
 	}
 
-	g.defaultErrors = make([]string, len(g.ViewOption.Errors.Default))
-	for idx, name := range g.ViewOption.Errors.Default {
+	g.defaultErrors = make([]string, len(g.Errors.Default))
+	for idx, name := range g.Errors.Default {
 		short, err := g.AddType(name)
 		if err != nil {
 			g.errs = append(g.errs, fmt.Errorf("add default error[%d]:%w", idx, err))

@@ -47,6 +47,7 @@ func handle(w io.Writer, data generate.Handler, option definition.Option) error 
 
 type ChildData struct {
 	generate.Handler
+
 	structName string
 	keys       []string
 }
@@ -61,8 +62,9 @@ func (c ChildData) Keys() []string {
 
 type View struct {
 	Group
-	ParentName string
 	generate.ViewOption
+
+	ParentName string
 }
 
 func (v View) FuncName() string {

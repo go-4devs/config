@@ -5,7 +5,9 @@ import (
 )
 
 func New() Definition {
-	return Definition{}
+	return Definition{
+		options: nil,
+	}
 }
 
 type Definition struct {

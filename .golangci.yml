@@ -9,6 +9,8 @@ linters:
     # deprecated
     - wsl
   settings:
+    funcorder:
+      constructor: false
     dupl:
       threshold: 100
     funlen:

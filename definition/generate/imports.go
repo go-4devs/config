@@ -16,7 +16,7 @@ type Imports struct {
 	data map[string]string
 }
 
-func (i Imports) Imports() []Import {
+func (i *Imports) Imports() []Import {
 	imports := make([]Import, 0, len(i.data))
 	for name, alias := range i.data {
 		imports = append(imports, Import{

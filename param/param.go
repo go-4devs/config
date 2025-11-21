@@ -8,6 +8,8 @@ var (
 	emptyParam = empty{}
 )
 
+type Option func(p Param) Param
+
 type Param interface {
 	Value(key any) (any, bool)
 }
@@ -26,8 +28,16 @@ func With(parent Param, key, val any) Param {
 	}
 }
 
-func New() Param {
-	return emptyParam
+func New(opts ...Option) Param {
+	var parms Param
+
+	parms = emptyParam
+
+	for _, opt := range opts {
+		parms = opt(parms)
+	}
+
+	return parms
 }
 
 type empty struct{}

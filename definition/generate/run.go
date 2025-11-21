@@ -10,9 +10,11 @@ import (
 
 func Run(w io.Writer, pkgName string, defs definition.Definition, viewOpt ViewOption) error {
 	gen := Generator{
-		pkg:        pkgName,
-		ViewOption: viewOpt,
-		Imp:        NewImports(),
+		errs:          nil,
+		defaultErrors: nil,
+		pkg:           pkgName,
+		ViewOption:    viewOpt,
+		Imp:           NewImports(),
 	}
 
 	gen.Imp.Adds("gitoa.ru/go-4devs/config", "fmt", "context")

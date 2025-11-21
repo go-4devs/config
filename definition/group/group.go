@@ -6,8 +6,6 @@ import (
 
 const Kind = "group"
 
-var _ definition.Option = Group{}
-
 func New(name, desc string, opts ...definition.Option) Group {
 	return Group{
 		Name:        name,
