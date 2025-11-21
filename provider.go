@@ -18,3 +18,25 @@ type WatchProvider interface {
 }
 
 type Factory func(ctx context.Context, cfg Provider) (Provider, error)
+
+type Option interface {
+	Name() string
+	Param(key any) (any, bool)
+}
+
+type Group interface {
+	Option
+	Options
+}
+
+type Options interface {
+	Options() []Option
+}
+
+type Definition interface {
+	Add(opts ...Option)
+}
+
+type BindProvider interface {
+	Bind(ctx context.Context, def Definition)
+}

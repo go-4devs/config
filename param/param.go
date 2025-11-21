@@ -8,28 +8,28 @@ var (
 	emptyParam = empty{}
 )
 
-type Option func(p Param) Param
+type Option func(p Params) Params
 
-type Param interface {
-	Value(key any) (any, bool)
+type Params interface {
+	Param(key any) (any, bool)
 }
 
-func Chain(vals ...Param) Param {
+func Chain(vals ...Params) Params {
 	slices.Reverse(vals)
 
 	return chain(vals)
 }
 
-func With(parent Param, key, val any) Param {
+func With(parent Params, key, val any) Params {
 	return value{
-		Param: parent,
-		key:   key,
-		val:   val,
+		Params: parent,
+		key:    key,
+		val:    val,
 	}
 }
 
-func New(opts ...Option) Param {
-	var parms Param
+func New(opts ...Option) Params {
+	var parms Params
 
 	parms = emptyParam
 
@@ -42,29 +42,29 @@ func New(opts ...Option) Param {
 
 type empty struct{}
 
-func (v empty) Value(_ any) (any, bool) {
+func (v empty) Param(_ any) (any, bool) {
 	return nil, false
 }
 
 type value struct {
-	Param
+	Params
 
 	key, val any
 }
 
-func (v value) Value(key any) (any, bool) {
+func (v value) Param(key any) (any, bool) {
 	if v.key == key {
 		return v.val, true
 	}
 
-	return v.Param.Value(key)
+	return v.Params.Param(key)
 }
 
-type chain []Param
+type chain []Params
 
-func (c chain) Value(key any) (any, bool) {
+func (c chain) Param(key any) (any, bool) {
 	for _, p := range c {
-		val, ok := p.Value(key)
+		val, ok := p.Param(key)
 		if ok {
 			return val, ok
 		}

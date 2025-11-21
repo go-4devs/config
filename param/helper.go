@@ -2,8 +2,8 @@ package param
 
 import "gitoa.ru/go-4devs/config"
 
-func String(key any, fn Param) (string, bool) {
-	val, ok := fn.Value(key)
+func String(key any, fn Params) (string, bool) {
+	val, ok := fn.Param(key)
 	if !ok {
 		return "", false
 	}
@@ -13,8 +13,8 @@ func String(key any, fn Param) (string, bool) {
 	return data, ok
 }
 
-func Bool(key any, fn Param) (bool, bool) {
-	val, ok := fn.Value(key)
+func Bool(key any, fn Params) (bool, bool) {
+	val, ok := fn.Param(key)
 	if !ok {
 		return false, false
 	}
@@ -24,8 +24,8 @@ func Bool(key any, fn Param) (bool, bool) {
 	return data, ok
 }
 
-func Value(key any, fn Param) (config.Value, bool) {
-	data, ok := fn.Value(key)
+func Value(key any, fn Params) (config.Value, bool) {
+	data, ok := fn.Param(key)
 	if !ok {
 		return nil, false
 	}
@@ -35,8 +35,8 @@ func Value(key any, fn Param) (config.Value, bool) {
 	return res, ok
 }
 
-func Uint64(key any, fn Param) (uint64, bool) {
-	data, ok := fn.Value(key)
+func Uint64(key any, fn Params) (uint64, bool) {
+	data, ok := fn.Param(key)
 	if !ok {
 		return 0, false
 	}

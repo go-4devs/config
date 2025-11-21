@@ -19,25 +19,25 @@ const (
 )
 
 func Short(in rune) param.Option {
-	return func(v param.Param) param.Param {
+	return func(v param.Params) param.Params {
 		return param.With(v, paramShort, string(in))
 	}
 }
 
-func ParamShort(fn param.Param) (string, bool) {
+func ParamShort(fn param.Params) (string, bool) {
 	data, ok := param.String(paramShort, fn)
 
 	return data, ok
 }
 
-func HasShort(short string, fn param.Param) bool {
+func HasShort(short string, fn param.Params) bool {
 	data, ok := param.String(paramShort, fn)
 
 	return ok && data == short
 }
 
 func WithType(in any) param.Option {
-	return func(v param.Param) param.Param {
+	return func(v param.Params) param.Params {
 		out := param.With(v, paramType, in)
 		if _, ok := in.(bool); ok {
 			return param.With(out, paramBool, ok)
@@ -48,82 +48,82 @@ func WithType(in any) param.Option {
 }
 
 func Position(pos uint64) param.Option {
-	return func(p param.Param) param.Param {
+	return func(p param.Params) param.Params {
 		return param.With(p, paramPos, pos)
 	}
 }
 
-func Hidden(v param.Param) param.Param {
+func Hidden(v param.Params) param.Params {
 	return param.With(v, paramHidden, true)
 }
 
-func Required(v param.Param) param.Param {
+func Required(v param.Params) param.Params {
 	return param.With(v, paramRequired, true)
 }
 
-func Slice(v param.Param) param.Param {
+func Slice(v param.Params) param.Params {
 	return param.With(v, paramSlice, true)
 }
 
 func Default(in any) param.Option {
-	return func(v param.Param) param.Param {
+	return func(v param.Params) param.Params {
 		return param.With(v, paramDefault, in)
 	}
 }
 
 func Description(in string) param.Option {
-	return func(v param.Param) param.Param {
+	return func(v param.Params) param.Params {
 		return param.With(v, paramDesc, in)
 	}
 }
 
-func HasDefaut(fn param.Param) bool {
-	_, ok := fn.Value(paramDefault)
+func HasDefaut(fn param.Params) bool {
+	_, ok := fn.Param(paramDefault)
 
 	return ok
 }
 
-func DataPosition(fn param.Param) (uint64, bool) {
+func DataPosition(fn param.Params) (uint64, bool) {
 	return param.Uint64(paramPos, fn)
 }
 
-func DataDefaut(fn param.Param) (any, bool) {
-	data, ok := fn.Value(paramDefault)
+func DataDefaut(fn param.Params) (any, bool) {
+	data, ok := fn.Param(paramDefault)
 
 	return data, ok
 }
 
-func IsSlice(fn param.Param) bool {
+func IsSlice(fn param.Params) bool {
 	data, ok := param.Bool(paramSlice, fn)
 
 	return ok && data
 }
 
-func IsBool(fn param.Param) bool {
+func IsBool(fn param.Params) bool {
 	data, ok := param.Bool(paramBool, fn)
 
 	return ok && data
 }
 
-func IsHidden(fn param.Param) bool {
+func IsHidden(fn param.Params) bool {
 	data, ok := param.Bool(paramHidden, fn)
 
 	return ok && data
 }
 
-func IsRequired(fn param.Param) bool {
+func IsRequired(fn param.Params) bool {
 	data, ok := param.Bool(paramRequired, fn)
 
 	return ok && data
 }
 
-func DataType(fn param.Param) any {
-	param, _ := fn.Value(paramType)
+func DataType(fn param.Params) any {
+	param, _ := fn.Param(paramType)
 
 	return param
 }
 
-func DataDescription(fn param.Param) string {
+func DataDescription(fn param.Params) string {
 	data, _ := param.String(paramDesc, fn)
 
 	return data

@@ -7,11 +7,11 @@ const (
 )
 
 func WithTimeFormat(format string) Option {
-	return func(p Param) Param {
+	return func(p Params) Params {
 		return With(p, paramTimeFormat, format)
 	}
 }
 
-func TimeFormat(fn Param) (string, bool) {
+func TimeFormat(fn Params) (string, bool) {
 	return String(paramTimeFormat, fn)
 }

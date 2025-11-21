@@ -1,27 +1,34 @@
 package proto
 
 import (
-	"gitoa.ru/go-4devs/config/definition"
+	"gitoa.ru/go-4devs/config"
+	"gitoa.ru/go-4devs/config/definition/option"
+	"gitoa.ru/go-4devs/config/param"
 )
 
-const Kind = "proto"
+var (
+	_ config.Group = New("", "")
+)
 
-func New(name, desc string, opt definition.Option) Proto {
-	pr := Proto{
-		Name:        name,
-		Description: desc,
-		Option:      opt,
+func New(name string, desc string, opts ...config.Option) Proto {
+	return Proto{
+		name:   name,
+		opts:   opts,
+		Params: param.New(option.Description(desc)),
 	}
-
-	return pr
 }
 
 type Proto struct {
-	Name        string
-	Description string
-	Option      definition.Option
+	param.Params
+
+	opts []config.Option
+	name string
 }
 
-func (p Proto) Kind() string {
-	return Kind
+func (p Proto) Options() []config.Option {
+	return p.opts
+}
+
+func (p Proto) Name() string {
+	return "{" + p.name + "}"
 }

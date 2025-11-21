@@ -3,21 +3,24 @@ package option
 import (
 	"time"
 
+	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/param"
 )
+
+var _ config.Option = New("", "", nil)
 
 func New(name, desc string, vtype any, opts ...param.Option) Option {
 	opts = append(opts, Description(desc), WithType(vtype))
 	res := Option{
-		name:  name,
-		Param: param.New(opts...),
+		name:   name,
+		Params: param.New(opts...),
 	}
 
 	return res
 }
 
 type Option struct {
-	param.Param
+	param.Params
 
 	name string
 }

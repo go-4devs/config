@@ -1,7 +1,7 @@
 package definition
 
 import (
-	"fmt"
+	"gitoa.ru/go-4devs/config"
 )
 
 func New() Definition {
@@ -11,21 +11,9 @@ func New() Definition {
 }
 
 type Definition struct {
-	options Options
+	options []config.Option
 }
 
-func (d *Definition) Add(opts ...Option) *Definition {
+func (d *Definition) Add(opts ...config.Option) {
 	d.options = append(d.options, opts...)
-
-	return d
-}
-
-func (d *Definition) View(handle func(Option) error) error {
-	for idx, opt := range d.options {
-		if err := handle(opt); err != nil {
-			return fmt.Errorf("%s[%d]:%w", opt.Kind(), idx, err)
-		}
-	}
-
-	return nil
 }
