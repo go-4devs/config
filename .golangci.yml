@@ -9,6 +9,10 @@ linters:
     # deprecated
     - wsl
   settings:
+    recvcheck:
+      disable-builtin: true
+      exclusions:
+        - "*.String"
     funcorder:
       constructor: false
     dupl:

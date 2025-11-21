@@ -25,13 +25,13 @@ func Short(in rune) param.Option {
 }
 
 func ParamShort(fn param.Params) (string, bool) {
-	data, ok := param.String(paramShort, fn)
+	data, ok := param.String(fn, paramShort)
 
 	return data, ok
 }
 
 func HasShort(short string, fn param.Params) bool {
-	data, ok := param.String(paramShort, fn)
+	data, ok := param.String(fn, paramShort)
 
 	return ok && data == short
 }
@@ -124,7 +124,7 @@ func DataType(fn param.Params) any {
 }
 
 func DataDescription(fn param.Params) string {
-	data, _ := param.String(paramDesc, fn)
+	data, _ := param.String(fn, paramDesc)
 
 	return data
 }

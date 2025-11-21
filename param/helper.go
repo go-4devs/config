@@ -2,7 +2,7 @@ package param
 
 import "gitoa.ru/go-4devs/config"
 
-func String(key any, fn Params) (string, bool) {
+func String(fn Params, key any) (string, bool) {
 	val, ok := fn.Param(key)
 	if !ok {
 		return "", false

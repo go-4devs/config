@@ -17,7 +17,7 @@ func TestChainReplace(t *testing.T) {
 	params1 := param.With(param.New(), replaceParam, "param1")
 	params2 := param.With(param.New(), replaceParam, replaceValue)
 
-	data, ok := param.String(replaceParam, param.Chain(params1, params2))
+	data, ok := param.String(param.Chain(params1, params2), replaceParam)
 	if !ok {
 		t.Errorf("param %v: not found", replaceParam)
 	}
@@ -38,7 +38,7 @@ func TestChainExtend(t *testing.T) {
 	params1 := param.With(param.New(), extendParam, extendValue)
 	params2 := param.With(param.New(), "new_value", "param2")
 
-	data1, ok := param.String(extendParam, param.Chain(params1, params2))
+	data1, ok := param.String(param.Chain(params1, params2), extendParam)
 	if !ok {
 		t.Errorf("param %v: not found", extendParam)
 	}

@@ -2,6 +2,7 @@ package proto
 
 import (
 	"gitoa.ru/go-4devs/config"
+	"gitoa.ru/go-4devs/config/definition/key"
 	"gitoa.ru/go-4devs/config/definition/option"
 	"gitoa.ru/go-4devs/config/param"
 )
@@ -12,7 +13,7 @@ var (
 
 func New(name string, desc string, opts ...config.Option) Proto {
 	return Proto{
-		name:   name,
+		name:   key.Wild(name),
 		opts:   opts,
 		Params: param.New(option.Description(desc)),
 	}
@@ -30,5 +31,5 @@ func (p Proto) Options() []config.Option {
 }
 
 func (p Proto) Name() string {
-	return "{" + p.name + "}"
+	return p.name
 }

@@ -13,5 +13,5 @@ func WithTimeFormat(format string) Option {
 }
 
 func TimeFormat(fn Params) (string, bool) {
-	return String(paramTimeFormat, fn)
+	return String(fn, paramTimeFormat)
 }
