@@ -26,6 +26,7 @@ func New(namespace, appName string, opts ...Option) *Provider {
 			return strings.ToUpper(strings.Join(path, "_"))
 		},
 		prefix: strings.ToUpper(namespace + "_" + appName + "_"),
+		name:   "",
 	}
 
 	for _, opt := range opts {

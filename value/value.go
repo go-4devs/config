@@ -11,7 +11,7 @@ import (
 var _ config.Value = (*Value)(nil)
 
 type Value struct {
-	Val interface{}
+	Val any
 }
 
 func (s Value) Int() int {
@@ -62,7 +62,7 @@ func (s Value) Duration() time.Duration {
 	return v
 }
 
-func (s Value) Raw() interface{} {
+func (s Value) Raw() any {
 	return s.Val
 }
 
@@ -72,7 +72,7 @@ func (s Value) Time() time.Time {
 	return v
 }
 
-func (s Value) Unmarshal(target interface{}) error {
+func (s Value) Unmarshal(target any) error {
 	if v, ok := s.Raw().([]byte); ok {
 		err := json.Unmarshal(v, target)
 		if err != nil {

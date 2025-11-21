@@ -10,7 +10,7 @@ var _ config.Value = (*JString)(nil)
 
 type JString string
 
-func (s JString) Unmarshal(v interface{}) error {
+func (s JString) Unmarshal(v any) error {
 	return JUnmarshal(s.Bytes(), v)
 }
 

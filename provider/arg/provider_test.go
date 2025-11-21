@@ -65,5 +65,5 @@ func (d *Duration) UnmarshalJSON(in []byte) error {
 }
 
 func (d *Duration) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", d)), nil
+	return fmt.Appendf(nil, "%q", d), nil
 }

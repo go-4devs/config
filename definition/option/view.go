@@ -141,7 +141,7 @@ func (v View) Parse(valName string, value string, keys []string) string {
 	return data
 }
 
-//nolint:gochecknoglobals,unparam
+//nolint:gochecknoglobals
 var parses = map[string]func(data ParseData) (string, error){
 	typesIntreface[0].Name(): func(data ParseData) (string, error) {
 		var b bytes.Buffer

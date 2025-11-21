@@ -1,7 +1,13 @@
-run:
-  timeout: 5m
-
-linters-settings:
+version: "2"
+linters:
+  default: all
+  disable:
+    - noinlineerr
+    - depguard
+    - ireturn
+    # deprecated
+    - wsl
+  settings:
     dupl:
       threshold: 100
     funlen:
@@ -12,16 +18,10 @@ linters-settings:
       min-occurrences: 2
     gocyclo:
       min-complexity: 15
-    golint:
-      min-confidence: 0
-    govet:
-      check-shadowing: true
     lll:
       line-length: 140
-    maligned:
-      suggest-new: true
     misspell:
-      locale: US  
+      locale: US
     varnamelen:
       min-name-length: 2
       ignore-decls:
@@ -31,43 +31,39 @@ linters-settings:
         - i int
         - b bytes.Buffer
         - h Handle
-
-linters:
-    enable-all: true
-    disable:
-      - exhaustivestruct
-      - maligned
-      - interfacer
-      - scopelint
-      - exhaustruct
-      - depguard
-      - nolintlint
-      #deprecated
-      - structcheck
-      - varcheck
-      - golint
-      - deadcode
-      - ifshort
-      - nosnakecase
-
-      - ireturn # implement provider interface
-
-issues:
-  # Excluding configuration per-path, per-linter, per-text and per-source
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gomnd
-        - exhaustivestruct
-        - wrapcheck
-        - exhaustruct
-        - varnamelen
-        - tenv
-        - funlen
-    - path: test/*
-      linters:
-        - gomnd
-        - exhaustivestruct
-        - wrapcheck
-        - exhaustruct
-        - varnamelen
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - exhaustivestruct
+          - exhaustruct
+          - funlen
+          - mnd
+          - tenv
+          - varnamelen
+          - wrapcheck
+        path: _test\.go
+      - linters:
+          - exhaustivestruct
+          - exhaustruct
+          - mnd
+          - varnamelen
+          - wrapcheck
+        path: test/*
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  default: all
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

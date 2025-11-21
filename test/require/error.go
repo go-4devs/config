@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func NoError(t *testing.T, err error, msgAndArgs ...interface{}) {
+func NoError(t *testing.T, err error, msgAndArgs ...any) {
 	t.Helper()
 
 	if err != nil {
@@ -13,7 +13,7 @@ func NoError(t *testing.T, err error, msgAndArgs ...interface{}) {
 	}
 }
 
-func NoErrorf(t *testing.T, err error, msg string, args ...interface{}) {
+func NoErrorf(t *testing.T, err error, msg string, args ...any) {
 	t.Helper()
 
 	if err != nil {

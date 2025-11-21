@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 )
 
-func Must(providers ...interface{}) *Client {
+func Must(providers ...any) *Client {
 	client, err := New(providers...)
 	if err != nil {
 		panic(err)
@@ -17,7 +17,7 @@ func Must(providers ...interface{}) *Client {
 	return client
 }
 
-func New(providers ...interface{}) (*Client, error) {
+func New(providers ...any) (*Client, error) {
 	client := &Client{
 		providers: make([]Provider, len(providers)),
 	}
@@ -31,6 +31,9 @@ func New(providers ...interface{}) (*Client, error) {
 				factory: func(ctx context.Context) (Provider, error) {
 					return current(ctx, client)
 				},
+				mu:       sync.Mutex{},
+				done:     0,
+				provider: nil,
 			}
 		default:
 			return nil, fmt.Errorf("provier[%d]: %w %T", idx, ErrUnknowType, prov)
@@ -45,23 +48,6 @@ type provider struct {
 	done     uint32
 	provider Provider
 	factory  func(ctx context.Context) (Provider, error)
-}
-
-func (p *provider) init(ctx context.Context) error {
-	if atomic.LoadUint32(&p.done) == 0 {
-		if !p.mu.TryLock() {
-			return fmt.Errorf("%w", ErrInitFactory)
-		}
-		defer atomic.StoreUint32(&p.done, 1)
-		defer p.mu.Unlock()
-
-		var err error
-		if p.provider, err = p.factory(ctx); err != nil {
-			return fmt.Errorf("init provider factory:%w", err)
-		}
-	}
-
-	return nil
 }
 
 func (p *provider) Watch(ctx context.Context, callback WatchCallback, path ...string) error {
@@ -94,6 +80,23 @@ func (p *provider) Value(ctx context.Context, path ...string) (Value, error) {
 	return variable, nil
 }
 
+func (p *provider) init(ctx context.Context) error {
+	if atomic.LoadUint32(&p.done) == 0 {
+		if !p.mu.TryLock() {
+			return fmt.Errorf("%w", ErrInitFactory)
+		}
+		defer atomic.StoreUint32(&p.done, 1)
+		defer p.mu.Unlock()
+
+		var err error
+		if p.provider, err = p.factory(ctx); err != nil {
+			return fmt.Errorf("init provider factory:%w", err)
+		}
+	}
+
+	return nil
+}
+
 type Client struct {
 	providers []Provider
 }
@@ -111,7 +114,7 @@ func (c *Client) Value(ctx context.Context, path ...string) (Value, error) {
 
 	for _, provider := range c.providers {
 		value, err = provider.Value(ctx, path...)
-		if err == nil || !(errors.Is(err, ErrValueNotFound) || errors.Is(err, ErrInitFactory)) {
+		if err == nil || (!errors.Is(err, ErrValueNotFound) && !errors.Is(err, ErrInitFactory)) {
 			break
 		}
 	}

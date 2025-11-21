@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Equal(t *testing.T, expected interface{}, actual interface{}, msgAndArgs ...interface{}) bool {
+func Equal(t *testing.T, expected any, actual any, msgAndArgs ...any) bool {
 	t.Helper()
 
 	if reflect.DeepEqual(expected, actual) {
@@ -17,7 +17,7 @@ func Equal(t *testing.T, expected interface{}, actual interface{}, msgAndArgs ..
 	return false
 }
 
-func Equalf(t *testing.T, expected interface{}, actual interface{}, msg string, args ...interface{}) bool {
+func Equalf(t *testing.T, expected any, actual any, msg string, args ...any) bool {
 	t.Helper()
 
 	if reflect.DeepEqual(expected, actual) {

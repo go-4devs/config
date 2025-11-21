@@ -1,3 +1,3 @@
 module gitoa.ru/go-4devs/config
 
-go 1.21
+go 1.23

@@ -79,7 +79,7 @@ func ExampleClient_Watch() {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	err = watcher.Watch(ctx, func(ctx context.Context, oldVar, newVar config.Value) error {
+	err = watcher.Watch(ctx, func(_ context.Context, oldVar, newVar config.Value) error {
 		fmt.Println("update example_enable old: ", oldVar.Bool(), " new:", newVar.Bool())
 		wg.Done()
 
@@ -93,7 +93,7 @@ func ExampleClient_Watch() {
 
 	_ = os.Setenv("FDEVS_CONFIG_EXAMPLE_ENABLE", "false")
 
-	err = watcher.Watch(ctx, func(ctx context.Context, oldVar, newVar config.Value) error {
+	err = watcher.Watch(ctx, func(_ context.Context, oldVar, newVar config.Value) error {
 		fmt.Println("update example_db_dsn old: ", oldVar.String(), " new:", newVar.String())
 		wg.Done()
 

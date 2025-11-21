@@ -10,7 +10,7 @@ var _ config.Value = (*JBytes)(nil)
 
 type JBytes []byte
 
-func (s JBytes) Unmarshal(v interface{}) error {
+func (s JBytes) Unmarshal(v any) error {
 	return JUnmarshal(s.Bytes(), v)
 }
 

@@ -12,7 +12,7 @@ type Value interface {
 }
 
 type UnmarshalValue interface {
-	Unmarshal(val interface{}) error
+	Unmarshal(val any) error
 }
 
 type ReadValue interface {

@@ -8,7 +8,7 @@ type Empty struct {
 	Err error
 }
 
-func (e Empty) Unmarshal(_ interface{}) error {
+func (e Empty) Unmarshal(_ any) error {
 	return e.Err
 }
 

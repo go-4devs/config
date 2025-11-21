@@ -34,6 +34,7 @@ func TestWatcher(t *testing.T) {
 	t.Parallel()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+
 	defer func() {
 		cancel()
 	}()
@@ -48,9 +49,10 @@ func TestWatcher(t *testing.T) {
 
 	err := w.Watch(
 		ctx,
-		func(ctx context.Context, oldVar, newVar config.Value) error {
+		func(_ context.Context, _, _ config.Value) error {
 			atomic.AddInt32(&cnt, 1)
 			wg.Done()
+
 			if atomic.LoadInt32(&cnt) == 2 {
 				return config.ErrStopWatch
 			}

@@ -72,7 +72,7 @@ func ParseBool(s string) (bool, error) {
 	return b, nil
 }
 
-func JUnmarshal(b []byte, v interface{}) error {
+func JUnmarshal(b []byte, v any) error {
 	if err := json.Unmarshal(b, v); err != nil {
 		return fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
 	}

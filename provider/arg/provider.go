@@ -43,8 +43,44 @@ type Provider struct {
 	name string
 }
 
-// nolint: cyclop
-// return name, value, error.
+func (p *Provider) Name() string {
+	return p.name
+}
+
+func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error) {
+	err := p.parse()
+	if err != nil {
+		return nil, err
+	}
+
+	name := p.key(path...)
+	if val, ok := p.args[name]; ok {
+		switch {
+		case len(val) == 1:
+			return value.JString(val[0]), nil
+		default:
+			data, jerr := json.Marshal(val)
+			if jerr != nil {
+				return nil, fmt.Errorf("failed load data:%w", jerr)
+			}
+
+			return value.Decode(func(v any) error {
+				err := json.Unmarshal(data, v)
+				if err != nil {
+					return fmt.Errorf("unmarshal:%w", err)
+				}
+
+				return nil
+			}), nil
+		}
+	}
+
+	return nil, fmt.Errorf("%s:%w", p.Name(), config.ErrValueNotFound)
+}
+
+// parseOne return name, value, error.
+//
+//nolint:cyclop
 func (p *Provider) parseOne(arg string) (string, string, error) {
 	if arg[0] != '-' {
 		return "", "", nil
@@ -100,37 +136,4 @@ func (p *Provider) parse() error {
 	}
 
 	return nil
-}
-
-func (p *Provider) Name() string {
-	return p.name
-}
-
-func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error) {
-	if err := p.parse(); err != nil {
-		return nil, err
-	}
-
-	name := p.key(path...)
-	if val, ok := p.args[name]; ok {
-		switch {
-		case len(val) == 1:
-			return value.JString(val[0]), nil
-		default:
-			data, jerr := json.Marshal(val)
-			if jerr != nil {
-				return nil, fmt.Errorf("failed load data:%w", jerr)
-			}
-
-			return value.Decode(func(v interface{}) error {
-				if err := json.Unmarshal(data, v); err != nil {
-					return fmt.Errorf("unmarshal:%w", err)
-				}
-
-				return nil
-			}), nil
-		}
-	}
-
-	return nil, fmt.Errorf("%s:%w", p.Name(), config.ErrValueNotFound)
 }
