@@ -23,6 +23,8 @@ linters:
     goconst:
       min-len: 2
       min-occurrences: 2
+    cyclop:
+      max-complexity: 15
     gocyclo:
       min-complexity: 15
     lll:
