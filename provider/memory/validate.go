@@ -35,6 +35,7 @@ func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 
 	return nil
 }
+
 func (a Validate) Name() string {
 	if a.name != "" {
 		return a.name

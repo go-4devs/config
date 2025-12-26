@@ -4,15 +4,15 @@ import (
 	"slices"
 )
 
-var (
-	emptyParam = empty{}
-)
+var emptyParam = empty{}
 
-type Option func(p Params) Params
-type Has func(Params) bool
-type Params interface {
-	Param(key any) (any, bool)
-}
+type (
+	Option func(p Params) Params
+	Has    func(Params) bool
+	Params interface {
+		Param(key any) (any, bool)
+	}
+)
 
 func Chain(vals ...Params) Params {
 	slices.Reverse(vals)

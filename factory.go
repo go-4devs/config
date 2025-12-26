@@ -41,6 +41,7 @@ func (p *WrapProvider) Watch(ctx context.Context, callback WatchCallback, path .
 
 	return nil
 }
+
 func (p *WrapProvider) Value(ctx context.Context, path ...string) (Value, error) {
 	if err := p.init(ctx); err != nil {
 		return nil, fmt.Errorf("init read:%w", err)

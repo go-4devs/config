@@ -7,9 +7,7 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
-var (
-	_ config.Group = New("", "")
-)
+var _ config.Group = New("", "")
 
 func New(name string, desc string, opts ...config.Option) Proto {
 	return Proto{

@@ -133,9 +133,7 @@ func (c Config) OutName() string {
 //go:embed tpl/*
 var tpls embed.FS
 
-var (
-	initTpl = template.Must(template.New("tpls").ParseFS(tpls, "tpl/*.tpl")).Lookup("init.go.tpl")
-)
+var initTpl = template.Must(template.New("tpls").ParseFS(tpls, "tpl/*.tpl")).Lookup("init.go.tpl")
 
 func Run(_ context.Context, cfg Config, w io.Writer, inputs ...Input) error {
 	data := Data{

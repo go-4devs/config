@@ -46,6 +46,7 @@ func sliceByType(vType any, in config.Value) error {
 		return sliceBy[any](in)
 	}
 }
+
 func sliceBy[T any](in config.Value) error {
 	var data []T
 	if err := in.Unmarshal(&data); err != nil {

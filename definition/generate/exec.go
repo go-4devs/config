@@ -69,7 +69,7 @@ func Generate(ctx context.Context, cfg GConfig) error {
 		return fmt.Errorf("format source:%w", err)
 	}
 
-	err = os.WriteFile(cfg.OutName(), out, 0644) //nolint:gosec,mnd
+	err = os.WriteFile(cfg.OutName(), out, 0o644) //nolint:gosec,mnd
 	if err != nil {
 		return fmt.Errorf("write file:%w", err)
 	}

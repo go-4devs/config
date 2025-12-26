@@ -7,9 +7,7 @@ import (
 	"gitoa.ru/go-4devs/config"
 )
 
-var (
-	emptyValue = Empty{Err: nil}
-)
+var emptyValue = Empty{Err: nil}
 
 func EmptyValue() config.Value {
 	return emptyValue
