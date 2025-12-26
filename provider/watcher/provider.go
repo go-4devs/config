@@ -39,18 +39,20 @@ type Option func(*Provider)
 
 type Provider struct {
 	config.Provider
+
 	duration time.Duration
 	logger   func(context.Context, string, ...any)
 }
 
 func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, key ...string) error {
-	old, err := p.Provider.Value(ctx, key...)
+	old, err := p.Value(ctx, key...)
 	if err != nil {
 		return fmt.Errorf("failed watch variable: %w", err)
 	}
 
 	go func(oldVar config.Value) {
 		ticker := time.NewTicker(p.duration)
+
 		defer func() {
 			ticker.Stop()
 		}()
@@ -58,7 +60,7 @@ func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, key
 		for {
 			select {
 			case <-ticker.C:
-				newVar, err := p.Provider.Value(ctx, key...)
+				newVar, err := p.Value(ctx, key...)
 				if err != nil {
 					p.logger(ctx, "get value%v:%v", key, err.Error())
 				} else if !newVar.IsEquals(oldVar) {
@@ -66,8 +68,10 @@ func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, key
 						if errors.Is(err, config.ErrStopWatch) {
 							return
 						}
+
 						p.logger(ctx, "callback %v:%v", key, err)
 					}
+
 					oldVar = newVar
 				}
 			case <-ctx.Done():

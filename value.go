@@ -12,7 +12,7 @@ type Value interface {
 }
 
 type UnmarshalValue interface {
-	Unmarshal(val interface{}) error
+	Unmarshal(val any) error
 }
 
 type ReadValue interface {
@@ -25,6 +25,7 @@ type ReadValue interface {
 	Bool() bool
 	Duration() time.Duration
 	Time() time.Time
+	Any() any
 }
 
 type ParseValue interface {

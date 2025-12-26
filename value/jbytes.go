@@ -10,7 +10,7 @@ var _ config.Value = (*JBytes)(nil)
 
 type JBytes []byte
 
-func (s JBytes) Unmarshal(v interface{}) error {
+func (s JBytes) Unmarshal(v any) error {
 	return JUnmarshal(s.Bytes(), v)
 }
 
@@ -23,20 +23,15 @@ func (s JBytes) ParseInt() (int, error) {
 }
 
 func (s JBytes) ParseInt64() (int64, error) {
-	return ParseInt(s.String())
+	return ParseInt64(s.String())
 }
 
 func (s JBytes) ParseUint() (uint, error) {
-	u64, err := ParseUint(s.String())
-	if err != nil {
-		return 0, err
-	}
-
-	return uint(u64), nil
+	return ParseUint(s.String())
 }
 
 func (s JBytes) ParseUint64() (uint64, error) {
-	return ParseUint(s.String())
+	return ParseUint64(s.String())
 }
 
 func (s JBytes) ParseFloat64() (float64, error) {
@@ -109,6 +104,10 @@ func (s JBytes) Time() time.Time {
 	in, _ := s.ParseTime()
 
 	return in
+}
+
+func (s JBytes) Any() any {
+	return s
 }
 
 func (s JBytes) IsEquals(in config.Value) bool {

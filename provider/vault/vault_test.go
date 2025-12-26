@@ -33,7 +33,7 @@ func NewVault() (*api.Client, error) {
 
 	cl.SetToken(tokenID)
 
-	values := map[string]map[string]interface{}{
+	values := map[string]map[string]any{
 		"database": {
 			"duration": 1260000000000,
 			"enabled":  true,
@@ -57,9 +57,9 @@ func NewVault() (*api.Client, error) {
 	return cl, nil
 }
 
-func create(host, token, path string, data map[string]interface{}) error {
+func create(host, token, path string, data map[string]any) error {
 	type Req struct {
-		Data interface{} `json:"data"`
+		Data any `json:"data"`
 	}
 
 	b, err := json.Marshal(Req{Data: data})

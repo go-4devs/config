@@ -65,7 +65,7 @@ func ExampleClient_Watch() {
 		return
 	}
 
-	_, err = etcdClient.KV.Put(ctx, "fdevs/config/example_db_dsn", "pgsql://user@pass:127.0.0.1:5432")
+	_, err = etcdClient.Put(ctx, "fdevs/config/example_db_dsn", "pgsql://user@pass:127.0.0.1:5432")
 	if err != nil {
 		log.Print(err)
 
@@ -75,7 +75,7 @@ func ExampleClient_Watch() {
 	defer func() {
 		cancel()
 
-		if _, err = etcdClient.KV.Delete(context.Background(), "fdevs/config/example_db_dsn"); err != nil {
+		if _, err = etcdClient.Delete(context.Background(), "fdevs/config/example_db_dsn"); err != nil {
 			log.Print(err)
 
 			return
@@ -107,7 +107,7 @@ func ExampleClient_Watch() {
 	}
 
 	time.AfterFunc(time.Second, func() {
-		if _, err := etcdClient.KV.Put(ctx, "fdevs/config/example_db_dsn", "mysql://localhost:5432"); err != nil {
+		if _, err := etcdClient.Put(ctx, "fdevs/config/example_db_dsn", "mysql://localhost:5432"); err != nil {
 			log.Print(err)
 
 			return

@@ -1,14 +1,27 @@
 package value
 
 import (
+	"errors"
 	"time"
+
+	"gitoa.ru/go-4devs/config"
 )
+
+var emptyValue = Empty{Err: nil}
+
+func EmptyValue() config.Value {
+	return emptyValue
+}
 
 type Empty struct {
 	Err error
 }
 
-func (e Empty) Unmarshal(_ interface{}) error {
+func IsEmpty(v config.Value) bool {
+	return v == nil || v == emptyValue
+}
+
+func (e Empty) Unmarshal(_ any) error {
 	return e.Err
 }
 
@@ -82,4 +95,14 @@ func (e Empty) Duration() time.Duration {
 
 func (e Empty) Time() time.Time {
 	return time.Time{}
+}
+
+func (e Empty) Any() any {
+	return e.Err
+}
+
+func (e Empty) IsEquals(v config.Value) bool {
+	em, ok := v.(Empty)
+
+	return ok && errors.Is(em.Err, e.Err)
 }

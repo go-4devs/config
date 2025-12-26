@@ -1,4 +1,6 @@
-// nolint: nonamedreturns
+// Package value decode value.
+//
+//nolint:nonamedreturns
 package value
 
 import (
@@ -9,9 +11,9 @@ import (
 
 var _ config.Value = (*Decode)(nil)
 
-type Decode func(v interface{}) error
+type Decode func(v any) error
 
-func (s Decode) Unmarshal(v interface{}) error {
+func (s Decode) Unmarshal(v any) error {
 	return s(v)
 }
 
@@ -107,6 +109,10 @@ func (s Decode) Time() time.Time {
 	in, _ := s.ParseTime()
 
 	return in
+}
+
+func (s Decode) Any() any {
+	return s
 }
 
 func (s Decode) IsEquals(in config.Value) bool {

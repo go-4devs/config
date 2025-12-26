@@ -26,6 +26,7 @@ func New(namespace, appName string, opts ...Option) *Provider {
 			return strings.ToUpper(strings.Join(path, "_"))
 		},
 		prefix: strings.ToUpper(namespace + "_" + appName + "_"),
+		name:   "",
 	}
 
 	for _, opt := range opts {
@@ -51,5 +52,5 @@ func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error
 		return value.JString(val), nil
 	}
 
-	return nil, fmt.Errorf("%v:%w", p.Name(), config.ErrValueNotFound)
+	return nil, fmt.Errorf("%v:%w", p.Name(), config.ErrNotFound)
 }

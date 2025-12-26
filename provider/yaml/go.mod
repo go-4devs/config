@@ -1,6 +1,6 @@
 module gitoa.ru/go-4devs/config/provider/yaml
 
-go 1.21
+go 1.22
 
 require (
 	gitoa.ru/go-4devs/config v0.0.1

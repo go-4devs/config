@@ -1,27 +1,34 @@
 package group
 
 import (
-	"gitoa.ru/go-4devs/config/definition"
+	"gitoa.ru/go-4devs/config"
+	"gitoa.ru/go-4devs/config/definition/option"
+	"gitoa.ru/go-4devs/config/param"
 )
 
-const Kind = "group"
+var _ config.Group = New("", "")
 
-var _ definition.Option = Group{}
-
-func New(name, desc string, opts ...definition.Option) Group {
-	return Group{
-		Name:        name,
-		Description: desc,
-		Options:     opts,
+func New(name, desc string, opts ...config.Option) Group {
+	group := Group{
+		name:   name,
+		opts:   opts,
+		Params: param.New(option.Description(desc)),
 	}
+
+	return group
 }
 
 type Group struct {
-	Options     definition.Options
-	Name        string
-	Description string
+	param.Params
+
+	name string
+	opts []config.Option
 }
 
-func (o Group) Kind() string {
-	return Kind
+func (g Group) Name() string {
+	return g.name
+}
+
+func (g Group) Options() []config.Option {
+	return g.opts
 }

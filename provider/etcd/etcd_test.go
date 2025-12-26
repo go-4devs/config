@@ -38,7 +38,7 @@ func NewEtcd(ctx context.Context) (*client.Client, error) {
 	}
 
 	for name, val := range values {
-		_, err = et.KV.Put(ctx, name, val)
+		_, err = et.Put(ctx, name, val)
 		if err != nil {
 			return nil, err
 		}

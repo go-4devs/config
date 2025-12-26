@@ -49,7 +49,7 @@ func NewReadConfig(key ...string) Read {
 	return NewReadUnmarshal(ex, &Config{}, key...)
 }
 
-func NewReadUnmarshal(expected, target interface{}, key ...string) Read {
+func NewReadUnmarshal(expected, target any, key ...string) Read {
 	return Read{
 		Key: key,
 		Assert: func(t *testing.T, v config.Value) {
@@ -66,17 +66,19 @@ func Time(value string) time.Time {
 	return t
 }
 
-// nolint: cyclop
-func NewRead(expected interface{}, key ...string) Read {
+// NewRead test data.
+func NewRead(expected any, key ...string) Read {
 	return Read{
 		Key: key,
 		Assert: func(t *testing.T, v config.Value) {
 			t.Helper()
+
 			var (
-				val   interface{}
+				val   any
 				err   error
-				short interface{}
+				short any
 			)
+
 			switch expected.(type) {
 			case bool:
 				val, err = v.ParseBool()

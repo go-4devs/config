@@ -68,19 +68,6 @@ func (p *Provider) Key(in []string) (string, string) {
 	return p.prefix + Separator + path, val
 }
 
-func (p *Provider) read(path, key string) (*api.Secret, error) {
-	secret, err := p.client.Logical().Read(path)
-	if err != nil {
-		return nil, fmt.Errorf("read[%s:%s]:%w", path, key, err)
-	}
-
-	if secret == nil && key != ValueName {
-		return p.read(path+Separator+key, ValueName)
-	}
-
-	return secret, nil
-}
-
 func (p *Provider) Value(_ context.Context, key ...string) (config.Value, error) {
 	path, field := p.Key(key)
 
@@ -98,7 +85,7 @@ func (p *Provider) Value(_ context.Context, key ...string) (config.Value, error)
 			fmt.Errorf("%w: warn: %s, path:%s, field:%s, provider:%s", config.ErrValueNotFound, secret.Warnings, path, field, p.Name())
 	}
 
-	data, ok := secret.Data["data"].(map[string]interface{})
+	data, ok := secret.Data["data"].(map[string]any)
 	if !ok {
 		return nil, fmt.Errorf("%w: path:%s, field:%s, provider:%s", config.ErrValueNotFound, path, field, p.Name())
 	}
@@ -117,4 +104,17 @@ func (p *Provider) Value(_ context.Context, key ...string) (config.Value, error)
 	}
 
 	return value.JBytes(md), nil
+}
+
+func (p *Provider) read(path, key string) (*api.Secret, error) {
+	secret, err := p.client.Logical().Read(path)
+	if err != nil {
+		return nil, fmt.Errorf("read[%s:%s]:%w", path, key, err)
+	}
+
+	if secret == nil && key != ValueName {
+		return p.read(path+Separator+key, ValueName)
+	}
+
+	return secret, nil
 }

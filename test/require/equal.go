@@ -6,7 +6,7 @@ import (
 	"gitoa.ru/go-4devs/config/test/assert"
 )
 
-func Equal(t *testing.T, expected interface{}, actual interface{}, msgAndArgs ...interface{}) {
+func Equal(t *testing.T, expected any, actual any, msgAndArgs ...any) {
 	t.Helper()
 
 	if assert.Equal(t, expected, actual, msgAndArgs...) {
@@ -16,7 +16,7 @@ func Equal(t *testing.T, expected interface{}, actual interface{}, msgAndArgs ..
 	t.FailNow()
 }
 
-func Equalf(t *testing.T, expected interface{}, actual interface{}, msg string, args ...interface{}) {
+func Equalf(t *testing.T, expected any, actual any, msg string, args ...any) {
 	t.Helper()
 
 	if assert.Equalf(t, expected, actual, msg, args...) {
