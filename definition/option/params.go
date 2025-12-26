@@ -13,7 +13,6 @@ const (
 	paramRequired
 	paramSlice
 	paramBool
-	paramType
 	paramPos
 	paramShort
 )
@@ -30,15 +29,17 @@ func ParamShort(fn param.Params) (string, bool) {
 	return data, ok
 }
 
-func HasShort(short string, fn param.Params) bool {
-	data, ok := param.String(fn, paramShort)
+func HasShort(short string) param.Has {
+	return func(fn param.Params) bool {
+		data, ok := param.String(fn, paramShort)
 
-	return ok && data == short
+		return ok && data == short
+	}
 }
 
 func WithType(in any) param.Option {
 	return func(v param.Params) param.Params {
-		out := param.With(v, paramType, in)
+		out := param.WithType(in)(v)
 		if _, ok := in.(bool); ok {
 			return param.With(out, paramBool, ok)
 		}
@@ -115,12 +116,6 @@ func IsRequired(fn param.Params) bool {
 	data, ok := param.Bool(paramRequired, fn)
 
 	return ok && data
-}
-
-func DataType(fn param.Params) any {
-	param, _ := fn.Param(paramType)
-
-	return param
 }
 
 func DataDescription(fn param.Params) string {

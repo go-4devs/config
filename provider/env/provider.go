@@ -52,5 +52,5 @@ func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error
 		return value.JString(val), nil
 	}
 
-	return nil, fmt.Errorf("%v:%w", p.Name(), config.ErrValueNotFound)
+	return nil, fmt.Errorf("%v:%w", p.Name(), config.ErrNotFound)
 }

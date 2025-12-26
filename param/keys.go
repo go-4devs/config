@@ -4,6 +4,7 @@ type key int
 
 const (
 	paramTimeFormat key = iota + 1
+	paramType
 )
 
 func WithTimeFormat(format string) Option {
@@ -14,4 +15,16 @@ func WithTimeFormat(format string) Option {
 
 func TimeFormat(fn Params) (string, bool) {
 	return String(fn, paramTimeFormat)
+}
+
+func WithType(in any) Option {
+	return func(v Params) Params {
+		return With(v, paramType, in)
+	}
+}
+
+func Type(fn Params) any {
+	param, _ := fn.Param(paramType)
+
+	return param
 }

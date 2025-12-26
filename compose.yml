@@ -1,7 +1,6 @@
-version: '3'
-
 services:
   vault:
+    container_name: vault
     image: vault:1.13.3
     cap_add:
       - IPC_LOCK
@@ -10,8 +9,11 @@ services:
     environment: 
       VAULT_DEV_ROOT_TOKEN_ID: "dev"
   etcd:
-    image: bitnami/etcd:3.5.11
+    container_name: etcd
+    image: quay.io/coreos/etcd:v3.6.7
     environment: 
       ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
     ports: 
       - "2379:2379"

@@ -1,8 +1,6 @@
 package render
 
 import (
-	"log"
-
 	"gitoa.ru/go-4devs/config/definition/generate/pkg"
 	"gitoa.ru/go-4devs/config/definition/generate/view"
 )
@@ -53,8 +51,6 @@ func (d ViewData) Value(name, val string) string {
 }
 
 func (d ViewData) Default(name string) string {
-	log.Print(d.View.Default())
-
 	return Data(d.View.Default(), name, d)
 }
 

@@ -1,4 +1,4 @@
-package json
+package json //nolint:revive
 
 import (
 	"context"
@@ -25,6 +25,7 @@ func New(json []byte, opts ...Option) *Provider {
 			return strings.Join(s, Separator)
 		},
 		data: json,
+		name: Name,
 	}
 
 	for _, opt := range opts {

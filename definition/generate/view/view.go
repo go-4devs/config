@@ -67,7 +67,7 @@ func newView(name string, get param.Params, in any, opts ...Option) View {
 		kind:     reflect.TypeOf(in),
 		name:     name,
 		Params:   get,
-		dtype:    option.DataType(get),
+		dtype:    param.Type(get),
 		children: nil,
 		keys:     nil,
 		parent:   "",

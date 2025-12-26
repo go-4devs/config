@@ -34,6 +34,7 @@ func configure(tree *toml.Tree, opts ...Option) *Provider {
 		key: func(s []string) string {
 			return strings.Join(s, Separator)
 		},
+		name: Name,
 	}
 
 	for _, opt := range opts {

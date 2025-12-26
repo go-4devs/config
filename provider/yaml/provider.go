@@ -36,9 +36,9 @@ func New(yml []byte, opts ...Option) (*Provider, error) {
 }
 
 func create(opts ...Option) *Provider {
-	prov := Provider{
-		name: Name,
-	}
+	var prov Provider
+
+	prov.name = Name
 
 	for _, opt := range opts {
 		opt(&prov)
@@ -65,6 +65,7 @@ func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error
 func (p *Provider) With(data *yaml.Node) *Provider {
 	return &Provider{
 		data: node{Node: data},
+		name: p.name,
 	}
 }
 
@@ -85,7 +86,7 @@ func (n *node) read(name string, keys []string) (config.Value, error) {
 	return value.Decode(val), nil
 }
 
-func getData(node []*yaml.Node, keys []string) (func(interface{}) error, error) {
+func getData(node []*yaml.Node, keys []string) (func(any) error, error) {
 	for idx := len(node) - 1; idx > 0; idx -= 2 {
 		if node[idx-1].Value == keys[0] {
 			if len(keys) > 1 {

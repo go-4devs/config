@@ -4,9 +4,9 @@ import (
 	"gitoa.ru/go-4devs/config"
 )
 
-func New() *Definition {
+func New(opts ...config.Option) *Definition {
 	return &Definition{
-		options: nil,
+		options: opts,
 	}
 }
 

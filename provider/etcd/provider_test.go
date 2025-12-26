@@ -55,7 +55,7 @@ func TestWatcher(t *testing.T) {
 	require.NoError(t, err)
 
 	defer func() {
-		_, err = et.KV.Delete(context.Background(), "fdevs/config/test_watch")
+		_, err = et.Delete(context.Background(), "fdevs/config/test_watch")
 		require.NoError(t, err)
 	}()
 
@@ -66,7 +66,7 @@ func TestWatcher(t *testing.T) {
 	wg.Add(6)
 
 	watch := func(cnt *int32) config.WatchCallback {
-		return func(ctx context.Context, oldVar, newVar config.Value) error {
+		return func(_ context.Context, oldVar, newVar config.Value) error {
 			switch *cnt {
 			case 0:
 				assert.Equal(t, value(*cnt), newVar.String())
@@ -77,7 +77,7 @@ func TestWatcher(t *testing.T) {
 			case 2:
 				_, perr := newVar.ParseString()
 				require.NoError(t, perr)
-				assert.Equal(t, "", newVar.String())
+				assert.Empty(t, newVar.String())
 				assert.Equal(t, value(*cnt-1), oldVar.String())
 			default:
 				t.Error("unexpected watch")
@@ -96,11 +96,11 @@ func TestWatcher(t *testing.T) {
 	require.NoError(t, err)
 
 	time.AfterFunc(time.Second, func() {
-		_, err = et.KV.Put(ctx, "fdevs/config/test_watch", value(0))
+		_, err = et.Put(ctx, "fdevs/config/test_watch", value(0))
 		require.NoError(t, err)
-		_, err = et.KV.Put(ctx, "fdevs/config/test_watch", value(1))
+		_, err = et.Put(ctx, "fdevs/config/test_watch", value(1))
 		require.NoError(t, err)
-		_, err = et.KV.Delete(ctx, "fdevs/config/test_watch")
+		_, err = et.Delete(ctx, "fdevs/config/test_watch")
 		require.NoError(t, err)
 	})
 

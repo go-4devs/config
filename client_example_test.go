@@ -42,14 +42,14 @@ func ExampleClient_Value() {
 
 	port, err := config.Value(ctx, "listen")
 	if err != nil {
-		log.Print("listen", err)
+		log.Print("listen: ", err)
 
 		return
 	}
 
 	hostValue, err := config.Value(ctx, "host")
 	if err != nil {
-		log.Print("host ", err)
+		log.Print("host:", err)
 
 		return
 	}

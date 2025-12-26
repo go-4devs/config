@@ -27,7 +27,7 @@ func (s Value) ParseInt() (int, error) {
 	return int(v), nil
 }
 
-func (s Value) Unmarshal(target interface{}) error {
+func (s Value) Unmarshal(target any) error {
 	b, err := json.Marshal(s.Raw())
 	if err != nil {
 		return fmt.Errorf("%w: %w", config.ErrInvalidValue, err)

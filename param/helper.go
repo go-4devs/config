@@ -1,7 +1,5 @@
 package param
 
-import "gitoa.ru/go-4devs/config"
-
 func String(fn Params, key any) (string, bool) {
 	val, ok := fn.Param(key)
 	if !ok {
@@ -22,17 +20,6 @@ func Bool(key any, fn Params) (bool, bool) {
 	data, ok := val.(bool)
 
 	return data, ok
-}
-
-func Value(key any, fn Params) (config.Value, bool) {
-	data, ok := fn.Param(key)
-	if !ok {
-		return nil, false
-	}
-
-	res, ok := data.(config.Value)
-
-	return res, ok
 }
 
 func Uint64(key any, fn Params) (uint64, bool) {

@@ -18,7 +18,7 @@ func ParseDuration(raw string) (time.Duration, error) {
 	return d, nil
 }
 
-func ParseInt(s string) (int64, error) {
+func ParseInt64(s string) (int64, error) {
 	i, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
@@ -27,13 +27,13 @@ func ParseInt(s string) (int64, error) {
 	return i, nil
 }
 
-func ParseUint(s string) (uint64, error) {
+func ParseUint(s string) (uint, error) {
 	i, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
 	}
 
-	return i, nil
+	return uint(i), nil
 }
 
 func Atoi(s string) (int, error) {
@@ -78,4 +78,13 @@ func JUnmarshal(b []byte, v any) error {
 	}
 
 	return nil
+}
+
+func ParseUint64(s string) (uint64, error) {
+	i, err := strconv.ParseUint(s, 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
+	}
+
+	return i, nil
 }

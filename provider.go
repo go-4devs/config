@@ -1,14 +1,14 @@
 package config
 
-import "context"
+import (
+	"context"
+
+	"gitoa.ru/go-4devs/config/param"
+)
 
 type Provider interface {
 	Value(ctx context.Context, path ...string) (Value, error)
-}
-
-type NamedProvider interface {
 	Name() string
-	Provider
 }
 
 type WatchCallback func(ctx context.Context, oldVar, newVar Value) error
@@ -33,10 +33,18 @@ type Options interface {
 	Options() []Option
 }
 
-type Definition interface {
-	Add(opts ...Option)
+type BindProvider interface {
+	Provider
+
+	Bind(ctx context.Context, data Variables) error
 }
 
-type BindProvider interface {
-	Bind(ctx context.Context, def Definition)
+type Variables interface {
+	ByName(name ...string) (Variable, error)
+	ByParam(filter param.Has) (Variable, error)
+	Variables() []Variable
+}
+
+type Definition interface {
+	Add(opts ...Option)
 }

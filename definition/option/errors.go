@@ -22,7 +22,7 @@ func (o Error) Unwrap() error {
 	return o.Err
 }
 
-func Err(err error, key ...string) Error {
+func Err(err error, key []string) Error {
 	return Error{
 		Key: key,
 		Err: err,

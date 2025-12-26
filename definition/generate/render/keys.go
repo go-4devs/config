@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"gitoa.ru/go-4devs/config/definition/generate/pkg"
-	"gitoa.ru/go-4devs/config/definition/key"
+	"gitoa.ru/go-4devs/config/key"
 )
 
 func Keys(keys []string, val string) string {

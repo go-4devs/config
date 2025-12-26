@@ -2,8 +2,8 @@ package proto
 
 import (
 	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/key"
 	"gitoa.ru/go-4devs/config/definition/option"
+	"gitoa.ru/go-4devs/config/key"
 	"gitoa.ru/go-4devs/config/param"
 )
 

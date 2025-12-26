@@ -3,6 +3,7 @@ package etcd
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"gitoa.ru/go-4devs/config"
@@ -34,6 +35,9 @@ func New(namespace, appName string, client Client) *Provider {
 		},
 		name:   Name,
 		prefix: namespace + Separator + appName,
+		log: func(_ context.Context, format string, args ...any) {
+			log.Printf(format, args...)
+		},
 	}
 
 	return &prov
@@ -102,6 +106,7 @@ func (p *Provider) getEventKvs(events []*client.Event) ([]*pb.KeyValue, []*pb.Ke
 	return kvs, old
 }
 
+//nolint:nilnil
 func (p *Provider) resolve(key string, kvs []*pb.KeyValue) (config.Value, error) {
 	for _, kv := range kvs {
 		switch {

@@ -9,7 +9,7 @@ var (
 )
 
 type Option func(p Params) Params
-
+type Has func(Params) bool
 type Params interface {
 	Param(key any) (any, bool)
 }

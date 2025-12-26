@@ -23,20 +23,15 @@ func (s JString) ParseInt() (int, error) {
 }
 
 func (s JString) ParseInt64() (int64, error) {
-	return ParseInt(s.String())
+	return ParseInt64(s.String())
 }
 
 func (s JString) ParseUint() (uint, error) {
-	u64, err := ParseUint(s.String())
-	if err != nil {
-		return 0, err
-	}
-
-	return uint(u64), nil
+	return ParseUint(s.String())
 }
 
 func (s JString) ParseUint64() (uint64, error) {
-	return ParseUint(s.String())
+	return ParseUint64(s.String())
 }
 
 func (s JString) ParseFloat64() (float64, error) {
@@ -109,6 +104,10 @@ func (s JString) Time() time.Time {
 	in, _ := s.ParseTime()
 
 	return in
+}
+
+func (s JString) Any() any {
+	return s
 }
 
 func (s JString) IsEquals(in config.Value) bool {

@@ -67,8 +67,6 @@ func Time(value string) time.Time {
 }
 
 // NewRead test data.
-//
-//nolint:cyclop
 func NewRead(expected any, key ...string) Read {
 	return Read{
 		Key: key,

@@ -25,6 +25,7 @@ type ReadValue interface {
 	Bool() bool
 	Duration() time.Duration
 	Time() time.Time
+	Any() any
 }
 
 type ParseValue interface {
