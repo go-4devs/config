@@ -1,10 +1,10 @@
 module gitoa.ru/go-4devs/config/provider/json
 
-go 1.22
+go 1.23
 
 require (
-	github.com/tidwall/gjson v1.17.0
-	gitoa.ru/go-4devs/config v0.0.1
+	github.com/tidwall/gjson v1.18.0
+	gitoa.ru/go-4devs/config v0.0.3
 )
 
 require (
