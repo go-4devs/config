@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
 	"gitoa.ru/go-4devs/config/provider/ini"
 	"gitoa.ru/go-4devs/config/test"
+	"gitoa.ru/go-4devs/config/test/require"
 	lib "gopkg.in/ini.v1"
 )
 
