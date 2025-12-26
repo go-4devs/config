@@ -24,6 +24,7 @@ func Equalf(t *testing.T, expected any, actual any, msg string, args ...any) boo
 		return true
 	}
 
+	t.Errorf("not equal expect:%#v acctual: %#v", expected, actual)
 	t.Errorf(msg, args...)
 
 	return false

@@ -72,6 +72,15 @@ func ParseBool(s string) (bool, error) {
 	return b, nil
 }
 
+func ParseUint64(s string) (uint64, error) {
+	i, err := strconv.ParseUint(s, 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
+	}
+
+	return i, nil
+}
+
 func JUnmarshal(b []byte, v any) error {
 	if err := json.Unmarshal(b, v); err != nil {
 		return fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
@@ -80,11 +89,8 @@ func JUnmarshal(b []byte, v any) error {
 	return nil
 }
 
-func ParseUint64(s string) (uint64, error) {
-	i, err := strconv.ParseUint(s, 10, 64)
-	if err != nil {
-		return 0, fmt.Errorf("%w: %w", config.ErrInvalidValue, err)
-	}
+func JParce[T any](b []byte) (T, error) {
+	var data T
 
-	return i, nil
+	return data, JUnmarshal(b, &data)
 }

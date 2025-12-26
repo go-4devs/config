@@ -23,6 +23,5 @@ func Equalf(t *testing.T, expected any, actual any, msg string, args ...any) {
 		return
 	}
 
-	t.Errorf(msg, args...)
 	t.FailNow()
 }
