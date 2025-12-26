@@ -1,10 +1,10 @@
 module gitoa.ru/go-4devs/config/provider/etcd
 
-go 1.22
+go 1.23
 
 require (
 	github.com/stretchr/testify v1.8.4
-	gitoa.ru/go-4devs/config v0.0.2
+	gitoa.ru/go-4devs/config v0.0.3
 	go.etcd.io/etcd/api/v3 v3.5.11
 	go.etcd.io/etcd/client/v3 v3.5.11
 )
