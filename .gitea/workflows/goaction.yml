@@ -7,11 +7,18 @@ on:
   pull_request:
     paths-ignore:
       - 'provider/etcd/**'
+      - '.gitea/workflows/etcd.yml'
       - 'provider/ini/**'
+      - '.gitea/workflows/ini.yml'
       - 'provider/json/**'
+      - '.gitea/workflows/json.yml'
       - 'provider/toml/**'
+      - '.gitea/workflows/toml.yml'
       - 'provider/vault/**'
+      - '.gitea/workflows/vault.yml'
       - 'provider/yaml/**'
+      - '.gitea/workflows/yaml.yml'
+
 
 jobs:
   goaction:
