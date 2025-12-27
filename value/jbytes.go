@@ -15,39 +15,41 @@ func (s JBytes) Unmarshal(v any) error {
 }
 
 func (s JBytes) ParseString() (string, error) {
-	return s.String(), nil
+	var data string
+
+	return data, s.Unmarshal(&data)
 }
 
 func (s JBytes) ParseInt() (int, error) {
-	return Atoi(s.String())
+	return JParce[int](s.Bytes())
 }
 
 func (s JBytes) ParseInt64() (int64, error) {
-	return ParseInt64(s.String())
+	return JParce[int64](s.Bytes())
 }
 
 func (s JBytes) ParseUint() (uint, error) {
-	return ParseUint(s.String())
+	return JParce[uint](s.Bytes())
 }
 
 func (s JBytes) ParseUint64() (uint64, error) {
-	return ParseUint64(s.String())
+	return JParce[uint64](s.Bytes())
 }
 
 func (s JBytes) ParseFloat64() (float64, error) {
-	return ParseFloat(s.String())
+	return JParce[float64](s.Bytes())
 }
 
 func (s JBytes) ParseBool() (bool, error) {
-	return ParseBool(s.String())
+	return JParce[bool](s.Bytes())
 }
 
 func (s JBytes) ParseDuration() (time.Duration, error) {
-	return ParseDuration(s.String())
+	return JParce[time.Duration](s.Bytes())
 }
 
 func (s JBytes) ParseTime() (time.Time, error) {
-	return ParseTime(s.String())
+	return JParce[time.Time](s.Bytes())
 }
 
 func (s JBytes) Bytes() []byte {
@@ -55,7 +57,9 @@ func (s JBytes) Bytes() []byte {
 }
 
 func (s JBytes) String() string {
-	return string(s)
+	data, _ := s.ParseString()
+
+	return data
 }
 
 func (s JBytes) Int() int {
@@ -107,7 +111,7 @@ func (s JBytes) Time() time.Time {
 }
 
 func (s JBytes) Any() any {
-	return s
+	return s.Bytes()
 }
 
 func (s JBytes) IsEquals(in config.Value) bool {

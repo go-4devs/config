@@ -24,7 +24,7 @@ func Run(t *testing.T, provider config.Provider, read []Read) {
 	for idx, read := range read {
 		t.Run(fmt.Sprintf("%v:%v", idx, read.Key), func(t *testing.T) {
 			val, err := provider.Value(ctx, read.Key...)
-			require.NoError(t, err, read.Key)
+			read.Error(t, err)
 			read.Assert(t, val)
 		})
 	}
@@ -33,6 +33,7 @@ func Run(t *testing.T, provider config.Provider, read []Read) {
 type Read struct {
 	Key    []string
 	Assert func(t *testing.T, v config.Value)
+	Error  func(t *testing.T, ex error)
 }
 
 type Config struct {
@@ -57,6 +58,14 @@ func NewReadUnmarshal(expected, target any, key ...string) Read {
 			require.NoErrorf(t, v.Unmarshal(target), "unmarshal")
 			require.Equal(t, expected, target, "unmarshal")
 		},
+		Error: exError(key...),
+	}
+}
+
+func exError(path ...string) func(t *testing.T, err error) {
+	return func(t *testing.T, err error) {
+		t.Helper()
+		require.NoError(t, err, path)
 	}
 }
 
@@ -69,7 +78,8 @@ func Time(value string) time.Time {
 // NewRead test data.
 func NewRead(expected any, key ...string) Read {
 	return Read{
-		Key: key,
+		Key:   key,
+		Error: exError(key...),
 		Assert: func(t *testing.T, v config.Value) {
 			t.Helper()
 
@@ -111,9 +121,20 @@ func NewRead(expected any, key ...string) Read {
 				require.Fail(t, "unexpected type:%+T", expected)
 			}
 
-			require.Equalf(t, val, short, "type:%T", expected)
-			require.NoErrorf(t, err, "type:%T", expected)
-			require.Equalf(t, expected, val, "type:%T", expected)
+			require.Equalf(t, val, short, "%q!=%q, type:%T", val, short, expected)
+			require.NoErrorf(t, err, "err:%v type:%T", err, expected)
+			require.Equalf(t, expected, val, "%q!=%q type:%T", expected, val, expected)
+		},
+	}
+}
+
+func NewErrorIs(exErr error, path ...string) Read {
+	return Read{
+		Key:    path,
+		Assert: func(*testing.T, config.Value) {},
+		Error: func(t *testing.T, err error) {
+			t.Helper()
+			require.ErrorIsf(t, exErr, err, "except err %v != %v", exErr, err)
 		},
 	}
 }
