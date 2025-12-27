@@ -1,6 +1,8 @@
 package value
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"gitoa.ru/go-4devs/config"
@@ -45,7 +47,17 @@ func (s JBytes) ParseBool() (bool, error) {
 }
 
 func (s JBytes) ParseDuration() (time.Duration, error) {
-	return JParce[time.Duration](s.Bytes())
+	jdata, jerr := JParce[time.Duration](s.Bytes())
+	if jerr == nil {
+		return jdata, nil
+	}
+
+	ustr, serr := s.ParseString()
+	if serr != nil {
+		return 0, errors.Join(jerr, fmt.Errorf("parse duration:%w", serr))
+	}
+
+	return ParseDuration(ustr)
 }
 
 func (s JBytes) ParseTime() (time.Time, error) {
