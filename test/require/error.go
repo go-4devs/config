@@ -37,7 +37,7 @@ func ErrorIs(t *testing.T, err, ex error, msgAndArgs ...any) {
 func ErrorIsf(t *testing.T, err, ex error, msg string, args ...any) {
 	t.Helper()
 
-	if !errors.Is(ex, err) {
+	if !errors.Is(err, ex) {
 		t.Errorf(msg, args...)
 		t.FailNow()
 	}

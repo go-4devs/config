@@ -12,6 +12,7 @@ func Equal(t *testing.T, expected any, actual any, msgAndArgs ...any) bool {
 		return true
 	}
 
+	t.Errorf("not equal expect:%v actual:%v", expected, actual)
 	t.Error(msgAndArgs...)
 
 	return false
