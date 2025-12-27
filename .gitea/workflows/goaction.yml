@@ -1,6 +1,17 @@
 name: Go Action 
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    paths-ignore:
+      - 'provider/etcd/**'
+      - 'provider/ini/**'
+      - 'provider/json/**'
+      - 'provider/toml/**'
+      - 'provider/vault/**'
+      - 'provider/yaml/**'
 
 jobs:
   goaction:

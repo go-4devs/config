@@ -1,6 +1,16 @@
 name: Go Action 
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'provider/toml/**'
+      - '.gitea/workflows/toml.yml'
+  pull_request:
+    paths:
+      - 'provider/toml/**'
+      - '.gitea/workflows/toml.yml'
 
 jobs:
   goaction:
@@ -20,9 +30,9 @@ jobs:
           version: v2.7.2 # Specify the linter version
           # Optional: additional arguments
           args: --verbose
-          working-directory: ./provider/json 
+          working-directory: ./provider/toml 
 
       - name: Run go test
         run: go test ./...
-        working-directory: ./provider/json
+        working-directory: ./provider/toml
 
