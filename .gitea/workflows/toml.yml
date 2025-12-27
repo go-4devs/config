@@ -4,14 +4,13 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    paths-ignore:
-      - 'provider/etcd/**'
-      - 'provider/ini/**'
-      - 'provider/json/**'
+    paths:
       - 'provider/toml/**'
-      - 'provider/vault/**'
-      - 'provider/yaml/**'
+      - '.gitea/workflows/toml.yml'
+  pull_request:
+    paths:
+      - 'provider/toml/**'
+      - '.gitea/workflows/toml.yml'
 
 jobs:
   goaction:
@@ -24,14 +23,16 @@ jobs:
         uses: actions/setup-go@v5 # Action to install a specific Go version
         with:
           go-version: '1.25.5' # Specify your required Go version
-
+      
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v8 # Use the golangci-lint action
         with:
           version: v2.7.2 # Specify the linter version
           # Optional: additional arguments
           args: --verbose
+          working-directory: ./provider/toml 
 
       - name: Run go test
         run: go test ./...
+        working-directory: ./provider/toml
 

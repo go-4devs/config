@@ -2,10 +2,10 @@ package toml
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"strings"
 
-	"github.com/pelletier/go-toml"
+	toml "github.com/pelletier/go-toml/v2"
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/value"
 )
@@ -17,23 +17,22 @@ const (
 
 var _ config.Provider = (*Provider)(nil)
 
-func NewFile(file string, opts ...Option) (*Provider, error) {
-	tree, err := toml.LoadFile(file)
-	if err != nil {
-		return nil, fmt.Errorf("toml: failed load file: %w", err)
-	}
-
-	return configure(tree, opts...), nil
-}
-
 type Option func(*Provider)
 
-func configure(tree *toml.Tree, opts ...Option) *Provider {
+func WithName(in string) Option {
+	return func(p *Provider) {
+		p.name = in
+	}
+}
+
+func New(in []byte, opts ...Option) (*Provider, error) {
+	var data Data
+	if err := toml.Unmarshal(in, &data); err != nil {
+		return nil, fmt.Errorf("toml failed load data: %w", err)
+	}
+
 	prov := &Provider{
-		tree: tree,
-		key: func(s []string) string {
-			return strings.Join(s, Separator)
-		},
+		data: data,
 		name: Name,
 	}
 
@@ -41,21 +40,11 @@ func configure(tree *toml.Tree, opts ...Option) *Provider {
 		opt(prov)
 	}
 
-	return prov
-}
-
-func New(data []byte, opts ...Option) (*Provider, error) {
-	tree, err := toml.LoadBytes(data)
-	if err != nil {
-		return nil, fmt.Errorf("toml failed load data: %w", err)
-	}
-
-	return configure(tree, opts...), nil
+	return prov, nil
 }
 
 type Provider struct {
-	tree *toml.Tree
-	key  func([]string) string
+	data Data
 	name string
 }
 
@@ -64,9 +53,39 @@ func (p *Provider) Name() string {
 }
 
 func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error) {
-	if k := p.key(path); p.tree.Has(k) {
-		return Value{Value: value.Value{Val: p.tree.Get(k)}}, nil
+	val, err := p.data.Value(path...)
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
 	}
 
-	return nil, config.ErrValueNotFound
+	data, merr := json.Marshal(val)
+	if merr != nil {
+		return nil, fmt.Errorf("toml:%w", merr)
+	}
+
+	return value.JBytes(data), nil
+}
+
+type Data map[string]any
+
+func (d Data) Value(path ...string) (any, error) {
+	if len(path) == 1 {
+		val, ok := d[path[0]]
+		if !ok {
+			return "", config.ErrValueNotFound
+		}
+
+		return val, nil
+	}
+
+	key, path := path[0], path[1:]
+
+	val, ok := d[key]
+	if !ok {
+		return nil, config.ErrValueNotFound
+	}
+
+	data, _ := val.(map[string]any)
+
+	return Data(data).Value(path...)
 }
