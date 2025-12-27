@@ -4,6 +4,7 @@ import (
 	"embed"
 	"testing"
 
+	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/provider/toml"
 	"gitoa.ru/go-4devs/config/test"
 	"gitoa.ru/go-4devs/config/test/require"
@@ -24,12 +25,14 @@ func TestProvider(t *testing.T) {
 	m := []int{}
 
 	read := []test.Read{
-		test.NewRead("192.168.1.1", "database.server"),
+		test.NewRead("192.168.1.1", "database", "server"),
 		test.NewRead("TOML Example", "title"),
-		test.NewRead("10.0.0.1", "servers.alpha.ip"),
-		test.NewRead(true, "database.enabled"),
-		test.NewRead(5000, "database.connection_max"),
+		test.NewRead("10.0.0.1", "servers", "alpha", "ip"),
+		test.NewRead(true, "database", "enabled"),
+		test.NewRead(5000, "database", "connection_max"),
 		test.NewReadUnmarshal(&[]int{8001, 8001, 8002}, &m, "database", "ports"),
+		test.NewErrorIs(config.ErrValueNotFound, "typo"),
+		test.NewErrorIs(config.ErrValueNotFound, "database.server"),
 	}
 
 	test.Run(t, prov, read)
