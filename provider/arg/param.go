@@ -16,7 +16,7 @@ const (
 var argNum uint64
 
 func Argument(v param.Params) param.Params {
-	return param.With(v, paramArgument, atomic.AddUint64(&argNum, 1))
+	return param.With(v, paramArgument, atomic.AddUint64(&argNum, 1)-1)
 }
 
 func ParamArgument(fn param.Params) (uint64, bool) {
