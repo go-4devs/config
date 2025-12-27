@@ -33,7 +33,7 @@ func (p *provider) Value(context.Context, ...string) (config.Value, error) {
 func TestWatcher(t *testing.T) {
 	t.Parallel()
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 
 	defer func() {
 		cancel()
@@ -41,7 +41,7 @@ func TestWatcher(t *testing.T) {
 
 	prov := &provider{}
 
-	w := watcher.New(time.Second, prov)
+	w := watcher.New(time.Second/3, prov)
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
