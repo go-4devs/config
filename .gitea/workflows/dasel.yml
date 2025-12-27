@@ -4,24 +4,13 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    paths-ignore:
-      - 'provider/etcd/**'
-      - '.gitea/workflows/etcd.yml'
-      - 'provider/ini/**'
-      - '.gitea/workflows/ini.yml'
-      - 'provider/json/**'
-      - '.gitea/workflows/json.yml'
-      - 'provider/toml/**'
-      - '.gitea/workflows/toml.yml'
-      - 'provider/vault/**'
-      - '.gitea/workflows/vault.yml'
-      - 'provider/yaml/**'
-      - '.gitea/workflows/yaml.yml'
+    paths:
       - 'provider/dasel/**'
       - '.gitea/workflows/dasel.yml'
-
-
+  pull_request:
+    paths:
+      - 'provider/dasel/**'
+      - '.gitea/workflows/dasel.yml'
 
 jobs:
   goaction:
@@ -34,14 +23,16 @@ jobs:
         uses: actions/setup-go@v5 # Action to install a specific Go version
         with:
           go-version: '1.25.5' # Specify your required Go version
-
+      
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v8 # Use the golangci-lint action
         with:
           version: v2.7.2 # Specify the linter version
           # Optional: additional arguments
           args: --verbose
+          working-directory: ./provider/dasel 
 
       - name: Run go test
         run: go test ./...
+        working-directory: ./provider/dasel
 

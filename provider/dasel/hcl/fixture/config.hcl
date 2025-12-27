@@ -1,0 +1,18 @@
+app {
+  name {
+    var = [
+      "name"
+    ]
+
+    title = "config title"
+    timeout = "1m"
+    success = true
+  }
+
+}
+
+cfg {
+  duration = 1260000000000
+  enabled = true
+  type = "json"
+}
