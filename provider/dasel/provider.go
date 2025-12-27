@@ -8,11 +8,12 @@ import (
 
 	dasel "github.com/tomwright/dasel/v3"
 	"github.com/tomwright/dasel/v3/model"
+	"github.com/tomwright/dasel/v3/parsing"
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/value"
 )
 
-var _ config.Provider = New(nil)
+var _ config.Provider = Provider{} //nolint:exhaustruct
 
 const Name = "dasel"
 
@@ -24,7 +25,17 @@ func WithName(in string) Option {
 	}
 }
 
-func New(data *model.Value, opts ...Option) Provider {
+func New(in []byte, format parsing.Format, opts ...Option) (Provider, error) {
+	reader, err := format.NewReader(parsing.DefaultReaderOptions())
+	if err != nil {
+		return Provider{}, fmt.Errorf("%w:%w", config.ErrInitFactory, err)
+	}
+
+	data, verr := reader.Read(in)
+	if verr != nil {
+		return Provider{}, fmt.Errorf("%w:%w", config.ErrInitFactory, verr)
+	}
+
 	prov := Provider{
 		data: data,
 		key: func(path ...string) string {
@@ -32,11 +43,12 @@ func New(data *model.Value, opts ...Option) Provider {
 		},
 		name: Name,
 	}
+
 	for _, opt := range opts {
 		opt(&prov)
 	}
 
-	return prov
+	return prov, nil
 }
 
 type Provider struct {
