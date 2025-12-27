@@ -1,6 +1,16 @@
 name: Go Action 
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'provider/json/**'
+      - '.gitea/workflows/json.yml'
+  pull_request:
+    paths:
+      - 'provider/json/**'
+      - '.gitea/workflows/json.yml'
 
 jobs:
   goaction:
