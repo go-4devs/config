@@ -134,7 +134,7 @@ func NewErrorIs(exErr error, path ...string) Read {
 		Assert: func(*testing.T, config.Value) {},
 		Error: func(t *testing.T, err error) {
 			t.Helper()
-			require.ErrorIsf(t, exErr, err, "except err %v != %v", exErr, err)
+			require.ErrorIs(t, err, exErr)
 		},
 	}
 }
