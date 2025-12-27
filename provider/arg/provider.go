@@ -70,7 +70,7 @@ func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
 
 	data, err := i.Map.Value(ctx, key...)
 	if err != nil {
-		return nil, fmt.Errorf("%w", err)
+		return nil, fmt.Errorf("map: %w", err)
 	}
 
 	return data, nil
@@ -101,12 +101,12 @@ func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 		}
 
 		if err != nil {
-			return fmt.Errorf("%w", err)
+			return fmt.Errorf("arg bind:%w", err)
 		}
 	}
 
 	if err := i.Map.Bind(ctx, def); err != nil {
-		return fmt.Errorf("%w", err)
+		return fmt.Errorf("arg map:%w", err)
 	}
 
 	return nil
