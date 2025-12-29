@@ -1,9 +1,9 @@
 type {{.StructName}} struct {
-    {{.ParentName}}
+    {{.ParentStruct}}
     {{ .Name }} string
 }
 
 // {{.FuncName}} {{.Description}}.
-func (i {{.ParentName}}) {{.FuncName}}(key string) {{.StructName}} {
+func (i {{.ParentStruct}}) {{.FuncName}}(key string) {{.StructName}} {
 	return {{.StructName}}{i,key}
 }

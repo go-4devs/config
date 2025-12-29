@@ -117,7 +117,7 @@ func getPkgPathFromGOPATH(fname string, isDir bool) (string, error) {
 		gopath = build.Default.GOPATH
 	}
 
-	for _, p := range strings.Split(gopath, string(filepath.ListSeparator)) {
+	for p := range strings.SplitSeq(gopath, string(filepath.ListSeparator)) {
 		prefix := filepath.Join(p, "src") + string(filepath.Separator)
 
 		rel, err := filepath.Rel(prefix, fname)

@@ -3,6 +3,6 @@ package {{.Pkg}}
 
 import (
     {{range .Imports}}
-    {{- .Alias }} "{{ .Package }}"
+    {{- . }}
     {{end}}
 )

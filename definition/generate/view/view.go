@@ -3,6 +3,7 @@ package view
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/definition/option"
@@ -14,7 +15,28 @@ type key int
 const (
 	viewParamFunctName key = iota + 1
 	viewParamSkipContext
+	viewParamStructName
+	viewParamStructPrefix
+	viewParamStructSuffix
 )
+
+func WithStructName(name string) param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, viewParamStructName, name)
+	}
+}
+
+func WithStructPrefix(prefix string) param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, viewParamStructPrefix, prefix)
+	}
+}
+
+func WithStructSuffix(suffix string) param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, viewParamStructSuffix, suffix)
+	}
+}
 
 func WithSkipContext(p param.Params) param.Params {
 	return param.With(p, viewParamSkipContext, true)
@@ -38,23 +60,17 @@ func IsSkipContext(p param.Params) bool {
 
 type Option func(*View)
 
-func WithParent(name string) Option {
+func WithParent(in *View) Option {
 	return func(v *View) {
-		v.parent = name
+		v.parent = in
 	}
 }
 
-func WithKeys(keys ...string) Option {
-	return func(v *View) {
-		v.keys = keys
-	}
-}
-
-func NewViews(name string, get param.Params, option config.Options, opts ...Option) View {
-	view := newView(name, get, option, opts...)
+func NewViews(option config.Group, opts ...Option) View {
+	view := newView(option, opts...)
 
 	for _, op := range option.Options() {
-		view.children = append(view.children, NewView(op, get, WithParent(name)))
+		view.children = append(view.children, NewView(op, WithParent(&view)))
 	}
 
 	return view
@@ -62,15 +78,11 @@ func NewViews(name string, get param.Params, option config.Options, opts ...Opti
 
 type IOption any
 
-func newView(name string, get param.Params, in any, opts ...Option) View {
+func newView(option config.Option, opts ...Option) View {
 	vi := View{
-		kind:     reflect.TypeOf(in),
-		name:     name,
-		Params:   get,
-		dtype:    param.Type(get),
+		Option:   option,
+		parent:   nil,
 		children: nil,
-		keys:     nil,
-		parent:   "",
 	}
 
 	for _, opt := range opts {
@@ -80,17 +92,12 @@ func newView(name string, get param.Params, in any, opts ...Option) View {
 	return vi
 }
 
-func NewView(opt config.Option, get param.Params, opts ...Option) View {
-	vi := newView(opt.Name(), param.Chain(get, opt), opt, opts...)
+func NewView(opt config.Option, opts ...Option) View {
+	vi := newView(opt, opts...)
 
 	if data, ok := opt.(config.Group); ok {
 		for _, chi := range data.Options() {
-			vi.children = append(vi.children, NewView(
-				chi,
-				param.Chain(vi.Params, chi),
-				WithParent(vi.ParentName()+"_"+opt.Name()),
-				WithKeys(append(vi.keys, opt.Name())...),
-			))
+			vi.children = append(vi.children, NewView(chi, WithParent(&vi)))
 		}
 	}
 
@@ -98,20 +105,16 @@ func NewView(opt config.Option, get param.Params, opts ...Option) View {
 }
 
 type View struct {
-	param.Params
+	config.Option
 
 	children []View
-	keys     []string
-	kind     reflect.Type
-	name     string
-	parent   string
-	dtype    any
+	parent   *View
 }
 
 func (v View) Types() []any {
 	types := make([]any, 0)
-	if v.dtype != nil {
-		types = append(types, v.dtype)
+	if v.Type() != "" {
+		types = append(types, v.Type())
 	}
 
 	for _, child := range v.children {
@@ -122,7 +125,7 @@ func (v View) Types() []any {
 }
 
 func (v View) Kind() reflect.Type {
-	return v.kind
+	return reflect.TypeOf(v.Option)
 }
 
 func (v View) Views() []View {
@@ -130,55 +133,109 @@ func (v View) Views() []View {
 }
 
 func (v View) Param(key any) string {
-	data, ok := v.Params.Param(key)
-	if !ok {
-		return ""
+	data, has := v.Option.Param(key)
+	if has {
+		return fmt.Sprintf("%v", data)
 	}
 
-	if res, ok := data.(string); ok {
-		return res
+	if v.parent != nil {
+		return v.parent.Param(key)
 	}
 
-	return fmt.Sprintf("%v", data)
+	return ""
+}
+
+func (v View) ClildSkipContext() bool {
+	for _, child := range v.children {
+		if child.SkipContext() {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (v View) SkipContext() bool {
-	return IsSkipContext(v.Params)
+	if IsSkipContext(v.Option) {
+		return true
+	}
+
+	if v.parent != nil {
+		return v.parent.SkipContext()
+	}
+
+	return false
 }
 
 func (v View) Name() string {
-	return v.name
+	return v.Option.Name()
 }
 
 func (v View) Keys() []string {
-	return v.keys
+	keys := make([]string, 0, 1)
+	if v.parent != nil {
+		keys = append(keys, v.parent.Keys()...)
+	}
+
+	if name := v.Option.Name(); name != "" {
+		keys = append(keys, name)
+	}
+
+	return keys
 }
 
 func (v View) Type() any {
-	return v.dtype
+	return param.Type(v.Option)
 }
 
 func (v View) FuncName() string {
-	data, ok := v.Params.Param(viewParamFunctName)
+	data, ok := v.Option.Param(viewParamFunctName)
 	name, valid := data.(string)
 
 	if !ok || !valid {
-		return v.name
+		return v.Name()
 	}
 
 	return name
 }
 
-func (v View) ParentName() string {
-	return v.parent
+func (v View) StructName() string {
+	name, ok := param.String(v.Option, viewParamStructName)
+	if ok {
+		return name
+	}
+
+	keys := make([]string, 0, len(v.Keys())+2) //nolint:mnd
+
+	prefix := v.Param(viewParamStructPrefix)
+	if prefix != "" {
+		keys = append(keys, prefix)
+	}
+
+	keys = append(keys, v.Keys()...)
+
+	suffix := v.Param(viewParamStructSuffix)
+	if suffix != "" {
+		keys = append(keys, suffix)
+	}
+
+	return strings.Join(keys, "_")
+}
+
+func (v View) ParentStruct() string {
+	if v.parent == nil {
+		return ""
+	}
+
+	return v.parent.StructName()
 }
 
 func (v View) Description() string {
-	return option.DataDescription(v.Params)
+	return option.DataDescription(v.Option)
 }
 
 func (v View) Default() any {
-	data, ok := option.DataDefaut(v.Params)
+	data, ok := option.DataDefaut(v.Option)
 	if !ok {
 		return nil
 	}
@@ -187,5 +244,5 @@ func (v View) Default() any {
 }
 
 func (v View) HasDefault() bool {
-	return option.HasDefaut(v.Params)
+	return option.HasDefaut(v.Option)
 }

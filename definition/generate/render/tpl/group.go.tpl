@@ -1,8 +1,8 @@
 type {{.StructName}} struct {
-    {{.ParentName}}
+    {{.ParentStruct}}
 }
 
 // {{.FuncName}} {{.Description}}.
-func (i {{.ParentName}}) {{.FuncName}}() {{.StructName}} {
+func (i {{.ParentStruct}}) {{.FuncName}}() {{.StructName}} {
 	return {{.StructName}}{i}
 }

@@ -16,14 +16,13 @@ var tpls embed.FS
 
 type Boot struct {
 	Config
+	*pkg.Packages
 
-	imp       *pkg.Imports
 	Configure []string
-	OutName   string
 }
 
-func (b Boot) Imports() []pkg.Import {
-	return b.imp.Imports()
+func (b Boot) Pkg() string {
+	return pkg.Pkg(b.FullPkg())
 }
 
 type Config interface {
@@ -33,13 +32,12 @@ type Config interface {
 	Prefix() string
 	Suffix() string
 	FullPkg() string
-	Pkg() string
 }
 
 func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 	fInfo, err := os.Stat(cfg.File())
 	if err != nil {
-		return "", fmt.Errorf("stat:%w", err)
+		return "", fmt.Errorf("stat[%v]:%w", cfg.File(), err)
 	}
 
 	pkgPath, err := pkg.ByPath(ctx, cfg.File(), fInfo.IsDir())
@@ -61,17 +59,19 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 		Adds(
 			"context",
 			"gitoa.ru/go-4devs/config/definition",
+			"gitoa.ru/go-4devs/config",
+			"gitoa.ru/go-4devs/config/definition/generate/view",
+			"gitoa.ru/go-4devs/config/param",
 			"gitoa.ru/go-4devs/config/definition/generate",
 			"os",
+			"io",
 			"fmt",
-			"go/format",
 			pkgPath,
 		)
 
 	data := Boot{
-		imp:       imports,
+		Packages:  imports,
 		Configure: cfg.Methods(),
-		OutName:   fInfo.Name()[0:len(fInfo.Name())-3] + "_config.go",
 		Config:    cfg,
 	}
 
