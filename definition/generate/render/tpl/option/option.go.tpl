@@ -1,9 +1,9 @@
 // read{{.FuncName}} {{.Description}}.
-func (i {{.ParentName}}) read{{.FuncName}}(ctx context.Context) (v {{.Type}},e error) {
+func (i {{.ParentStruct}}) read{{.FuncName}}(ctx context.Context) (v {{.Type}},e error) {
 	val, err := i.Value(ctx, {{ .Keys "i" }})
 	if err != nil {
         {{- if .HasDefault }}
-        i.log({{ if not .SkipContext }}context.Background(){{else}}ctx{{ end }}, "read [%v]: %v",[]string{ {{- .Keys "i" -}} }, err)
+        i.handle(ctx, err)
         
         {{ .Default "val" -}}
         {{ else }}
@@ -15,15 +15,15 @@ func (i {{.ParentName}}) read{{.FuncName}}(ctx context.Context) (v {{.Type}},e e
 }
 
 // Read{{.FuncName}} {{.Description}}.
-func (i {{.ParentName}}) Read{{.FuncName}}({{if not .SkipContext}} ctx context.Context {{end}}) ({{.Type}}, error) {
-    return i.read{{.FuncName}}({{if .SkipContext}}context.Background(){{else}}ctx{{end}})
+func (i {{.ParentStruct}}) Read{{.FuncName}}({{if not .SkipContext}} ctx context.Context {{end}}) ({{.Type}}, error) {
+    return i.read{{.FuncName}}({{if .SkipContext}}i.ctx{{else}}ctx{{end}})
 }
 
 // {{.FuncName}} {{.Description}}.
-func (i {{.ParentName}}) {{.FuncName}}({{if not .SkipContext}} ctx context.Context {{end}}) {{.Type}} {
-    val, err := i.read{{.FuncName}}({{ if .SkipContext }}context.Background(){{else}}ctx{{ end }})
+func (i {{.ParentStruct}}) {{.FuncName}}({{if not .SkipContext}} ctx context.Context {{end}}) {{.Type}} {
+    val, err := i.read{{.FuncName}}({{ if .SkipContext }}i.ctx{{else}}ctx{{ end }})
 	if err != nil {
-		i.log({{ if .SkipContext }}context.Background(){{else}}ctx{{ end }}, "get [%v]: %v",[]string{ {{- .Keys "i" -}} }, err)
+		i.handle({{ if .SkipContext }}i.ctx{{else}}ctx{{ end }}, err)
 	}
 
 	return val

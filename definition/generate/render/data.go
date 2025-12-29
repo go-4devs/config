@@ -18,15 +18,15 @@ type ViewData struct {
 }
 
 func (d ViewData) StructName() string {
-	return d.Rendering.StructName(d.View.ParentName() + "_" + d.View.Name())
+	return d.Rendering.StructName(d.View.StructName())
 }
 
 func (d ViewData) FuncName() string {
 	return d.Rendering.FuncName(d.View.FuncName())
 }
 
-func (d ViewData) ParentName() string {
-	name := d.View.ParentName()
+func (d ViewData) ParentStruct() string {
+	name := d.View.ParentStruct()
 	if name == "" {
 		name = d.Name()
 	}
@@ -43,7 +43,7 @@ func (d ViewData) Type() string {
 }
 
 func (d ViewData) Keys(parent string) string {
-	return Keys(append(d.View.Keys(), d.Name()), parent)
+	return Keys(d.View.Keys(), parent)
 }
 
 func (d ViewData) Value(name, val string) string {

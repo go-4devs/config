@@ -1,15 +1,16 @@
-func With{{.StructName}}Log(log func(context.Context, string, ...any)) func(*{{.StructName}}) {
+func With{{.StructName}}Handle(fn func(context.Context, error)) func(*{{.StructName}}) {
 	return func(ci *{{.StructName}}) {
-		ci.log = log
+		ci.handle = fn
 	}
 }
 
-func New{{.StructName}}(prov config.Provider, opts ...func(*{{.StructName}})) {{.StructName}} {
+func New{{.StructName}}({{if or .SkipContext .ClildSkipContext }} ctx context.Context,{{end}}prov config.Provider, opts ...func(*{{.StructName}})) {{.StructName}} {
 	i := {{.StructName}}{
 		Provider: prov,
-		log: func(_ context.Context, format string, args ...any) {
-			fmt.Printf(format, args...)
+		handle: func(_ context.Context, err error) {
+			fmt.Printf("{{.StructName}}:%v",err)
 		},
+		{{if or .SkipContext .ClildSkipContext }} ctx: ctx, {{end}}
 	}
 
 	for _, opt := range opts {
@@ -21,5 +22,6 @@ func New{{.StructName}}(prov config.Provider, opts ...func(*{{.StructName}})) {{
 
 type {{.StructName}} struct {
 	config.Provider
-	log   func(context.Context, string, ...any)
+	handle   func(context.Context, error)
+	{{if or .SkipContext .ClildSkipContext}}ctx context.Context {{end}}
 }

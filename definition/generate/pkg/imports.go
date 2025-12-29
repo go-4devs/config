@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func NewImports(pkg string) *Imports {
-	imp := Imports{
+func NewImports(pkg string) *Packages {
+	imp := Packages{
 		data: make(map[string]string),
 		pkg:  pkg,
 	}
@@ -15,12 +15,12 @@ func NewImports(pkg string) *Imports {
 	return &imp
 }
 
-type Imports struct {
+type Packages struct {
 	data map[string]string
 	pkg  string
 }
 
-func (i *Imports) Imports() []Import {
+func (i *Packages) Imports() []Import {
 	imports := make([]Import, 0, len(i.data))
 	for name, alias := range i.data {
 		imports = append(imports, Import{
@@ -32,7 +32,7 @@ func (i *Imports) Imports() []Import {
 	return imports
 }
 
-func (i *Imports) Short(fullType string) (string, error) {
+func (i *Packages) Short(fullType string) (string, error) {
 	idx := strings.LastIndexByte(fullType, '.')
 	if idx == -1 {
 		return "", fmt.Errorf("%w: expect package.Type", ErrWrongFormat)
@@ -45,7 +45,7 @@ func (i *Imports) Short(fullType string) (string, error) {
 	return "", fmt.Errorf("%w alias for pkg %v", ErrNotFound, fullType[:idx])
 }
 
-func (i *Imports) AddType(fullType string) (string, error) {
+func (i *Packages) AddType(fullType string) (string, error) {
 	idx := strings.LastIndexByte(fullType, '.')
 	if idx == -1 {
 		return "", fmt.Errorf("%w: expect pckage.Type got %v", ErrWrongFormat, fullType)
@@ -60,7 +60,7 @@ func (i *Imports) AddType(fullType string) (string, error) {
 	return imp.Alias + fullType[idx:], nil
 }
 
-func (i *Imports) Adds(pkgs ...string) *Imports {
+func (i *Packages) Adds(pkgs ...string) *Packages {
 	for _, pkg := range pkgs {
 		i.Add(pkg)
 	}
@@ -68,7 +68,7 @@ func (i *Imports) Adds(pkgs ...string) *Imports {
 	return i
 }
 
-func (i *Imports) Add(pkg string) Import {
+func (i *Packages) Add(pkg string) Import {
 	if pkg == i.pkg {
 		return Import{
 			Alias:   "",
@@ -100,7 +100,31 @@ func (i *Imports) Add(pkg string) Import {
 	}
 }
 
+func (i *Packages) Pkg() string {
+	return Pkg(i.pkg)
+}
+
 type Import struct {
 	Alias   string
 	Package string
+}
+
+func (i Import) Pkg() string {
+	return Pkg(i.Package)
+}
+
+func (i Import) String() string {
+	if i.Alias == i.Pkg() {
+		return fmt.Sprintf("%q", i.Package)
+	}
+
+	return fmt.Sprintf("%s %q", i.Alias, i.Package)
+}
+
+func Pkg(fullPkg string) string {
+	if idx := strings.LastIndex(fullPkg, "/"); idx != -1 {
+		return fullPkg[idx+1:]
+	}
+
+	return fullPkg
 }

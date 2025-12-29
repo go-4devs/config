@@ -16,7 +16,7 @@ type Execute func(w io.Writer, vi view.View, rnd Rendering) error
 
 var randders = map[reflect.Type]Execute{
 	reflect.TypeFor[*definition.Definition](): Template(defTpl),
-	reflect.TypeFor[group.Group]():            Template(groupTpl),
+	reflect.TypeFor[*group.Group]():           Template(groupTpl),
 	reflect.TypeFor[option.Option]():          Template(optTpl),
 	reflect.TypeFor[proto.Proto]():            Template(protoTpl),
 }

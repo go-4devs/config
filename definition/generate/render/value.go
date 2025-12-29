@@ -111,7 +111,7 @@ func dataRender(view ViewData) DataRender {
 		return h
 	}
 
-	if vtype.Kind() != reflect.Interface && vtype.Kind() != reflect.Ptr {
+	if vtype.Kind() != reflect.Interface && vtype.Kind() != reflect.Pointer {
 		vtype = reflect.PointerTo(vtype)
 	}
 

@@ -32,12 +32,12 @@ func TestValue_FlagType(t *testing.T) {
 
 	const ex = `pval, perr := val.ParseString()
     if perr != nil {
-        return v, fmt.Errorf("read [%v]:%w",[]string{"flagValue"}, perr)
+        return v, fmt.Errorf("parse [%v]:%w",[]string{"flag_value"}, perr)
     }
 
     return v, v.Set(pval)`
 
-	viewData := render.NewViewData(nil, view.NewView(option.New("flag_value", "flag desc", flagValue(0)), nil))
+	viewData := render.NewViewData(nil, view.NewView(option.New("flag_value", "flag desc", flagValue(0))))
 	result := render.Value("val", "v", viewData)
 
 	if result != ex {
@@ -50,7 +50,7 @@ func TestData_Flag(t *testing.T) {
 
 	const ex = `return {{.val}}, {{.val}}.Set("42")`
 
-	viewData := render.NewViewData(nil, view.NewView(option.New("flag_value", "flag desc", flagValue(0)), nil))
+	viewData := render.NewViewData(nil, view.NewView(option.New("flag_value", "flag desc", flagValue(0))))
 	result := render.Data(flagValue(42), "val", viewData)
 
 	if result != ex {
@@ -78,7 +78,7 @@ func TestValue_Scan(t *testing.T) {
 
 	const ex = `return v, v.Scan(val.Any())`
 
-	viewData := render.NewViewData(nil, view.NewView(option.New("scan_value", "scan desc", scanValue(42)), nil))
+	viewData := render.NewViewData(nil, view.NewView(option.New("scan_value", "scan desc", scanValue(42))))
 	result := render.Value("val", "v", viewData)
 
 	if result != ex {
@@ -102,7 +102,7 @@ func TestData_UnmarshalText(t *testing.T) {
 	const ex = `return {{.val}}, {{.val}}.UnmarshalText("4devs")`
 
 	data := textData("4devs")
-	viewData := render.NewViewData(nil, view.NewView(option.New("tvalue", "unmarshal text desc", textData("")), nil))
+	viewData := render.NewViewData(nil, view.NewView(option.New("tvalue", "unmarshal text desc", textData(""))))
 	result := render.Data(data, "val", viewData)
 
 	if result != ex {
@@ -115,12 +115,12 @@ func TestValue_UnmarshalText(t *testing.T) {
 
 	const ex = `pval, perr := val.ParseString()
     if perr != nil {
-        return v, fmt.Errorf("read [%v]:%w", []string{"tvalue"}, perr)
+        return v, fmt.Errorf("parse [%v]:%w", []string{"tvalue"}, perr)
     }
 
     return v, v.UnmarshalText([]byte(pval))`
 
-	viewData := render.NewViewData(nil, view.NewView(option.New("tvalue", "unmarshal text desc", textData("")), nil))
+	viewData := render.NewViewData(nil, view.NewView(option.New("tvalue", "unmarshal text desc", textData(""))))
 	result := render.Value("val", "v", viewData)
 
 	if result != ex {

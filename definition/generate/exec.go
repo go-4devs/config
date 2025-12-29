@@ -11,14 +11,6 @@ import (
 	"gitoa.ru/go-4devs/config/definition/generate/bootstrap"
 )
 
-func NewGConfig(fname string, opts ...Option) (Config, error) {
-	opts = append([]Option{
-		WithFile(fname),
-	}, opts...)
-
-	return NewConfig(opts...), nil
-}
-
 type GConfig interface {
 	BuildTags() string
 	OutName() string
