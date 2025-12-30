@@ -23,31 +23,31 @@ func (s JBytes) ParseString() (string, error) {
 }
 
 func (s JBytes) ParseInt() (int, error) {
-	return JParce[int](s.Bytes())
+	return JParse[int](s.Bytes())
 }
 
 func (s JBytes) ParseInt64() (int64, error) {
-	return JParce[int64](s.Bytes())
+	return JParse[int64](s.Bytes())
 }
 
 func (s JBytes) ParseUint() (uint, error) {
-	return JParce[uint](s.Bytes())
+	return JParse[uint](s.Bytes())
 }
 
 func (s JBytes) ParseUint64() (uint64, error) {
-	return JParce[uint64](s.Bytes())
+	return JParse[uint64](s.Bytes())
 }
 
 func (s JBytes) ParseFloat64() (float64, error) {
-	return JParce[float64](s.Bytes())
+	return JParse[float64](s.Bytes())
 }
 
 func (s JBytes) ParseBool() (bool, error) {
-	return JParce[bool](s.Bytes())
+	return JParse[bool](s.Bytes())
 }
 
 func (s JBytes) ParseDuration() (time.Duration, error) {
-	jdata, jerr := JParce[time.Duration](s.Bytes())
+	jdata, jerr := JParse[time.Duration](s.Bytes())
 	if jerr == nil {
 		return jdata, nil
 	}
@@ -61,7 +61,7 @@ func (s JBytes) ParseDuration() (time.Duration, error) {
 }
 
 func (s JBytes) ParseTime() (time.Time, error) {
-	return JParce[time.Time](s.Bytes())
+	return JParse[time.Time](s.Bytes())
 }
 
 func (s JBytes) Bytes() []byte {
