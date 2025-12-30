@@ -17,7 +17,10 @@ type WatchProvider interface {
 	Watch(ctx context.Context, callback WatchCallback, path ...string) error
 }
 
-type Factory func(ctx context.Context, cfg Provider) (Provider, error)
+type Factory interface {
+	Name() string
+	Create(ctx context.Context, prov Provider) (Provider, error)
+}
 
 type Option interface {
 	Name() string
