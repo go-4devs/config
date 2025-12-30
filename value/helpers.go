@@ -89,7 +89,7 @@ func JUnmarshal(b []byte, v any) error {
 	return nil
 }
 
-func JParce[T any](b []byte) (T, error) {
+func JParse[T any](b []byte) (T, error) {
 	var data T
 
 	return data, JUnmarshal(b, &data)
