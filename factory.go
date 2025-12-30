@@ -10,11 +10,12 @@ import (
 func WrapFactory(fn Factory, prov Provider) *WrapProvider {
 	return &WrapProvider{
 		factory: func(ctx context.Context) (Provider, error) {
-			return fn(ctx, prov)
+			return fn.Create(ctx, prov)
 		},
 		mu:       sync.Mutex{},
 		done:     0,
 		provider: nil,
+		name:     fn.Name(),
 	}
 }
 
@@ -23,6 +24,7 @@ type WrapProvider struct {
 	done     uint32
 	provider Provider
 	factory  func(ctx context.Context) (Provider, error)
+	name     string
 }
 
 func (p *WrapProvider) Watch(ctx context.Context, callback WatchCallback, path ...string) error {
@@ -56,11 +58,7 @@ func (p *WrapProvider) Value(ctx context.Context, path ...string) (Value, error)
 }
 
 func (p *WrapProvider) Name() string {
-	if err := p.init(context.Background()); err != nil {
-		return fmt.Sprintf("%T", p.provider)
-	}
-
-	return p.provider.Name()
+	return p.name
 }
 
 func (p *WrapProvider) Bind(ctx context.Context, data Variables) error {

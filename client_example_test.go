@@ -11,6 +11,7 @@ import (
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/provider/arg"
 	"gitoa.ru/go-4devs/config/provider/env"
+	"gitoa.ru/go-4devs/config/provider/factory"
 	"gitoa.ru/go-4devs/config/provider/watcher"
 	"gitoa.ru/go-4devs/config/test"
 )
@@ -127,7 +128,7 @@ func ExampleClient_Value_factory() {
 
 	config, err := config.New(
 		arg.New(),
-		config.Factory(func(ctx context.Context, cfg config.Provider) (config.Provider, error) {
+		factory.New("factory:env", func(ctx context.Context, cfg config.Provider) (config.Provider, error) {
 			val, err := cfg.Value(ctx, "env")
 			if err != nil {
 				return nil, fmt.Errorf("failed read config file:%w", err)
