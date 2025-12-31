@@ -1,11 +1,11 @@
-package env_test
+package handler_test
 
 import (
 	"context"
 	"testing"
 
 	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/processor/env"
+	"gitoa.ru/go-4devs/config/provider/handler"
 	"gitoa.ru/go-4devs/config/test/require"
 	"gitoa.ru/go-4devs/config/value"
 )
@@ -14,7 +14,7 @@ type provider struct {
 	value config.Value
 }
 
-func (p provider) Value(_ context.Context, _ ...string) (config.Value, error) {
+func (p provider) Value(context.Context, ...string) (config.Value, error) {
 	return p.value, nil
 }
 
@@ -27,7 +27,7 @@ func TestEnvValue(t *testing.T) {
 	t.Setenv("APP_ENV", except)
 
 	ctx := context.Background()
-	process := env.New(provider{value: value.String("%env(APP_ENV)%")})
+	process := handler.Env(provider{value: value.String("%env(APP_ENV)%")})
 	data, err := process.Value(ctx, "any")
 	require.NoError(t, err)
 	require.Equal(t, except, data.String())
