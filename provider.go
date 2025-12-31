@@ -51,3 +51,13 @@ type Variables interface {
 type Definition interface {
 	Add(opts ...Option)
 }
+
+type ProcessFunc func(ctx context.Context, in Value) (Value, error)
+
+func (o ProcessFunc) Process(ctx context.Context, in Value) (Value, error) {
+	return o(ctx, in)
+}
+
+type Processor interface {
+	Process(ctx context.Context, in Value) (Value, error)
+}
