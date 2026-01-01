@@ -52,12 +52,12 @@ type Definition interface {
 	Add(opts ...Option)
 }
 
-type ProcessFunc func(ctx context.Context, in Value) (Value, error)
+type ProcessFunc func(ctx context.Context, in Value, opts ...param.Option) (Value, error)
 
-func (o ProcessFunc) Process(ctx context.Context, in Value) (Value, error) {
-	return o(ctx, in)
+func (o ProcessFunc) Process(ctx context.Context, in Value, opts ...param.Option) (Value, error) {
+	return o(ctx, in, opts...)
 }
 
 type Processor interface {
-	Process(ctx context.Context, in Value) (Value, error)
+	Process(ctx context.Context, in Value, opts ...param.Option) (Value, error)
 }
