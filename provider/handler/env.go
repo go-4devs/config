@@ -15,11 +15,29 @@ const (
 	envSuffix  = ")%"
 )
 
-func Env(parent config.Provider) EnvHandler {
+type EnvOption func(*EnvHandler)
+
+func WithEnvName(in string) EnvOption {
+	return func(eh *EnvHandler) {
+		eh.name = in
+	}
+}
+
+func WithEnvProcessor(proc config.Processor) EnvOption {
+	return func(eh *EnvHandler) {
+		eh.Processor = proc
+	}
+}
+
+func Env(parent config.Provider, opts ...EnvOption) EnvHandler {
 	handler := EnvHandler{
 		Provider:  parent,
 		Processor: config.ProcessFunc(env.Env),
 		name:      "env:" + parent.Name(),
+	}
+
+	for _, opt := range opts {
+		opt(&handler)
 	}
 
 	return handler
