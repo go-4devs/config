@@ -171,7 +171,7 @@ func typeAssert(source, target any) error {
 	}
 
 	valTarget := reflect.ValueOf(target)
-	if !valTarget.IsValid() || valTarget.Kind() != reflect.Ptr {
+	if !valTarget.IsValid() || valTarget.Kind() != reflect.Pointer {
 		return fmt.Errorf("ptr target:%w", config.ErrInvalidValue)
 	}
 
@@ -245,7 +245,7 @@ func directTypeAssert(source, target any) bool {
 }
 
 func deReference(v reflect.Value) reflect.Value {
-	if (v.Kind() == reflect.Ptr || v.Kind() == reflect.Interface) && !v.IsNil() {
+	if (v.Kind() == reflect.Pointer || v.Kind() == reflect.Interface) && !v.IsNil() {
 		return v.Elem()
 	}
 
