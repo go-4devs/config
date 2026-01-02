@@ -6,11 +6,12 @@ import (
 
 const (
 	prefixByPath = "byPath"
+	wrongIDx     = -1
 )
 
 func newMap() *Map {
 	return &Map{
-		idx:      0,
+		idx:      wrongIDx,
 		wild:     nil,
 		children: nil,
 	}
@@ -69,31 +70,30 @@ func (m *Map) add(path []string) *Map {
 }
 
 func (m *Map) byPath(path, sep string) (*Map, bool) {
+	if len(path) == 0 {
+		return m, m.isValid()
+	}
+
 	for name := range m.children {
 		if after, ok := strings.CutPrefix(path, name); ok {
 			data := m.children[name]
-			if len(after) == 0 {
-				return data, true
+			if len(after) == 0 || len(after) == len(sep) {
+				return data, data.isValid()
 			}
 
-			after, ok = strings.CutPrefix(after, sep)
-			if !ok {
-				return data, false
-			}
-
-			if data.wild == nil {
-				return data.byPath(after, sep)
-			}
-
-			if idx := strings.Index(after, sep); idx != -1 {
-				return data.wild.byPath(after[idx+1:], sep)
-			}
-
-			return data, false
+			return data.byPath(after[len(sep):], sep)
 		}
 	}
 
-	return m, false
+	if m.wild == nil {
+		return m, m.isValid()
+	}
+
+	if idx := strings.Index(path, sep); idx != -1 {
+		return m.wild.byPath(path[idx+1:], sep)
+	}
+
+	return m, m.isValid()
 }
 
 func (m *Map) find(path []string) (*Map, bool) {
@@ -104,18 +104,22 @@ func (m *Map) find(path []string) (*Map, bool) {
 		path = path[1:]
 	}
 
-	if m.wild != nil {
+	data, ok := m.children[name]
+	if !ok && m.wild != nil {
 		return m.wild.find(path)
 	}
 
-	data, ok := m.children[name]
 	if !ok {
 		return data, false
 	}
 
 	if last {
-		return data, data.children == nil
+		return data, data.isValid()
 	}
 
 	return data.find(path)
+}
+
+func (m *Map) isValid() bool {
+	return m.idx != wrongIDx
 }
