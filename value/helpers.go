@@ -94,3 +94,17 @@ func JParse[T any](b []byte) (T, error) {
 
 	return data, JUnmarshal(b, &data)
 }
+
+func ParseSlice[T any](in []string, fn func(string) (T, error)) (config.Value, error) {
+	out := make([]T, 0, len(in))
+	for idx, one := range in {
+		data, err := fn(one)
+		if err != nil {
+			return nil, fmt.Errorf("parse[%T][%d]:%w", out, idx, err)
+		}
+
+		out = append(out, data)
+	}
+
+	return New(out), nil
+}
