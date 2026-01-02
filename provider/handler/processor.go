@@ -16,6 +16,12 @@ const (
 	processorKey pkey = iota + 1
 )
 
+func FormatFn(fn config.ProcessFunc, opts ...param.Option) param.Option {
+	return Process(config.ProcessFunc(func(ctx context.Context, in config.Value, _ ...param.Option) (config.Value, error) {
+		return fn(ctx, in, opts...)
+	}))
+}
+
 func Process(fn config.Processor) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, processorKey, fn)
