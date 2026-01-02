@@ -2,7 +2,6 @@ package value
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"gitoa.ru/go-4devs/config"
@@ -32,12 +31,7 @@ func (s String) Any() any {
 }
 
 func (s String) ParseInt() (int, error) {
-	v, err := strconv.Atoi(string(s))
-	if err != nil {
-		return 0, fmt.Errorf("string int:%w", err)
-	}
-
-	return v, nil
+	return Atoi(s.String())
 }
 
 func (s String) Int64() int64 {
@@ -47,63 +41,31 @@ func (s String) Int64() int64 {
 }
 
 func (s String) ParseInt64() (int64, error) {
-	v, err := strconv.ParseInt(string(s), 10, 64)
-	if err != nil {
-		return 0, fmt.Errorf("string int64:%w", err)
-	}
-
-	return v, nil
+	return ParseInt64(s.String())
 }
 
 func (s String) ParseUint() (uint, error) {
-	uout, err := s.ParseUint64()
-
-	return uint(uout), err
+	return ParseUint(s.String())
 }
 
 func (s String) ParseUint64() (uint64, error) {
-	uout, err := strconv.ParseUint(string(s), 10, 64)
-	if err != nil {
-		return 0, fmt.Errorf("string uint:%w", err)
-	}
-
-	return uout, nil
+	return ParseUint64(s.String())
 }
 
 func (s String) ParseFloat64() (float64, error) {
-	fout, err := strconv.ParseFloat(string(s), 64)
-	if err != nil {
-		return 0, fmt.Errorf("string float64:%w", err)
-	}
-
-	return fout, nil
+	return ParseFloat(s.String())
 }
 
 func (s String) ParseBool() (bool, error) {
-	v, err := strconv.ParseBool(string(s))
-	if err != nil {
-		return false, fmt.Errorf("string bool:%w", err)
-	}
-
-	return v, nil
+	return ParseBool(s.String())
 }
 
 func (s String) ParseDuration() (time.Duration, error) {
-	v, err := time.ParseDuration(string(s))
-	if err != nil {
-		return 0, fmt.Errorf("string duration:%w", err)
-	}
-
-	return v, nil
+	return ParseDuration(s.String())
 }
 
 func (s String) ParseTime() (time.Time, error) {
-	v, err := time.Parse(time.RFC3339, string(s))
-	if err != nil {
-		return time.Time{}, fmt.Errorf("string time:%w", err)
-	}
-
-	return v, nil
+	return ParseTime(s.String())
 }
 
 func (s String) IsEquals(val config.Value) bool {
