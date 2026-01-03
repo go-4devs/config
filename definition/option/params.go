@@ -9,7 +9,6 @@ type key int
 const (
 	paramHidden key = iota + 1
 	paramDefault
-	paramDesc
 	paramRequired
 	paramSlice
 	paramBool
@@ -72,10 +71,9 @@ func Default(in any) param.Option {
 	}
 }
 
+// Deprecated: use param.WithDescription.
 func Description(in string) param.Option {
-	return func(v param.Params) param.Params {
-		return param.With(v, paramDesc, in)
-	}
+	return param.WithDescription(in)
 }
 
 func HasDefaut(fn param.Params) bool {
@@ -118,8 +116,7 @@ func IsRequired(fn param.Params) bool {
 	return ok && data
 }
 
+// Deprecated: use param.Description.
 func DataDescription(fn param.Params) string {
-	data, _ := param.String(fn, paramDesc)
-
-	return data
+	return param.Description(fn)
 }

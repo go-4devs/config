@@ -231,7 +231,7 @@ func (v View) ParentStruct() string {
 }
 
 func (v View) Description() string {
-	return option.DataDescription(v.Option)
+	return param.Description(v.Option)
 }
 
 func (v View) Default() any {

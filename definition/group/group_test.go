@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
+	"gitoa.ru/go-4devs/config/param"
 	"gitoa.ru/go-4devs/config/test/require"
 )
 
@@ -23,7 +23,7 @@ func TestGroupWith(t *testing.T) {
 	const descrition = "group description"
 
 	gr := group.New("test", "test desc")
-	gr = gr.With(option.Description(descrition))
+	gr = gr.With(param.WithDescription(descrition))
 
-	require.Equal(t, descrition, option.DataDescription(gr))
+	require.Equal(t, descrition, param.Description(gr))
 }

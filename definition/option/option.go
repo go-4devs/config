@@ -10,7 +10,7 @@ import (
 var _ config.Option = New("", "", nil)
 
 func New(name, desc string, vtype any, opts ...param.Option) Option {
-	opts = append(opts, Description(desc), WithType(vtype))
+	opts = append(opts, param.WithDescription(desc), WithType(vtype))
 	res := Option{
 		name:   name,
 		Params: param.New(opts...),
