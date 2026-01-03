@@ -8,9 +8,14 @@ import (
 )
 
 func NewVar(opt Option) Variable {
+	names := make([]string, 0, 1)
+	if name := opt.Name(); name != "" {
+		names = append(names, name)
+	}
+
 	return Variable{
 		param: opt,
-		names: []string{opt.Name()},
+		names: names,
 	}
 }
 
@@ -58,6 +63,12 @@ func newVars(opts ...Option) []Variable {
 		one := NewVar(opt)
 		switch data := opt.(type) {
 		case Group:
+			if data.Name() == "" {
+				vars = append(vars, newVars(data.Options()...)...)
+
+				continue
+			}
+
 			vars = append(vars, groupVars(one, data.Options()...)...)
 		default:
 			vars = append(vars, one)

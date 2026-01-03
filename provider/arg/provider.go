@@ -19,6 +19,7 @@ const (
 	dash                 = `-`
 )
 
+// Deprecated: use WithArgs.
 func WithSkip(skip int) func(*Argv) {
 	return func(ar *Argv) {
 		res := 2
@@ -34,23 +35,26 @@ func WithSkip(skip int) func(*Argv) {
 			res = 1
 		}
 
-		ar.skip = res
+		ar.args = os.Args[res:]
+	}
+}
+
+func WithArgs(args []string) func(*Argv) {
+	return func(a *Argv) {
+		a.args = args
 	}
 }
 
 func New(opts ...func(*Argv)) *Argv {
 	arg := &Argv{
-		args: nil,
+		args: os.Args[1:],
 		pos:  0,
 		Map:  memory.Map{},
-		skip: 1,
 	}
 
 	for _, opt := range opts {
 		opt(arg)
 	}
-
-	arg.args = os.Args[arg.skip:]
 
 	return arg
 }
@@ -60,7 +64,6 @@ type Argv struct {
 
 	args []string
 	pos  uint64
-	skip int
 }
 
 func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
@@ -164,7 +167,7 @@ func (i *Argv) parseShortOption(arg string, def config.Variables) error {
 	var value string
 
 	if len(name) > 1 {
-		name, value = arg[0:1], arg[1:]
+		name, value = arg[0:1], strings.TrimSpace(arg[1:])
 	}
 
 	opt, err := def.ByParam(option.HasShort(name))
