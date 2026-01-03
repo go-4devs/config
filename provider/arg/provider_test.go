@@ -99,7 +99,7 @@ func testVariables(t *testing.T) config.Variables {
 		),
 	)
 
-	return config.NewVars(def)
+	return config.NewVars(def.Options()...)
 }
 
 type Duration struct {
