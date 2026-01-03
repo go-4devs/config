@@ -5,7 +5,7 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
-var _ config.Group = (*Definition)(nil)
+var _ config.Options = (*Definition)(nil)
 
 func New(opts ...config.Option) *Definition {
 	return &Definition{
@@ -26,10 +26,6 @@ func (d *Definition) Add(opts ...config.Option) {
 
 func (d *Definition) Options() []config.Option {
 	return d.options
-}
-
-func (d *Definition) Name() string {
-	return ""
 }
 
 func (d *Definition) With(params param.Params) *Definition {

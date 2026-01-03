@@ -19,7 +19,7 @@ func main() {
 func run(f io.Writer) error {
 	ctx := context.Background()
 
-	defs:=make([]config.Group,0)
+	defs:=make([]config.Options,0)
 {{ range .Configure }} 
 	params{{.}} := param.New(
 	{{- if $.SkipContext }}view.WithSkipContext,{{ end }}
