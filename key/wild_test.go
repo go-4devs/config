@@ -8,6 +8,8 @@ import (
 )
 
 func TestWild(t *testing.T) {
+	t.Parallel()
+
 	require.True(t, key.IsWild(key.Wild("test")))
 	require.True(t, !key.IsWild("test"))
 	require.True(t, key.IsWild("test", key.Wild("test"), "key"))
