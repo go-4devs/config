@@ -21,7 +21,7 @@ var tpls embed.FS
 
 var initTpl = template.Must(template.New("tpls").ParseFS(tpls, "tpl/*.tpl")).Lookup("init.go.tpl")
 
-func Run(_ context.Context, fullPkg string, w io.Writer, defs ...config.Group) error {
+func Run(_ context.Context, fullPkg string, w io.Writer, defs ...config.Options) error {
 	data := Data{
 		Packages: pkg.NewImports(fullPkg).
 			Adds("fmt", "context", "gitoa.ru/go-4devs/config"),

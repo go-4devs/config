@@ -66,7 +66,7 @@ func WithParent(in *View) Option {
 	}
 }
 
-func NewViews(option config.Group, opts ...Option) View {
+func NewViews(option config.Options, opts ...Option) View {
 	view := newView(option, opts...)
 
 	for _, op := range option.Options() {
@@ -76,11 +76,9 @@ func NewViews(option config.Group, opts ...Option) View {
 	return view
 }
 
-type IOption any
-
-func newView(option config.Option, opts ...Option) View {
+func newView(params param.Params, opts ...Option) View {
 	vi := View{
-		Option:   option,
+		Params:   params,
 		parent:   nil,
 		children: nil,
 	}
@@ -105,7 +103,7 @@ func NewView(opt config.Option, opts ...Option) View {
 }
 
 type View struct {
-	config.Option
+	param.Params
 
 	children []View
 	parent   *View
@@ -125,7 +123,7 @@ func (v View) Types() []any {
 }
 
 func (v View) Kind() reflect.Type {
-	return reflect.TypeOf(v.Option)
+	return reflect.TypeOf(v.Params)
 }
 
 func (v View) Views() []View {
@@ -133,7 +131,7 @@ func (v View) Views() []View {
 }
 
 func (v View) Param(key any) string {
-	data, has := v.Option.Param(key)
+	data, has := v.Params.Param(key)
 	if has {
 		return fmt.Sprintf("%v", data)
 	}
@@ -156,7 +154,7 @@ func (v View) ClildSkipContext() bool {
 }
 
 func (v View) SkipContext() bool {
-	if IsSkipContext(v.Option) {
+	if IsSkipContext(v.Params) {
 		return true
 	}
 
@@ -168,7 +166,11 @@ func (v View) SkipContext() bool {
 }
 
 func (v View) Name() string {
-	return v.Option.Name()
+	if data, ok := v.Params.(interface{ Name() string }); ok {
+		return data.Name()
+	}
+
+	return ""
 }
 
 func (v View) Keys() []string {
@@ -177,7 +179,7 @@ func (v View) Keys() []string {
 		keys = append(keys, v.parent.Keys()...)
 	}
 
-	if name := v.Option.Name(); name != "" {
+	if name := v.Name(); name != "" {
 		keys = append(keys, name)
 	}
 
@@ -185,11 +187,11 @@ func (v View) Keys() []string {
 }
 
 func (v View) Type() any {
-	return param.Type(v.Option)
+	return param.Type(v.Params)
 }
 
 func (v View) FuncName() string {
-	data, ok := v.Option.Param(viewParamFunctName)
+	data, ok := v.Params.Param(viewParamFunctName)
 	name, valid := data.(string)
 
 	if !ok || !valid {
@@ -200,7 +202,7 @@ func (v View) FuncName() string {
 }
 
 func (v View) StructName() string {
-	name, ok := param.String(v.Option, viewParamStructName)
+	name, ok := param.String(v.Params, viewParamStructName)
 	if ok {
 		return name
 	}
@@ -231,11 +233,11 @@ func (v View) ParentStruct() string {
 }
 
 func (v View) Description() string {
-	return param.Description(v.Option)
+	return param.Description(v.Params)
 }
 
 func (v View) Default() any {
-	data, ok := option.DataDefaut(v.Option)
+	data, ok := option.DataDefaut(v.Params)
 	if !ok {
 		return nil
 	}
@@ -244,5 +246,5 @@ func (v View) Default() any {
 }
 
 func (v View) HasDefault() bool {
-	return option.HasDefaut(v.Option)
+	return option.HasDefaut(v.Params)
 }

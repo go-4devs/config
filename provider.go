@@ -34,6 +34,7 @@ type Group interface {
 
 type Options interface {
 	Options() []Option
+	param.Params
 }
 
 type BindProvider interface {
