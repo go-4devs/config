@@ -10,6 +10,7 @@ type keyParam int
 
 const (
 	paramArgument keyParam = iota + 1
+	paramDumpReferenceView
 )
 
 //nolint:gochecknoglobals

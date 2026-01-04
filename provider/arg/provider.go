@@ -3,6 +3,7 @@ package arg
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -113,6 +114,10 @@ func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 	}
 
 	return nil
+}
+
+func (i *Argv) DumpRefernce(_ context.Context, w io.Writer, opt config.Options) error {
+	return NewDump().Reference(w, opt)
 }
 
 func (i *Argv) parseLongOption(arg string, def config.Variables) error {

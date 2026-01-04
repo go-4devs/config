@@ -8,10 +8,6 @@ import (
 	"time"
 
 	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition"
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/definition/proto"
 	"gitoa.ru/go-4devs/config/provider/arg"
 	"gitoa.ru/go-4devs/config/test"
 	"gitoa.ru/go-4devs/config/test/require"
@@ -52,7 +48,7 @@ func TestProviderBind(t *testing.T) {
 	t.Parallel()
 
 	args := []string{
-		"-p 8080",
+		"-l 8080",
 		"--config=config.hcl",
 		"-u http://4devs.io",
 		"--url=https://4devs.io",
@@ -84,22 +80,7 @@ func TestProviderBind(t *testing.T) {
 func testVariables(t *testing.T) config.Variables {
 	t.Helper()
 
-	def := definition.New()
-	def.Add(
-		option.Int("listen", "listen", option.Short('p')),
-		option.String("config", "config"),
-		option.String("url", "url", option.Short('u'), option.Slice),
-		option.Duration("timeout", "timeout", option.Short('t'), option.Slice),
-		option.Time("start-at", "start at"),
-		group.New("end", "end at",
-			option.Time("after", "after", option.Slice),
-			proto.New("service", "service after",
-				option.Time("after", "after"),
-			),
-		),
-	)
-
-	return config.NewVars(def.Options()...)
+	return config.NewVars(testOptions(t).Options()...)
 }
 
 type Duration struct {
