@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/option"
+	"gitoa.ru/go-4devs/config/param"
 )
 
 const NameDefault = "default"
@@ -27,7 +27,7 @@ func (a *Default) Value(ctx context.Context, key ...string) (config.Value, error
 
 func (a *Default) Bind(_ context.Context, def config.Variables) error {
 	for _, opt := range def.Variables() {
-		if data, ok := option.DataDefaut(opt); ok {
+		if data, ok := param.Default(opt); ok {
 			a.data.SetOption(data, opt.Key()...)
 		}
 	}

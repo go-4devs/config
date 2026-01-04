@@ -6,6 +6,7 @@ const (
 	paramTimeFormat key = iota + 1
 	paramType
 	paramDescription
+	paramDefault
 )
 
 func WithTimeFormat(format string) Option {
@@ -40,4 +41,16 @@ func Description(fn Params) string {
 	data, _ := String(fn, paramDescription)
 
 	return data
+}
+
+func WithDefault(in any) Option {
+	return func(p Params) Params {
+		return With(p, paramDefault, in)
+	}
+}
+
+func Default(p Params) (any, bool) {
+	data, ok := p.Param(paramDefault)
+
+	return data, ok
 }

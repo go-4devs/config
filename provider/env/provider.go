@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/option"
 	"gitoa.ru/go-4devs/config/key"
 	"gitoa.ru/go-4devs/config/param"
 	"gitoa.ru/go-4devs/config/value"
@@ -91,7 +90,7 @@ func (p *Provider) writeOption(w io.Writer, opt config.Option, keys ...string) e
 	case config.Options:
 		err = p.writeOptions(w, one, keys...)
 	default:
-		def, dok := option.DataDefaut(opt)
+		def, dok := param.Default(opt)
 
 		prefix := ""
 		if !dok || key.IsWild(keys...) {

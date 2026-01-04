@@ -237,7 +237,7 @@ func (v View) Description() string {
 }
 
 func (v View) Default() any {
-	data, ok := option.DataDefaut(v.Params)
+	data, ok := param.Default(v.Params)
 	if !ok {
 		return nil
 	}
