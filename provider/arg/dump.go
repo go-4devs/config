@@ -31,6 +31,16 @@ func ResolveStyle(params param.Params) ViewStyle {
 	return vs
 }
 
+func WithStyle(comment, info Style) param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, paramDumpReferenceView, ViewStyle{
+			Comment: comment,
+			Info:    info,
+			MLen:    0,
+		})
+	}
+}
+
 type ViewStyle struct {
 	Comment Style
 	Info    Style
@@ -87,14 +97,18 @@ func (d Dump) keyMaxLen(views ...View) int {
 	var maxLen int
 
 	for _, vi := range views {
-		vlen := len(vi.Name(d.sep)) + 6
+		vlen := len(vi.Name(d.sep)) + d.space
 
-		if !vi.IsBool() {
-			vlen = vlen*2 + 1
-		}
+		if !vi.IsArgument() {
+			if !vi.IsBool() {
+				vlen = vlen*2 + 1
+			}
 
-		if def := vi.Default(); def != "" {
-			vlen += 2
+			if def := vi.Default(); def != "" {
+				vlen += d.space
+			}
+
+			vlen += 4 + d.space
 		}
 
 		if vlen > maxLen {
@@ -300,7 +314,7 @@ func (v Views) Options() []View {
 	}
 
 	sort.Slice(opts, func(i, j int) bool {
-		return opts[i].Name(dash) < opts[j].Name(dash)
+		return opts[i].Pos() < opts[j].Pos()
 	})
 
 	return opts
@@ -312,6 +326,10 @@ func NewView(params config.Option, parent *View) View {
 	keys := make([]string, 0)
 	if parent != nil {
 		keys = append(keys, parent.Keys()...)
+	}
+
+	if !ok {
+		pos = param.Position(params)
 	}
 
 	if name := params.Name(); name != "" {

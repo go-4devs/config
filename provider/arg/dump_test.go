@@ -14,17 +14,17 @@ func TestDumpReference(t *testing.T) {
 	//nolint:dupword
 	const expect = `
 Arguments:
-  config                                             config [default:config.hcl]
-  user-name                                          username
+  config                                           config [default:config.hcl]
+  user-name                                        username
 
 Options:
-      --end-after[=END-AFTER]                        after  (multiple values allowed)
-      --end-{service}-after[=END-{SERVICE}-AFTER]    after
-  -l, --listen[=LISTEN]                              listen [default:8080]
-      --start-at[=START-AT]                          start at [default:2010-01-02T15:04:05Z]
-  -t, --timeout[=TIMEOUT]                            timeout  (multiple values allowed)
-  -u, --url[=URL]                                    url  (multiple values allowed)
-  -p, --user-password[=USER-PASSWORD]                user pass
+  -l, --listen[=LISTEN]                            listen [default:8080]
+  -p, --user-password[=USER-PASSWORD]              user pass
+  -u, --url[=URL]                                  url  (multiple values allowed)
+  -t, --timeout[=TIMEOUT]                          timeout  (multiple values allowed)
+      --start-at[=START-AT]                        start at [default:2010-01-02T15:04:05Z]
+      --end-after[=END-AFTER]                      after  (multiple values allowed)
+      --end-{service}-after[=END-{SERVICE}-AFTER]  after
 `
 
 	dump := arg.NewDump()
