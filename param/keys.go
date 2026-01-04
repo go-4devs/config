@@ -7,6 +7,7 @@ const (
 	paramType
 	paramDescription
 	paramDefault
+	paramPosition
 )
 
 func WithTimeFormat(format string) Option {
@@ -53,4 +54,16 @@ func Default(p Params) (any, bool) {
 	data, ok := p.Param(paramDefault)
 
 	return data, ok
+}
+
+func WithPostition(in uint64) Option {
+	return func(p Params) Params {
+		return With(p, paramPosition, in)
+	}
+}
+
+func Position(in Params) uint64 {
+	pos, _ := Uint64(paramPosition, in)
+
+	return pos
 }

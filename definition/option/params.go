@@ -11,7 +11,6 @@ const (
 	paramRequired
 	paramSlice
 	paramBool
-	paramPos
 	paramShort
 )
 
@@ -47,9 +46,7 @@ func WithType(in any) param.Option {
 }
 
 func Position(pos uint64) param.Option {
-	return func(p param.Params) param.Params {
-		return param.With(p, paramPos, pos)
-	}
+	return param.WithPostition(pos)
 }
 
 func Hidden(v param.Params) param.Params {
@@ -79,8 +76,11 @@ func HasDefaut(fn param.Params) bool {
 	return ok
 }
 
+// Deprecated: use param.Position.
 func DataPosition(fn param.Params) (uint64, bool) {
-	return param.Uint64(paramPos, fn)
+	pos := param.Position(fn)
+
+	return pos, pos != 0
 }
 
 // Deprecated: use param.Default.
