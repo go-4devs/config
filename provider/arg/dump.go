@@ -353,7 +353,7 @@ func (v View) Pos() uint64 {
 }
 
 func (v View) Default() string {
-	data, ok := option.DataDefaut(v.Params)
+	data, ok := param.Default(v.Params)
 	if !ok {
 		return ""
 	}
