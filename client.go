@@ -6,6 +6,8 @@ import (
 	"fmt"
 )
 
+var _ Providers = (*Client)(nil)
+
 func Must(providers ...any) *Client {
 	client, err := New(providers...)
 	if err != nil {
@@ -18,16 +20,27 @@ func Must(providers ...any) *Client {
 func New(providers ...any) (*Client, error) {
 	client := &Client{
 		providers: make([]Provider, len(providers)),
+		name:      make(map[string]int),
+		chain:     make([]Providers, 0, len(providers)),
 	}
 
 	for idx, prov := range providers {
+		var name string
+
 		switch current := prov.(type) {
 		case Provider:
 			client.providers[idx] = current
+			name = current.Name()
 		case Factory:
 			client.providers[idx] = WrapFactory(current, client)
+			name = current.Name()
 		default:
 			return nil, fmt.Errorf("provier[%d]: %w %T", idx, ErrUnknowType, prov)
+		}
+
+		client.name[name] = idx
+		if current, ok := prov.(Providers); ok {
+			client.chain = append(client.chain, current)
 		}
 	}
 
@@ -36,6 +49,8 @@ func New(providers ...any) (*Client, error) {
 
 type Client struct {
 	providers []Provider
+	name      map[string]int
+	chain     []Providers
 }
 
 func (c *Client) Name() string {
@@ -96,4 +111,31 @@ func (c *Client) Bind(ctx context.Context, data Variables) error {
 	}
 
 	return nil
+}
+
+func (c *Client) Provider(name string) (Provider, error) {
+	if idx, ok := c.name[name]; ok {
+		return c.providers[idx], nil
+	}
+
+	for _, prov := range c.chain {
+		if cprov, err := prov.Provider(name); err == nil {
+			return cprov, nil
+		}
+	}
+
+	return nil, fmt.Errorf("provider[%v]:%w", c.Name(), ErrNotFound)
+}
+
+func (c *Client) Names() []string {
+	names := make([]string, 0, len(c.providers))
+	for name := range c.name {
+		names = append(names, name)
+	}
+
+	for _, prov := range c.chain {
+		names = append(names, prov.Names()...)
+	}
+
+	return names
 }

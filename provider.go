@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"io"
 
 	"gitoa.ru/go-4devs/config/param"
 )
@@ -41,6 +42,19 @@ type BindProvider interface {
 	Provider
 
 	Bind(ctx context.Context, data Variables) error
+}
+
+type DunpProvider interface {
+	Provider
+
+	DumpRefernce(ctx context.Context, w io.Writer, opts Options) error
+}
+
+type Providers interface {
+	Provider
+
+	Provider(name string) (Provider, error)
+	Names() []string
 }
 
 type Variables interface {
