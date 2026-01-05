@@ -8,13 +8,13 @@ import (
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/definition/generate"
 	"gitoa.ru/go-4devs/config/provider/chain"
-	"gitoa.ru/go-4devs/console"
+	"gitoa.ru/go-4devs/console/command"
 	"gitoa.ru/go-4devs/console/output"
 )
 
 const Name = "config:generate"
 
-func Handle(ctx context.Context, in config.Provider, out output.Output, next console.Action) error {
+func Handle(ctx context.Context, in config.Provider, out output.Output, next command.ExecuteFn) error {
 	var name string
 
 	value, err := in.Value(ctx, generate.OptionFile)
@@ -53,16 +53,12 @@ func Execute(ctx context.Context, in config.Provider, _ output.Output) error {
 	return nil
 }
 
-func Command() *console.Command {
-	return &console.Command{
-		Description: "",
-		Help:        "",
-		Version:     "v0.0.1",
-		Hidden:      false,
-		Prepare:     nil,
-		Handle:      Handle,
-		Name:        Name,
-		Execute:     Execute,
-		Configure:   generate.Configure,
-	}
+func Command() command.Command {
+	return command.New(
+		Name,
+		"generate helper for configure command",
+		Execute,
+		command.Configure(generate.Configure),
+		command.Handle(Handle),
+	)
 }
