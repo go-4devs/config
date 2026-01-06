@@ -2,6 +2,7 @@ package arg
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -217,7 +218,21 @@ func (i *Argv) parseShortOption(arg string, def config.Variables) error {
 func (i *Argv) parseArgument(arg string, def config.Variables) error {
 	opt, err := def.ByParam(PosArgument(i.pos))
 	if err != nil {
-		return fmt.Errorf("%w", err)
+		var maxArgs uint64
+		if i.pos > 0 {
+			maxArgs -= i.pos
+		}
+
+		if errors.Is(err, config.ErrNotFound) {
+			return fmt.Errorf("argument[%s] by pos[%d] max[%d]: %w",
+				arg,
+				i.pos+1,
+				maxArgs,
+				config.ErrNotFound,
+			)
+		}
+
+		return fmt.Errorf("find argiment by pos[%d] max[%d]: %w", i.pos+1, maxArgs, err)
 	}
 
 	i.pos++
