@@ -44,10 +44,10 @@ type BindProvider interface {
 	Bind(ctx context.Context, data Variables) error
 }
 
-type DunpProvider interface {
+type DumpProvider interface {
 	Provider
 
-	DumpRefernce(ctx context.Context, w io.Writer, opts Options) error
+	DumpReference(ctx context.Context, w io.Writer, opts Options) error
 }
 
 type Providers interface {

@@ -19,6 +19,18 @@ const (
 
 var _ config.Provider = (*Provider)(nil)
 
+func WithKey(fn func(...string) string) Option {
+	return func(p *Provider) {
+		p.key = fn
+	}
+}
+
+func WithName(name string) Option {
+	return func(p *Provider) {
+		p.name = name
+	}
+}
+
 func New(json []byte, opts ...Option) *Provider {
 	provider := Provider{
 		key: func(s ...string) string {

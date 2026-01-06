@@ -18,6 +18,12 @@ const (
 	doubleDash           = `--`
 	defaultLenLognOption = 2
 	dash                 = `-`
+	Name                 = "arg"
+)
+
+var (
+	_ config.DumpProvider = (*Argv)(nil)
+	_ config.BindProvider = (*Argv)(nil)
 )
 
 // Deprecated: use WithArgs.
@@ -46,11 +52,18 @@ func WithArgs(args []string) func(*Argv) {
 	}
 }
 
+func WithName(name string) func(*Argv) {
+	return func(a *Argv) {
+		a.name = name
+	}
+}
+
 func New(opts ...func(*Argv)) *Argv {
 	arg := &Argv{
 		args: os.Args[1:],
 		pos:  0,
 		Map:  memory.Map{},
+		name: Name,
 	}
 
 	for _, opt := range opts {
@@ -65,6 +78,7 @@ type Argv struct {
 
 	args []string
 	pos  uint64
+	name string
 }
 
 func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
@@ -116,7 +130,11 @@ func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 	return nil
 }
 
-func (i *Argv) DumpRefernce(_ context.Context, w io.Writer, opt config.Options) error {
+func (i *Argv) Name() string {
+	return i.name
+}
+
+func (i *Argv) DumpReference(_ context.Context, w io.Writer, opt config.Options) error {
 	return NewDump().Reference(w, opt)
 }
 

@@ -26,6 +26,18 @@ func WithSecretResolve(f func(key []string) (string, string)) SecretOption {
 	return func(s *Provider) { s.resolve = f }
 }
 
+func WithName(name string) SecretOption {
+	return func(p *Provider) {
+		p.name = name
+	}
+}
+
+func WithPrefix(prefix string) SecretOption {
+	return func(p *Provider) {
+		p.prefix = prefix
+	}
+}
+
 func New(namespace, appName string, client *api.Client, opts ...SecretOption) *Provider {
 	prov := Provider{
 		client: client,

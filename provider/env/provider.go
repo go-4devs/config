@@ -15,12 +15,27 @@ import (
 
 const Name = "env"
 
-var _ config.Provider = (*Provider)(nil)
+var (
+	_ config.Provider     = (*Provider)(nil)
+	_ config.DumpProvider = (*Provider)(nil)
+)
 
 type Option func(*Provider)
 
 func WithKeyFactory(factory func(...string) string) Option {
 	return func(p *Provider) { p.key = factory }
+}
+
+func WithName(name string) Option {
+	return func(p *Provider) {
+		p.name = name
+	}
+}
+
+func WithPrefix(prefix string) Option {
+	return func(p *Provider) {
+		p.prefix = prefix
+	}
 }
 
 func New(namespace, appName string, opts ...Option) *Provider {
@@ -29,7 +44,7 @@ func New(namespace, appName string, opts ...Option) *Provider {
 			return strings.ToUpper(strings.Join(path, "_"))
 		},
 		prefix: strings.ToUpper(namespace + "_" + appName + "_"),
-		name:   "",
+		name:   Name,
 	}
 
 	for _, opt := range opts {
