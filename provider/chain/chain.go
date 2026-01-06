@@ -34,7 +34,7 @@ func (c chain) Bind(ctx context.Context, def config.Variables) error {
 	for _, input := range c {
 		if prov, ok := input.(config.BindProvider); ok {
 			if err := prov.Bind(ctx, def); err != nil {
-				return fmt.Errorf("%T:%w", input, err)
+				return fmt.Errorf("prov[%s]:%w", input.Name(), err)
 			}
 		}
 	}
