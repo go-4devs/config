@@ -17,6 +17,12 @@ const (
 
 var _ config.Provider = (*Provider)(nil)
 
+func WithName(name string) Option {
+	return func(p *Provider) {
+		p.name = name
+	}
+}
+
 func NewFile(name string, opts ...Option) (*Provider, error) {
 	in, err := os.ReadFile(name)
 	if err != nil {

@@ -10,12 +10,12 @@ func Default(in any) param.Option {
 	return option.Default(value.New(in))
 }
 
-func Required(v param.Params) {
-	option.Required(v)
+func Required(v param.Params) param.Params {
+	return option.Required(v)
 }
 
-func Slice(v param.Params) {
-	option.Slice(v)
+func Slice(v param.Params) param.Params {
+	return option.Slice(v)
 }
 
 func String(name, description string, opts ...param.Option) option.Option {

@@ -27,7 +27,31 @@ type Client interface {
 	client.Watcher
 }
 
-func New(namespace, appName string, client Client) *Provider {
+func WithName(name string) func(*Provider) {
+	return func(p *Provider) {
+		p.name = name
+	}
+}
+
+func WithLog(fn func(context.Context, string, ...any)) func(*Provider) {
+	return func(p *Provider) {
+		p.log = fn
+	}
+}
+
+func WithPrefix(prefix string) func(*Provider) {
+	return func(p *Provider) {
+		p.prefix = prefix
+	}
+}
+
+func WithKey(fn func(...string) string) func(*Provider) {
+	return func(p *Provider) {
+		p.key = fn
+	}
+}
+
+func New(namespace, appName string, client Client, opts ...func(*Provider)) *Provider {
 	prov := Provider{
 		client: client,
 		key: func(s ...string) string {
@@ -38,6 +62,10 @@ func New(namespace, appName string, client Client) *Provider {
 		log: func(_ context.Context, format string, args ...any) {
 			log.Printf(format, args...)
 		},
+	}
+
+	for _, opt := range opts {
+		opt(&prov)
 	}
 
 	return &prov

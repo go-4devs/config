@@ -27,10 +27,6 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
-gitoa.ru/go-4devs/config v0.0.1 h1:9KrOO09YbIMO8qL8aVn/G74DurGdOIW5y3O02bays4I=
-gitoa.ru/go-4devs/config v0.0.1/go.mod h1:xfEC2Al9xnMLJUuekYs3KhJ5BIzWAseNwkMwbN6/xss=
-gitoa.ru/go-4devs/config v0.0.2 h1:bkTxW57kDDMf4cj/8W7fxPSN7JCPWEqlhCmL6LP3Vzg=
-gitoa.ru/go-4devs/config v0.0.2/go.mod h1:xfEC2Al9xnMLJUuekYs3KhJ5BIzWAseNwkMwbN6/xss=
 gitoa.ru/go-4devs/config v0.0.3 h1:+ecwDQj4fneJCh2uLNNAonm4cUJdGmlfxUsFhQRI9Ko=
 gitoa.ru/go-4devs/config v0.0.3/go.mod h1:UINWnObZA0nLiJro+TtavUBBvN0cSt17aRHOk20pP74=
 go.etcd.io/etcd/api/v3 v3.5.11 h1:B54KwXbWDHyD3XYAwprxNzTe7vlhR69LuBgZnMVvS7E=

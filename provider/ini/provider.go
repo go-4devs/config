@@ -17,8 +17,20 @@ const (
 
 var _ config.Provider = (*Provider)(nil)
 
-func New(data *ini.File) *Provider {
-	return &Provider{
+func WithName(name string) func(*Provider) {
+	return func(p *Provider) {
+		p.name = name
+	}
+}
+
+func WithResolve(fn func([]string) (string, string)) func(*Provider) {
+	return func(p *Provider) {
+		p.resolve = fn
+	}
+}
+
+func New(data *ini.File, opts ...func(*Provider)) *Provider {
+	prov := &Provider{
 		data: data,
 		resolve: func(path []string) (string, string) {
 			if len(path) == 1 {
@@ -29,6 +41,12 @@ func New(data *ini.File) *Provider {
 		},
 		name: Name,
 	}
+
+	for _, opt := range opts {
+		opt(prov)
+	}
+
+	return prov
 }
 
 type Provider struct {
