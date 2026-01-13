@@ -113,13 +113,13 @@ func (c *Client) Bind(ctx context.Context, data Variables) error {
 	return nil
 }
 
-func (c *Client) Provider(name string) (Provider, error) {
+func (c *Client) ByName(name string) (Provider, error) {
 	if idx, ok := c.name[name]; ok {
 		return c.providers[idx], nil
 	}
 
 	for _, prov := range c.chain {
-		if cprov, err := prov.Provider(name); err == nil {
+		if cprov, err := prov.ByName(name); err == nil {
 			return cprov, nil
 		}
 	}

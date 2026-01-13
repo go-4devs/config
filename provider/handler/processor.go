@@ -7,6 +7,12 @@ import (
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/key"
 	"gitoa.ru/go-4devs/config/param"
+	"gitoa.ru/go-4devs/config/provider/memory"
+)
+
+var (
+	_ config.DumpProvider = Processor(nil)
+	_ config.BindProvider = Processor(nil)
 )
 
 type pkey uint8
@@ -40,25 +46,19 @@ func getProcess(in param.Params) (config.Processor, bool) {
 
 func Processor(parent config.Provider) *ProcessHandler {
 	handler := &ProcessHandler{
-		Provider: parent,
-		name:     "process:" + parent.Name(),
-		idx:      key.Map{},
-		process:  nil,
+		WrapProvider: memory.Wrap(parent),
+		idx:          key.Map{},
+		process:      nil,
 	}
 
 	return handler
 }
 
 type ProcessHandler struct {
-	config.Provider
+	memory.WrapProvider
 
 	idx     key.Map
 	process []config.Processor
-	name    string
-}
-
-func (p *ProcessHandler) Name() string {
-	return p.name
 }
 
 func (p *ProcessHandler) Bind(ctx context.Context, vars config.Variables) error {
@@ -72,11 +72,9 @@ func (p *ProcessHandler) Bind(ctx context.Context, vars config.Variables) error 
 		p.process = append(p.process, process)
 	}
 
-	if bind, bok := p.Provider.(config.BindProvider); bok {
-		berr := bind.Bind(ctx, vars)
-		if berr != nil {
-			return fmt.Errorf("%w", berr)
-		}
+	berr := p.WrapProvider.Bind(ctx, vars)
+	if berr != nil {
+		return fmt.Errorf("%w", berr)
 	}
 
 	return nil
