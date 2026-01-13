@@ -53,7 +53,7 @@ type DumpProvider interface {
 type Providers interface {
 	Provider
 
-	Provider(name string) (Provider, error)
+	ByName(name string) (Provider, error)
 	Names() []string
 }
 

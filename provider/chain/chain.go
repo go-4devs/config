@@ -46,7 +46,7 @@ func (c chain) Name() string {
 	return Name
 }
 
-func (c chain) Provider(name string) (config.Provider, error) {
+func (c chain) ByName(name string) (config.Provider, error) {
 	if c.Name() == name {
 		return c, nil
 	}
@@ -61,7 +61,7 @@ func (c chain) Provider(name string) (config.Provider, error) {
 			continue
 		}
 
-		if in, err := cprov.Provider(name); err == nil {
+		if in, err := cprov.ByName(name); err == nil {
 			return in, nil
 		}
 	}

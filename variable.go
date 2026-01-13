@@ -14,18 +14,29 @@ func NewVar(opt Option) Variable {
 	}
 
 	return Variable{
-		param: opt,
-		names: names,
+		Option: opt,
+		names:  names,
+		parent: nil,
 	}
 }
 
 type Variable struct {
-	names []string
-	param param.Params
+	Option
+
+	parent *Variable
+	names  []string
 }
 
 func (v Variable) Param(key any) (any, bool) {
-	return v.param.Param(key)
+	if data, ok := v.Option.Param(key); ok {
+		return data, ok
+	}
+
+	if v.parent != nil {
+		return v.parent.Param(key)
+	}
+
+	return nil, false
 }
 
 func (v Variable) Key() []string {
@@ -38,8 +49,9 @@ func (v Variable) Type() any {
 
 func (v Variable) With(opt Option) Variable {
 	return Variable{
-		names: append(v.Key(), opt.Name()),
-		param: param.Chain(v.param, opt),
+		parent: &v,
+		Option: opt,
+		names:  append(v.Key(), opt.Name()),
 	}
 }
 
@@ -63,12 +75,6 @@ func newVars(opts ...Option) []Variable {
 		one := NewVar(opt)
 		switch data := opt.(type) {
 		case Group:
-			if data.Name() == "" {
-				vars = append(vars, newVars(data.Options()...)...)
-
-				continue
-			}
-
 			vars = append(vars, groupVars(one, data.Options()...)...)
 		default:
 			vars = append(vars, one)

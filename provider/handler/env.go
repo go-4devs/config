@@ -7,7 +7,13 @@ import (
 
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/processor/env"
+	"gitoa.ru/go-4devs/config/provider/memory"
 	"gitoa.ru/go-4devs/config/value"
+)
+
+var (
+	_ config.DumpProvider = Env(nil)
+	_ config.BindProvider = Env(nil)
 )
 
 const (
@@ -17,12 +23,6 @@ const (
 
 type EnvOption func(*EnvHandler)
 
-func WithEnvName(in string) EnvOption {
-	return func(eh *EnvHandler) {
-		eh.name = in
-	}
-}
-
 func WithEnvProcessor(proc config.Processor) EnvOption {
 	return func(eh *EnvHandler) {
 		eh.Processor = proc
@@ -31,9 +31,8 @@ func WithEnvProcessor(proc config.Processor) EnvOption {
 
 func Env(parent config.Provider, opts ...EnvOption) EnvHandler {
 	handler := EnvHandler{
-		Provider:  parent,
-		Processor: config.ProcessFunc(env.Env),
-		name:      "env:" + parent.Name(),
+		WrapProvider: memory.Wrap(parent),
+		Processor:    config.ProcessFunc(env.Env),
 	}
 
 	for _, opt := range opts {
@@ -44,14 +43,8 @@ func Env(parent config.Provider, opts ...EnvOption) EnvHandler {
 }
 
 type EnvHandler struct {
-	config.Provider
+	memory.WrapProvider
 	config.Processor
-
-	name string
-}
-
-func (e EnvHandler) Name() string {
-	return e.name
 }
 
 func (e EnvHandler) Value(ctx context.Context, key ...string) (config.Value, error) {
