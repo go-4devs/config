@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/key"
@@ -72,8 +71,6 @@ func (p *ProcessHandler) Bind(ctx context.Context, vars config.Variables) error 
 		p.idx.Add(len(p.process), one.Key())
 		p.process = append(p.process, process)
 	}
-
-	log.Print(p.idx.Index([]string{"group", "int"}))
 
 	if bind, bok := p.Provider.(config.BindProvider); bok {
 		berr := bind.Bind(ctx, vars)
