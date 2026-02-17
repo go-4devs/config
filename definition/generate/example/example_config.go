@@ -71,6 +71,61 @@ func (i ExampleConfig) User() UserConfig {
 	return UserConfig{i}
 }
 
+// readName name.
+func (i UserConfig) readName(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "user", "name")
+	if err != nil {
+		i.handle(ctx, err)
+
+		return "4devs", nil
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadName name.
+func (i UserConfig) ReadName(ctx context.Context) (string, error) {
+	return i.readName(ctx)
+}
+
+// Name name.
+func (i UserConfig) Name(ctx context.Context) string {
+	val, err := i.readName(ctx)
+	if err != nil {
+		i.handle(ctx, err)
+	}
+
+	return val
+}
+
+// readPass password.
+func (i UserConfig) readPass(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "user", "pass")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"user", "pass"}, err)
+
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadPass password.
+func (i UserConfig) ReadPass(ctx context.Context) (string, error) {
+	return i.readPass(ctx)
+}
+
+// Pass password.
+func (i UserConfig) Pass(ctx context.Context) string {
+	val, err := i.readPass(ctx)
+	if err != nil {
+		i.handle(ctx, err)
+	}
+
+	return val
+}
+
 type LogConfig struct {
 	ExampleConfig
 }
@@ -84,8 +139,9 @@ func (i ExampleConfig) Log() LogConfig {
 func (i LogConfig) readLevel(ctx context.Context) (v Level, e error) {
 	val, err := i.Value(ctx, "log", "level")
 	if err != nil {
-		return v, fmt.Errorf("read [%v]:%w", []string{"log", "level"}, err)
+		i.handle(ctx, err)
 
+		return v, v.UnmarshalText([]byte("info"))
 	}
 
 	pval, perr := val.ParseString()

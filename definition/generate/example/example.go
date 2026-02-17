@@ -30,7 +30,7 @@ func Example(_ context.Context, def configs.Definition) error {
 		).With(view.WithContext),
 
 		group.New("log", "configure logger",
-			option.New("level", "log level", Level("")),
+			option.New("level", "log level", Level(""), option.Default(Level("info"))),
 			proto.New("service", "servise logger", option.New("level", "log level", Level(""))),
 		),
 	)

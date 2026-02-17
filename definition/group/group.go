@@ -39,6 +39,8 @@ func (g *Group) Add(opts ...config.Option) {
 func (g *Group) With(opts ...param.Option) *Group {
 	group := New(g.Name(), "")
 	group.Params = param.Chain(g.Params, param.New(opts...))
+	group.opts = make([]config.Option, len(g.opts))
+	copy(group.opts, g.opts)
 
 	return group
 }

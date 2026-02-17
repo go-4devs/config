@@ -75,7 +75,7 @@ func renderDataUnmarhal(val any, view ValueData) (string, error) {
 		return "", fmt.Errorf("render data unmarshal:%w", err)
 	}
 
-	return fmt.Sprintf("return {{.%[1]s}}, {{.%[1]s}}.UnmarshalJSON(%q)", view.ValName, res), nil
+	return fmt.Sprintf("return %[1]s, %[1]s.UnmarshalJSON([]byte(%q))", view.ValName, res), nil
 }
 
 func renderDataUnmarhalText(val any, view ValueData) (string, error) {
@@ -84,11 +84,11 @@ func renderDataUnmarhalText(val any, view ValueData) (string, error) {
 		return "", fmt.Errorf("render data unmarshal:%w", err)
 	}
 
-	return fmt.Sprintf("return {{.%[1]s}}, {{.%[1]s}}.UnmarshalText(%s)", view.ValName, res), nil
+	return fmt.Sprintf("return %[1]s, %[1]s.UnmarshalText([]byte(%s))", view.ValName, res), nil
 }
 
 func renderDataFlag(val any, view ValueData) (string, error) {
-	return fmt.Sprintf("return {{.%[1]s}}, {{.%[1]s}}.Set(%[2]q)", view.ValName, val), nil
+	return fmt.Sprintf("return %[1]s, %[1]s.Set(%[2]q)", view.ValName, val), nil
 }
 
 func renderType(view ViewData) func(data ValueData) (string, error) {

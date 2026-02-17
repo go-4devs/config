@@ -48,7 +48,7 @@ func TestValue_FlagType(t *testing.T) {
 func TestData_Flag(t *testing.T) {
 	t.Parallel()
 
-	const ex = `return {{.val}}, {{.val}}.Set("42")`
+	const ex = `return val, val.Set("42")`
 
 	viewData := render.NewViewData(nil, view.NewView(option.New("flag_value", "flag desc", flagValue(0))))
 	result := render.Data(flagValue(42), "val", viewData)
@@ -99,7 +99,7 @@ func (j *textData) UnmarshalText(in []byte) error {
 func TestData_UnmarshalText(t *testing.T) {
 	t.Parallel()
 
-	const ex = `return {{.val}}, {{.val}}.UnmarshalText("4devs")`
+	const ex = `return val, val.UnmarshalText([]byte("4devs"))`
 
 	data := textData("4devs")
 	viewData := render.NewViewData(nil, view.NewView(option.New("tvalue", "unmarshal text desc", textData(""))))
