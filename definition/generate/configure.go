@@ -6,10 +6,12 @@ import (
 	"strconv"
 
 	"gitoa.ru/go-4devs/config"
+	"gitoa.ru/go-4devs/config/definition/generate/view"
 	"gitoa.ru/go-4devs/config/definition/option"
 	"gitoa.ru/go-4devs/config/provider/memory"
 )
 
+//go:generate go run ../../cmd/config/main.go config:generate --skip-context
 const (
 	OptionFile        = "file"
 	optionPrefix      = "prefix"
@@ -126,7 +128,7 @@ func Configure(_ context.Context, def config.Definition) error {
 		option.Bool(optionSkipContext, "skip contect to method"),
 		option.String(optionBuildTags, "add build tags"),
 		option.String(optionOutName, "set out name"),
-		option.String(optionMethod, "set method", option.Slice),
+		option.New(optionMethod, "set method", []string{}, view.WithFuncName("methods")),
 		option.String(optionFullPkg, "set full pkg"),
 	)
 

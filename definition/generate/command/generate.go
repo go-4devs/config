@@ -44,7 +44,7 @@ func Handle(ctx context.Context, in config.Provider, out output.Output, next com
 }
 
 func Execute(ctx context.Context, in config.Provider, _ output.Output) error {
-	cfg := generate.NewConfigure(ctx, in)
+	cfg := generate.NewConfigureConfig(ctx, in, generate.WithConfigureConfigHandle(func(context.Context, error) {}))
 
 	if err := generate.Generate(ctx, cfg); err != nil {
 		return fmt.Errorf("%w", err)

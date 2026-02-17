@@ -104,7 +104,7 @@ func dataRender(view ViewData) DataRender {
 	vtype := reflect.TypeOf(data)
 
 	if vtype.Kind() == reflect.Slice {
-		return render[reflect.TypeFor[json.Unmarshaler]()]
+		return NewDataRender(sliceType, nil)
 	}
 
 	if h, ok := render[vtype]; ok {
@@ -224,6 +224,10 @@ func internalType(data ValueData) (string, error) {
 	return b.String(), nil
 }
 
+func sliceType(data ValueData) (string, error) {
+	return fmt.Sprintf("return %[2]s, %[1]s.Unmarshal(&%[2]s)", data.ValName, data.Value), nil
+}
+
 type ValueData struct {
 	ViewData
 
@@ -232,7 +236,7 @@ type ValueData struct {
 }
 
 func (v ValueData) FuncType() string {
-	name := reflect.TypeOf(v.ViewData.Type()).Name()
+	name := v.Type()
 
 	return v.Rendering.FuncName(name)
 }
