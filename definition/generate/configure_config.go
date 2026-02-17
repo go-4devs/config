@@ -224,6 +224,32 @@ func (i ConfigureConfig) Methods() []string {
 	return val
 }
 
+// readLeaveTemps leave temp files example:[bootstrap,config].
+func (i ConfigureConfig) readLeaveTemps(ctx context.Context) (v []string, e error) {
+	val, err := i.Value(ctx, "leave-temp")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"leave-temp"}, err)
+
+	}
+
+	return v, val.Unmarshal(&v)
+}
+
+// ReadLeaveTemps leave temp files example:[bootstrap,config].
+func (i ConfigureConfig) ReadLeaveTemps() ([]string, error) {
+	return i.readLeaveTemps(i.ctx)
+}
+
+// LeaveTemps leave temp files example:[bootstrap,config].
+func (i ConfigureConfig) LeaveTemps() []string {
+	val, err := i.readLeaveTemps(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
 // readFullPkg set full pkg.
 func (i ConfigureConfig) readFullPkg(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "full-pkg")

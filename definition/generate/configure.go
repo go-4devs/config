@@ -21,6 +21,7 @@ const (
 	optionOutName     = "out-name"
 	optionMethod      = "method"
 	optionFullPkg     = "full-pkg"
+	optionLeaveTemp   = "leave-temp"
 )
 
 func WithPrefix(in string) func(*memory.Map) error {
@@ -129,6 +130,7 @@ func Configure(_ context.Context, def config.Definition) error {
 		option.String(optionBuildTags, "add build tags"),
 		option.String(optionOutName, "set out name"),
 		option.New(optionMethod, "set method", []string{}, view.WithFuncName("methods")),
+		option.New(optionLeaveTemp, "leave temp files example:[bootstrap,config]", []string{}, view.WithFuncName("LeaveTemps")),
 		option.String(optionFullPkg, "set full pkg"),
 	)
 
