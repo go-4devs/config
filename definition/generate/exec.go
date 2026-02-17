@@ -7,19 +7,29 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 
 	"gitoa.ru/go-4devs/config/definition/generate/bootstrap"
+)
+
+const (
+	TmpBootstrap = "bootstrap"
+	TmpConfig    = "config"
 )
 
 type GConfig interface {
 	BuildTags() string
 	OutName() string
+	LeaveTemps() []string
 	bootstrap.Config
 }
 
 func Generate(ctx context.Context, cfg GConfig) error {
 	path, err := bootstrap.Bootstrap(ctx, cfg)
-	defer os.Remove(path)
+
+	if !slices.Contains(cfg.LeaveTemps(), TmpBootstrap) {
+		defer os.Remove(path)
+	}
 
 	if err != nil {
 		return fmt.Errorf("build bootstrap:%w", err)
@@ -30,7 +40,9 @@ func Generate(ctx context.Context, cfg GConfig) error {
 		return fmt.Errorf("create tmp file:%w", err)
 	}
 
-	defer os.Remove(tmpFile.Name()) // will not remove after rename
+	if !slices.Contains(cfg.LeaveTemps(), TmpConfig) {
+		defer os.Remove(tmpFile.Name()) // will not remove after rename
+	}
 
 	execArgs := []string{"run"}
 	if len(cfg.BuildTags()) > 0 {

@@ -55,7 +55,7 @@ func TestGenerate_Bootstrap(t *testing.T) {
 		generate.WithFullPkg("gitoa.ru/go-4devs/config/definition/generate_test"),
 	)
 
-	path, err := bootstrap.Bootstrap(ctx, generate.NewConfigure(ctx, cfg))
+	path, err := bootstrap.Bootstrap(ctx, generate.NewConfigureConfig(ctx, cfg))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -81,7 +81,7 @@ func TestGenerate_Genereate(t *testing.T) {
 		generate.WithFullPkg("gitoa.ru/go-4devs/config/definition/generate_test"),
 	)
 
-	err = generate.Generate(ctx, generate.NewConfigure(ctx, cfg))
+	err = generate.Generate(ctx, generate.NewConfigureConfig(ctx, cfg))
 	require.NoError(t, err)
 
 	t.FailNow()

@@ -6,10 +6,12 @@ import (
 	"strconv"
 
 	"gitoa.ru/go-4devs/config"
+	"gitoa.ru/go-4devs/config/definition/generate/view"
 	"gitoa.ru/go-4devs/config/definition/option"
 	"gitoa.ru/go-4devs/config/provider/memory"
 )
 
+//go:generate go run ../../cmd/config/main.go config:generate --skip-context
 const (
 	OptionFile        = "file"
 	optionPrefix      = "prefix"
@@ -19,6 +21,7 @@ const (
 	optionOutName     = "out-name"
 	optionMethod      = "method"
 	optionFullPkg     = "full-pkg"
+	optionLeaveTemp   = "leave-temp"
 )
 
 func WithPrefix(in string) func(*memory.Map) error {
@@ -126,7 +129,8 @@ func Configure(_ context.Context, def config.Definition) error {
 		option.Bool(optionSkipContext, "skip contect to method"),
 		option.String(optionBuildTags, "add build tags"),
 		option.String(optionOutName, "set out name"),
-		option.String(optionMethod, "set method", option.Slice),
+		option.New(optionMethod, "set method", []string{}, view.WithFuncName("methods")),
+		option.New(optionLeaveTemp, "leave temp files example:[bootstrap,config]", []string{}, view.WithFuncName("LeaveTemps")),
 		option.String(optionFullPkg, "set full pkg"),
 	)
 

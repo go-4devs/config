@@ -5,7 +5,7 @@ func (i {{.ParentStruct}}) read{{.FuncName}}(ctx context.Context) (v {{.Type}},e
         {{- if .HasDefault }}
         i.handle(ctx, err)
         
-        {{ .Default "val" -}}
+        {{ .Default "v" -}}
         {{ else }}
         return v, fmt.Errorf("read [%v]:%w",[]string{ {{- .Keys "i" -}} }, err)
         {{ end }}

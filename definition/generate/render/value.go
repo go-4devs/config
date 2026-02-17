@@ -75,7 +75,7 @@ func renderDataUnmarhal(val any, view ValueData) (string, error) {
 		return "", fmt.Errorf("render data unmarshal:%w", err)
 	}
 
-	return fmt.Sprintf("return {{.%[1]s}}, {{.%[1]s}}.UnmarshalJSON(%q)", view.ValName, res), nil
+	return fmt.Sprintf("return %[1]s, %[1]s.UnmarshalJSON([]byte(%q))", view.ValName, res), nil
 }
 
 func renderDataUnmarhalText(val any, view ValueData) (string, error) {
@@ -84,11 +84,11 @@ func renderDataUnmarhalText(val any, view ValueData) (string, error) {
 		return "", fmt.Errorf("render data unmarshal:%w", err)
 	}
 
-	return fmt.Sprintf("return {{.%[1]s}}, {{.%[1]s}}.UnmarshalText(%s)", view.ValName, res), nil
+	return fmt.Sprintf("return %[1]s, %[1]s.UnmarshalText([]byte(%s))", view.ValName, res), nil
 }
 
 func renderDataFlag(val any, view ValueData) (string, error) {
-	return fmt.Sprintf("return {{.%[1]s}}, {{.%[1]s}}.Set(%[2]q)", view.ValName, val), nil
+	return fmt.Sprintf("return %[1]s, %[1]s.Set(%[2]q)", view.ValName, val), nil
 }
 
 func renderType(view ViewData) func(data ValueData) (string, error) {
@@ -104,7 +104,7 @@ func dataRender(view ViewData) DataRender {
 	vtype := reflect.TypeOf(data)
 
 	if vtype.Kind() == reflect.Slice {
-		return render[reflect.TypeFor[json.Unmarshaler]()]
+		return NewDataRender(sliceType, nil)
 	}
 
 	if h, ok := render[vtype]; ok {
@@ -224,6 +224,10 @@ func internalType(data ValueData) (string, error) {
 	return b.String(), nil
 }
 
+func sliceType(data ValueData) (string, error) {
+	return fmt.Sprintf("return %[2]s, %[1]s.Unmarshal(&%[2]s)", data.ValName, data.Value), nil
+}
+
 type ValueData struct {
 	ViewData
 
@@ -232,7 +236,7 @@ type ValueData struct {
 }
 
 func (v ValueData) FuncType() string {
-	name := reflect.TypeOf(v.ViewData.Type()).Name()
+	name := v.Type()
 
 	return v.Rendering.FuncName(name)
 }

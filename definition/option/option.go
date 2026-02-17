@@ -1,6 +1,7 @@
 package option
 
 import (
+	"reflect"
 	"time"
 
 	"gitoa.ru/go-4devs/config"
@@ -11,12 +12,26 @@ var _ config.Option = New("", "", nil)
 
 func New(name, desc string, vtype any, opts ...param.Option) Option {
 	opts = append(opts, param.WithDescription(desc), WithType(vtype))
+
+	if vtype != nil && isSlice(vtype) {
+		opts = append(opts, Slice)
+	}
+
 	res := Option{
 		name:   name,
 		Params: param.New(opts...),
 	}
 
 	return res
+}
+
+func isSlice(vtype any) bool {
+	rtype, ok := vtype.(reflect.Type)
+	if !ok {
+		rtype = reflect.TypeOf(vtype)
+	}
+
+	return rtype.Kind() == reflect.Slice
 }
 
 type Option struct {

@@ -1,231 +1,278 @@
+// Code generated gitoa.ru/go-4devs/config DO NOT EDIT.
 package generate
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log"
-
 	"gitoa.ru/go-4devs/config"
 )
 
-func NewConfigure(ctx context.Context, prov config.Provider) ConfigureConfig {
-	return ConfigureConfig{
-		Provider: prov,
-		ctx:      ctx,
-		handle: func(err error) {
-			if !errors.Is(err, config.ErrNotFound) {
-				log.Print(err)
-			}
-		},
+func WithConfigureConfigHandle(fn func(context.Context, error)) func(*ConfigureConfig) {
+	return func(ci *ConfigureConfig) {
+		ci.handle = fn
 	}
+}
+
+func NewConfigureConfig(ctx context.Context, prov config.Provider, opts ...func(*ConfigureConfig)) ConfigureConfig {
+	i := ConfigureConfig{
+		Provider: prov,
+		handle: func(_ context.Context, err error) {
+			fmt.Printf("ConfigureConfig:%v", err)
+		},
+		ctx: ctx,
+	}
+
+	for _, opt := range opts {
+		opt(&i)
+	}
+
+	return i
 }
 
 type ConfigureConfig struct {
 	config.Provider
-
-	ctx    context.Context //nolint:containedctx
-	handle func(err error)
+	handle func(context.Context, error)
+	ctx    context.Context
 }
 
-func (i ConfigureConfig) ReadBuildTags() (string, error) {
-	val, verr := i.Value(i.ctx, optionBuildTags)
-	if verr != nil {
-		return "", fmt.Errorf("get %v:%w", optionBuildTags, verr)
-	}
-
-	data, err := val.ParseString()
+// readFile set file.
+func (i ConfigureConfig) readFile(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "file")
 	if err != nil {
-		return "", fmt.Errorf("parse %v:%w", optionBuildTags, err)
+		return v, fmt.Errorf("read [%v]:%w", []string{"file"}, err)
+
 	}
 
-	return data, nil
+	return val.ParseString()
+
 }
 
-func (i ConfigureConfig) BuildTags() string {
-	data, err := i.ReadBuildTags()
-	if err != nil {
-		i.handle(err)
-
-		return ""
-	}
-
-	return data
-}
-
-func (i ConfigureConfig) ReadOutName() (string, error) {
-	val, err := i.Value(i.ctx, optionOutName)
-	if err != nil {
-		return "", fmt.Errorf("get %v:%w", optionOutName, err)
-	}
-
-	data, derr := val.ParseString()
-	if derr != nil {
-		return "", fmt.Errorf("parse %v:%w", optionOutName, derr)
-	}
-
-	return data, nil
-}
-
-func (i ConfigureConfig) OutName() string {
-	data, err := i.ReadOutName()
-	if err != nil {
-		i.handle(err)
-
-		return ""
-	}
-
-	return data
-}
-
+// ReadFile set file.
 func (i ConfigureConfig) ReadFile() (string, error) {
-	val, err := i.Value(i.ctx, OptionFile)
-	if err != nil {
-		return "", fmt.Errorf("get %v:%w", OptionFile, err)
-	}
-
-	data, derr := val.ParseString()
-	if derr != nil {
-		return "", fmt.Errorf("parse %v:%w", OptionFile, derr)
-	}
-
-	return data, nil
+	return i.readFile(i.ctx)
 }
 
+// File set file.
 func (i ConfigureConfig) File() string {
-	data, err := i.ReadFile()
+	val, err := i.readFile(i.ctx)
 	if err != nil {
-		i.handle(err)
-
-		return ""
-	}
-
-	return data
-}
-
-func (i ConfigureConfig) ReadMethods() ([]string, error) {
-	val, err := i.Value(i.ctx, optionMethod)
-	if err != nil {
-		return nil, fmt.Errorf("get %v:%w", optionMethod, err)
-	}
-
-	var data []string
-
-	perr := val.Unmarshal(&data)
-	if perr != nil {
-		return nil, fmt.Errorf("unmarshal %v:%w", optionMethod, perr)
-	}
-
-	return data, nil
-}
-
-func (i ConfigureConfig) Methods() []string {
-	data, err := i.ReadMethods()
-	if err != nil {
-		i.handle(err)
-
-		return nil
-	}
-
-	return data
-}
-
-func (i ConfigureConfig) ReadSkipContext() (bool, error) {
-	val, err := i.Value(i.ctx, optionSkipContext)
-	if err != nil {
-		return false, fmt.Errorf("get %v:%w", optionSkipContext, err)
-	}
-
-	data, derr := val.ParseBool()
-	if derr != nil {
-		return false, fmt.Errorf("parse %v:%w", optionSkipContext, derr)
-	}
-
-	return data, nil
-}
-
-func (i ConfigureConfig) SkipContext() bool {
-	data, err := i.ReadSkipContext()
-	if err != nil {
-		i.handle(err)
-
-		return false
-	}
-
-	return data
-}
-
-func (i ConfigureConfig) ReadPrefix() (string, error) {
-	val, err := i.Value(i.ctx, optionPrefix)
-	if err != nil {
-		return "", fmt.Errorf("get %v: %w", optionPrefix, err)
-	}
-
-	data, derr := val.ParseString()
-	if derr != nil {
-		return "", fmt.Errorf("parse %v:%w", optionPrefix, derr)
-	}
-
-	return data, nil
-}
-
-func (i ConfigureConfig) Prefix() string {
-	val, err := i.ReadPrefix()
-	if err != nil {
-		i.handle(err)
-
-		return ""
+		i.handle(i.ctx, err)
 	}
 
 	return val
 }
 
+// readPrefix struct prefix.
+func (i ConfigureConfig) readPrefix(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "prefix")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"prefix"}, err)
+
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadPrefix struct prefix.
+func (i ConfigureConfig) ReadPrefix() (string, error) {
+	return i.readPrefix(i.ctx)
+}
+
+// Prefix struct prefix.
+func (i ConfigureConfig) Prefix() string {
+	val, err := i.readPrefix(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
+// readSuffix struct suffix.
+func (i ConfigureConfig) readSuffix(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "suffix")
+	if err != nil {
+		i.handle(ctx, err)
+
+		return "Config", nil
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadSuffix struct suffix.
 func (i ConfigureConfig) ReadSuffix() (string, error) {
-	val, err := i.Value(i.ctx, optionSuffix)
-	if err != nil {
-		return "", fmt.Errorf("get %v:%w", optionSuffix, err)
-	}
-
-	data, derr := val.ParseString()
-	if derr != nil {
-		return "", fmt.Errorf("parse %v:%w", optionSuffix, derr)
-	}
-
-	return data, nil
+	return i.readSuffix(i.ctx)
 }
 
+// Suffix struct suffix.
 func (i ConfigureConfig) Suffix() string {
-	data, err := i.ReadSuffix()
+	val, err := i.readSuffix(i.ctx)
 	if err != nil {
-		i.handle(err)
-
-		return ""
+		i.handle(i.ctx, err)
 	}
 
-	return data
+	return val
 }
 
+// readSkipContext skip contect to method.
+func (i ConfigureConfig) readSkipContext(ctx context.Context) (v bool, e error) {
+	val, err := i.Value(ctx, "skip-context")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"skip-context"}, err)
+
+	}
+
+	return val.ParseBool()
+
+}
+
+// ReadSkipContext skip contect to method.
+func (i ConfigureConfig) ReadSkipContext() (bool, error) {
+	return i.readSkipContext(i.ctx)
+}
+
+// SkipContext skip contect to method.
+func (i ConfigureConfig) SkipContext() bool {
+	val, err := i.readSkipContext(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
+// readBuildTags add build tags.
+func (i ConfigureConfig) readBuildTags(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "build-tags")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"build-tags"}, err)
+
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadBuildTags add build tags.
+func (i ConfigureConfig) ReadBuildTags() (string, error) {
+	return i.readBuildTags(i.ctx)
+}
+
+// BuildTags add build tags.
+func (i ConfigureConfig) BuildTags() string {
+	val, err := i.readBuildTags(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
+// readOutName set out name.
+func (i ConfigureConfig) readOutName(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "out-name")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"out-name"}, err)
+
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadOutName set out name.
+func (i ConfigureConfig) ReadOutName() (string, error) {
+	return i.readOutName(i.ctx)
+}
+
+// OutName set out name.
+func (i ConfigureConfig) OutName() string {
+	val, err := i.readOutName(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
+// readMethods set method.
+func (i ConfigureConfig) readMethods(ctx context.Context) (v []string, e error) {
+	val, err := i.Value(ctx, "method")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"method"}, err)
+
+	}
+
+	return v, val.Unmarshal(&v)
+}
+
+// ReadMethods set method.
+func (i ConfigureConfig) ReadMethods() ([]string, error) {
+	return i.readMethods(i.ctx)
+}
+
+// Methods set method.
+func (i ConfigureConfig) Methods() []string {
+	val, err := i.readMethods(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
+// readLeaveTemps leave temp files example:[bootstrap,config].
+func (i ConfigureConfig) readLeaveTemps(ctx context.Context) (v []string, e error) {
+	val, err := i.Value(ctx, "leave-temp")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"leave-temp"}, err)
+
+	}
+
+	return v, val.Unmarshal(&v)
+}
+
+// ReadLeaveTemps leave temp files example:[bootstrap,config].
+func (i ConfigureConfig) ReadLeaveTemps() ([]string, error) {
+	return i.readLeaveTemps(i.ctx)
+}
+
+// LeaveTemps leave temp files example:[bootstrap,config].
+func (i ConfigureConfig) LeaveTemps() []string {
+	val, err := i.readLeaveTemps(i.ctx)
+	if err != nil {
+		i.handle(i.ctx, err)
+	}
+
+	return val
+}
+
+// readFullPkg set full pkg.
+func (i ConfigureConfig) readFullPkg(ctx context.Context) (v string, e error) {
+	val, err := i.Value(ctx, "full-pkg")
+	if err != nil {
+		return v, fmt.Errorf("read [%v]:%w", []string{"full-pkg"}, err)
+
+	}
+
+	return val.ParseString()
+
+}
+
+// ReadFullPkg set full pkg.
 func (i ConfigureConfig) ReadFullPkg() (string, error) {
-	val, err := i.Value(i.ctx, optionFullPkg)
-	if err != nil {
-		return "", fmt.Errorf("get %v:%w", optionFullPkg, err)
-	}
-
-	data, derr := val.ParseString()
-	if derr != nil {
-		return "", fmt.Errorf("parse %v:%w", optionFullPkg, derr)
-	}
-
-	return data, nil
+	return i.readFullPkg(i.ctx)
 }
 
+// FullPkg set full pkg.
 func (i ConfigureConfig) FullPkg() string {
-	data, err := i.ReadFullPkg()
+	val, err := i.readFullPkg(i.ctx)
 	if err != nil {
-		i.handle(err)
-
-		return ""
+		i.handle(i.ctx, err)
 	}
 
-	return data
+	return val
 }

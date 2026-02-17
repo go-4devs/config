@@ -20,6 +20,12 @@ const (
 	viewParamStructSuffix
 )
 
+func WithFuncName(name string) param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, viewParamFunctName, name)
+	}
+}
+
 func WithStructName(name string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamStructName, name)
