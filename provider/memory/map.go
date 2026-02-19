@@ -14,6 +14,15 @@ const NameMap = "map"
 
 var _ config.BindProvider = (*Map)(nil)
 
+func NewMap(name string) *Map {
+	return &Map{
+		name: name,
+		vals: make([]config.Value, 0),
+		idx:  key.Map{},
+		mu:   sync.Mutex{},
+	}
+}
+
 type Map struct {
 	mu   sync.Mutex
 	vals []config.Value
