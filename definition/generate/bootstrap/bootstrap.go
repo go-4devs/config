@@ -86,7 +86,7 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 
 	dest := src + ".go"
 
-	if err := os.Rename(src, dest); err != nil { //nolint:gosec
+	if err := os.Rename(src, dest); err != nil {
 		return dest, fmt.Errorf("rename idt:%w", err)
 	}
 
