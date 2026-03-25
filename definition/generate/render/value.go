@@ -60,13 +60,13 @@ func Data(val any, name string, view ViewData) string {
 func renderDataTime(val any, _ ValueData) (string, error) {
 	data, _ := val.(time.Time)
 
-	return fmt.Sprintf("time.Parse(%q,time.RFC3339Nano)", data.Format(time.RFC3339Nano)), nil
+	return fmt.Sprintf("return time.Parse(%q,time.RFC3339Nano)", data.Format(time.RFC3339Nano)), nil
 }
 
 func renderDataDuration(val any, _ ValueData) (string, error) {
 	data, _ := val.(time.Duration)
 
-	return fmt.Sprintf("time.ParseDuration(%q)", data), nil
+	return fmt.Sprintf("return time.ParseDuration(%q)", data), nil
 }
 
 func renderDataUnmarhal(val any, view ValueData) (string, error) {
