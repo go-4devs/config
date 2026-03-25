@@ -115,11 +115,7 @@ func dataRender(view ViewData) DataRender {
 		vtype = reflect.PointerTo(vtype)
 	}
 
-	for extypes := range render {
-		if extypes == nil || extypes.Kind() != reflect.Interface {
-			continue
-		}
-
+	for _, extypes := range renderInterface {
 		if vtype.Implements(extypes) {
 			return render[extypes]
 		}
@@ -144,6 +140,14 @@ var render = map[reflect.Type]DataRender{
 	reflect.TypeFor[time.Duration]():            NewDataRender(durationType, renderDataDuration),
 	reflect.TypeFor[time.Time]():                NewDataRender(timeType, renderDataTime),
 	reflect.TypeOf((any)(nil)):                  NewDataRender(anyType, anyValue),
+}
+
+//nolint:gochecknoglobals
+var renderInterface = [...]reflect.Type{
+	reflect.TypeFor[encoding.TextUnmarshaler](),
+	reflect.TypeFor[flag.Value](),
+	reflect.TypeFor[json.Unmarshaler](),
+	reflect.TypeFor[sql.Scanner](),
 }
 
 func timeType(data ValueData) (string, error) {

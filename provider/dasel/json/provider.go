@@ -1,4 +1,4 @@
-package json //nolint:revive
+package json
 
 import (
 	"github.com/tomwright/dasel/v3/parsing/json"

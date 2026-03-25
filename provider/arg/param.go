@@ -14,10 +14,10 @@ const (
 )
 
 //nolint:gochecknoglobals
-var argNum uint64
+var argNum atomic.Uint64
 
 func Argument(v param.Params) param.Params {
-	return param.With(v, paramArgument, atomic.AddUint64(&argNum, 1)-1)
+	return param.With(v, paramArgument, argNum.Add(1)-1)
 }
 
 func ParamArgument(fn param.Params) (uint64, bool) {
