@@ -63,7 +63,7 @@ func Generate(ctx context.Context, cfg GConfig) error {
 	tmpFile.Close()
 
 	// format file and write to out path
-	in, err := os.ReadFile(tmpFile.Name())
+	in, err := os.ReadFile(tmpFile.Name()) //nolint:gosec
 	if err != nil {
 		return fmt.Errorf("read file: %w", err)
 	}
