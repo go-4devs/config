@@ -3,6 +3,7 @@ package memory
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/go-4devs/config"
 	"github.com/go-4devs/config/definition/option"
@@ -34,11 +35,11 @@ func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 		}
 
 		if err != nil {
-			return option.Err(err, opt.Key()) //nolint:wrapcheck
+			return fmt.Errorf("%w", option.Err(err, opt.Key()))
 		}
 
 		if err = validator.Validate(opt.Key(), opt, val); err != nil {
-			return option.Err(err, opt.Key()) //nolint:wrapcheck
+			return fmt.Errorf("%w", option.Err(err, opt.Key()))
 		}
 	}
 

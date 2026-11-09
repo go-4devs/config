@@ -74,10 +74,10 @@ func ExampleWhen() {
 
 func show(err error) {
 	if err != nil {
-		fmt.Println("invalid") //nolint:forbidigo // example output
+		fmt.Println("invalid")
 
 		return
 	}
 
-	fmt.Println("ok") //nolint:forbidigo // example output
+	fmt.Println("ok")
 }

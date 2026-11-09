@@ -14,7 +14,7 @@ import (
 	"github.com/tomwright/dasel/v3/parsing"
 )
 
-var _ config.Provider = Provider{} //nolint:exhaustruct,exhaustruct_v5
+var _ config.Provider = (*Provider)(nil)
 
 const Name = "dasel"
 

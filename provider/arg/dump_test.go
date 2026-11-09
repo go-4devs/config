@@ -11,7 +11,6 @@ import (
 func TestDumpReference(t *testing.T) {
 	t.Parallel()
 
-	//nolint:dupword
 	const expect = `
 Arguments:
   config                                           config [default:config.hcl]

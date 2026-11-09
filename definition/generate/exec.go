@@ -15,6 +15,8 @@ import (
 const (
 	TmpBootstrap = "bootstrap"
 	TmpConfig    = "config"
+
+	generatedFilePerm os.FileMode = 0o644
 )
 
 type GConfig interface {
@@ -74,7 +76,7 @@ func Generate(ctx context.Context, cfg GConfig) error {
 		return fmt.Errorf("format source:%w", err)
 	}
 
-	err = os.WriteFile(cfg.OutName(), out, 0o644) //nolint:gosec,mnd
+	err = os.WriteFile(cfg.OutName(), out, generatedFilePerm) //nolint:gosec // generated source is world-readable
 	if err != nil {
 		return fmt.Errorf("write file:%w", err)
 	}

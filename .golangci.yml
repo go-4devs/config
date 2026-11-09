@@ -52,9 +52,11 @@ linters:
       - std-error-handling
     rules:
       - linters:
+          - dupword
           - exhaustivestruct
           - exhaustruct
           - exhaustruct_v5
+          - forbidigo
           - funlen
           - mnd
           - tenv

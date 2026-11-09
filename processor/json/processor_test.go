@@ -14,21 +14,21 @@ func TestJson(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	val, err := json.Json(ctx, value.String("42"))
+	val, err := json.JSON(ctx, value.String("42"))
 	require.NoError(t, err)
 
 	var res int
 	require.NoError(t, val.Unmarshal(&res))
 	require.Equal(t, 42, res)
 
-	sval, serr := json.Json(ctx, value.String("\"test data\""))
+	sval, serr := json.JSON(ctx, value.String("\"test data\""))
 	require.NoError(t, serr)
 
 	var sres string
 	require.NoError(t, sval.Unmarshal(&sres))
 	require.Equal(t, "test data", sres)
 
-	slval, slerr := json.Json(ctx, value.String("[\"test\",\"test2 data\",\"test3\"]"))
+	slval, slerr := json.JSON(ctx, value.String("[\"test\",\"test2 data\",\"test3\"]"))
 	require.NoError(t, slerr)
 
 	var slres []string
@@ -40,7 +40,7 @@ func TestJson_invalidValue(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	val, err := json.Json(ctx, value.New("42"))
+	val, err := json.JSON(ctx, value.New("42"))
 	require.NoError(t, err)
 
 	var data string

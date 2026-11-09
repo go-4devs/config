@@ -13,7 +13,6 @@ const (
 	paramDumpReferenceView
 )
 
-//nolint:gochecknoglobals
 var argNum atomic.Uint64
 
 // Argument marks the option as the next positional argument.

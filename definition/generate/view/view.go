@@ -21,6 +21,9 @@ const (
 	viewParamInterface
 )
 
+// structNameAffixes is room for an optional prefix and suffix.
+const structNameAffixes = 2
+
 // WithFuncName sets the generated function name.
 func WithFuncName(name string) param.Option {
 	return func(p param.Params) param.Params {
@@ -242,7 +245,7 @@ func (v View) StructName() string {
 		return name
 	}
 
-	keys := make([]string, 0, len(v.Keys())+2) //nolint:mnd
+	keys := make([]string, 0, len(v.Keys())+structNameAffixes)
 
 	prefix := v.Param(viewParamStructPrefix)
 	if prefix != "" {

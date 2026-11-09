@@ -127,7 +127,6 @@ func dataRender(view ViewData) DataRender {
 	return render[reflect.TypeOf(any(nil))]
 }
 
-//nolint:gochecknoglobals
 var render = map[reflect.Type]DataRender{
 	reflect.TypeFor[encoding.TextUnmarshaler](): NewDataRender(unmarshalTextType, renderDataUnmarhalText),
 	reflect.TypeFor[json.Unmarshaler]():         NewDataRender(unmarshalType, renderDataUnmarhal),
@@ -145,7 +144,6 @@ var render = map[reflect.Type]DataRender{
 	reflect.TypeOf(any(nil)):                    NewDataRender(anyType, anyValue),
 }
 
-//nolint:gochecknoglobals
 var renderInterface = [...]reflect.Type{
 	reflect.TypeFor[encoding.TextUnmarshaler](),
 	reflect.TypeFor[flag.Value](),
