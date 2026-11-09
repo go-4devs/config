@@ -1,0 +1,4 @@
+github.com/go-4devs/config v0.0.19 h1:yVJt0FTcTW3iyvHUkZ2rv86wrhyU5Ntddy/5aueGXOY=
+github.com/go-4devs/config v0.0.19/go.mod h1:tX7Sh+X7r53EFgB4dRT8IXnh0wOrlS67Qm4R6piUdiA=
+github.com/go-4devs/console v0.5.0 h1:bG5ajzf2HU20h+SP/aXHiyN6QSJveb2NkA1nV5GXDyE=
+github.com/go-4devs/console v0.5.0/go.mod h1:LoktTU1XmHh0o2Pp1t7+LN4yhksC6v/kfAdBLFNeVw4=
