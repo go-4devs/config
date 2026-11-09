@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/param"
 )
 
 // ErrRegex is returned when the text does not match the pattern or the pattern is invalid.

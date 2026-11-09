@@ -6,13 +6,13 @@ import (
 	"strings"
 	"testing"
 
-	"gitoa.ru/go-4devs/config/definition"
-	"gitoa.ru/go-4devs/config/definition/generate"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/param"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/definition"
+	"github.com/go-4devs/config/definition/generate"
+	"github.com/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/group"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/param"
+	"github.com/go-4devs/config/test/require"
 )
 
 type UserAPI interface {
@@ -36,7 +36,7 @@ func TestGroupReturnsInterface(t *testing.T) {
 
 	var buf bytes.Buffer
 
-	err := generate.Run(context.Background(), "gitoa.ru/go-4devs/config/definition/generate", &buf, def)
+	err := generate.Run(context.Background(), "github.com/go-4devs/config/definition/generate", &buf, def)
 	require.NoError(t, err)
 
 	out := buf.String()

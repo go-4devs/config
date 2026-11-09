@@ -5,13 +5,13 @@ import (
 	"context"
 	"testing"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/definition/proto"
-	"gitoa.ru/go-4devs/config/provider/env"
-	"gitoa.ru/go-4devs/config/test"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/definition/group"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/definition/proto"
+	"github.com/go-4devs/config/provider/env"
+	"github.com/go-4devs/config/test"
+	"github.com/go-4devs/config/test/require"
 )
 
 func TestProvider(t *testing.T) {

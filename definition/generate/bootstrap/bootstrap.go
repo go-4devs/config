@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"gitoa.ru/go-4devs/config/definition/generate/pkg"
+	"github.com/go-4devs/config/definition/generate/pkg"
 )
 
 //go:embed *.tpl
@@ -60,11 +60,11 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 	imports := pkg.NewImports("main").
 		Adds(
 			"context",
-			"gitoa.ru/go-4devs/config/definition",
-			"gitoa.ru/go-4devs/config",
-			"gitoa.ru/go-4devs/config/definition/generate/view",
-			"gitoa.ru/go-4devs/config/param",
-			"gitoa.ru/go-4devs/config/definition/generate",
+			"github.com/go-4devs/config/definition",
+			"github.com/go-4devs/config",
+			"github.com/go-4devs/config/definition/generate/view",
+			"github.com/go-4devs/config/param",
+			"github.com/go-4devs/config/definition/generate",
 			"os",
 			"io",
 			"fmt",

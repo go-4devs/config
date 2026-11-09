@@ -1,9 +1,9 @@
 package arg
 
 import (
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/param"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/param"
+	"github.com/go-4devs/config/value"
 )
 
 // Default stores the default value.

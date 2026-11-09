@@ -3,7 +3,7 @@ package key_test
 import (
 	"testing"
 
-	"gitoa.ru/go-4devs/config/key"
+	"github.com/go-4devs/config/key"
 )
 
 func TestMap_ByPath(t *testing.T) {

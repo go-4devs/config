@@ -3,9 +3,9 @@ package group_test
 import (
 	"testing"
 
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/param"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/definition/group"
+	"github.com/go-4devs/config/param"
+	"github.com/go-4devs/config/test/require"
 )
 
 func TestGroupAdd(t *testing.T) {

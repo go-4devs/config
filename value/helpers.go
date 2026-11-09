@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitoa.ru/go-4devs/config"
+	"github.com/go-4devs/config"
 )
 
 // ParseDuration parses raw with time.ParseDuration.

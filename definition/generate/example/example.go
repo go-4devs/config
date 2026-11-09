@@ -3,11 +3,11 @@ package example
 import (
 	"context"
 
-	configs "gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/definition/proto"
+	configs "github.com/go-4devs/config"
+	"github.com/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/group"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/definition/proto"
 )
 
 //go:generate go run ../../../cmd/config/main.go config:generate

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/param"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/param"
+	"github.com/go-4devs/config/value"
 )
 
 var _ config.ProcessFunc = Env

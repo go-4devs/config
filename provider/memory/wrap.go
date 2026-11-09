@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"gitoa.ru/go-4devs/config"
+	"github.com/go-4devs/config"
 )
 
 var (

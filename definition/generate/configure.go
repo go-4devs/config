@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/provider/memory"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/provider/memory"
 )
 
 //go:generate go run ../../cmd/config/main.go config:generate --skip-context

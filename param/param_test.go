@@ -3,7 +3,7 @@ package param_test
 import (
 	"testing"
 
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config/param"
 )
 
 func TestChainReplace(t *testing.T) {

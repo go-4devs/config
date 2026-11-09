@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"slices"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/param"
 )
 
 // ErrEnum is returned when the value is outside the allowed set.

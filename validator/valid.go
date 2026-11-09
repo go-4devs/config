@@ -3,8 +3,8 @@ package validator
 import (
 	"fmt"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/param"
 )
 
 // Optional runs next when NotBlank would accept the value.

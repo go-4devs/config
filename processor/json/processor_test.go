@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/processor/json"
-	"gitoa.ru/go-4devs/config/test/require"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/processor/json"
+	"github.com/go-4devs/config/test/require"
+	"github.com/go-4devs/config/value"
 )
 
 func TestJson(t *testing.T) {

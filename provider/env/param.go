@@ -1,7 +1,7 @@
 package env
 
 import (
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config/param"
 )
 
 type ekey int

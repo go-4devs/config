@@ -3,7 +3,7 @@ package value
 import (
 	"time"
 
-	"gitoa.ru/go-4devs/config"
+	"github.com/go-4devs/config"
 )
 
 var _ config.Value = (*JString)(nil)

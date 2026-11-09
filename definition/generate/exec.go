@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"slices"
 
-	"gitoa.ru/go-4devs/config/definition/generate/bootstrap"
+	"github.com/go-4devs/config/definition/generate/bootstrap"
 )
 
 const (

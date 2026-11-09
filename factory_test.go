@@ -7,10 +7,10 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/provider/factory"
-	"gitoa.ru/go-4devs/config/provider/memory"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/provider/factory"
+	"github.com/go-4devs/config/provider/memory"
+	"github.com/go-4devs/config/test/require"
 )
 
 var (

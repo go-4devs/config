@@ -5,14 +5,14 @@ import (
 	"os"
 	"testing"
 
-	"gitoa.ru/go-4devs/config/definition"
-	"gitoa.ru/go-4devs/config/definition/generate"
-	"gitoa.ru/go-4devs/config/definition/generate/bootstrap"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/definition/proto"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/definition"
+	"github.com/go-4devs/config/definition/generate"
+	"github.com/go-4devs/config/definition/generate/bootstrap"
+	"github.com/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/group"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/definition/proto"
+	"github.com/go-4devs/config/test/require"
 )
 
 type LogLevel string
@@ -52,7 +52,7 @@ func TestGenerate_Bootstrap(t *testing.T) {
 
 	cfg, _ := generate.NewMemoryProvider("generate_test.go",
 		generate.WithMethods("Config"),
-		generate.WithFullPkg("gitoa.ru/go-4devs/config/definition/generate_test"),
+		generate.WithFullPkg("github.com/go-4devs/config/definition/generate_test"),
 	)
 
 	path, err := bootstrap.Bootstrap(ctx, generate.NewConfigureConfig(ctx, cfg))
@@ -78,7 +78,7 @@ func TestGenerate_Genereate(t *testing.T) {
 
 	cfg, _ := generate.NewMemoryProvider("generate_test.go",
 		generate.WithMethods("Config"),
-		generate.WithFullPkg("gitoa.ru/go-4devs/config/definition/generate_test"),
+		generate.WithFullPkg("github.com/go-4devs/config/definition/generate_test"),
 	)
 
 	err = generate.Generate(ctx, generate.NewConfigureConfig(ctx, cfg))

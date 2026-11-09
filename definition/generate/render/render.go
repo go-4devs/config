@@ -5,11 +5,11 @@ import (
 	"io"
 	"reflect"
 
-	"gitoa.ru/go-4devs/config/definition"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
-	"gitoa.ru/go-4devs/config/definition/group"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/definition/proto"
+	"github.com/go-4devs/config/definition"
+	"github.com/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/group"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/definition/proto"
 )
 
 type Execute func(w io.Writer, vi view.View, rnd Rendering) error

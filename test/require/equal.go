@@ -3,7 +3,7 @@ package require
 import (
 	"testing"
 
-	"gitoa.ru/go-4devs/config/test/assert"
+	"github.com/go-4devs/config/test/assert"
 )
 
 func Equal(t *testing.T, expected any, actual any, msgAndArgs ...any) {

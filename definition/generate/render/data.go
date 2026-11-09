@@ -3,8 +3,8 @@ package render
 import (
 	"reflect"
 
-	"gitoa.ru/go-4devs/config/definition/generate/pkg"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/generate/pkg"
+	"github.com/go-4devs/config/definition/generate/view"
 )
 
 // NewViewData returns the data passed to a template.

@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"testing"
 
-	"gitoa.ru/go-4devs/config/definition/generate/render"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
-	"gitoa.ru/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/definition/generate/render"
+	"github.com/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/option"
 )
 
 type flagValue int

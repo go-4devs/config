@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/processor/env"
-	"gitoa.ru/go-4devs/config/provider/memory"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/processor/env"
+	"github.com/go-4devs/config/provider/memory"
+	"github.com/go-4devs/config/value"
 )
 
 var (

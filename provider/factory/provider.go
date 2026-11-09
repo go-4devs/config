@@ -3,7 +3,7 @@ package factory
 import (
 	"context"
 
-	"gitoa.ru/go-4devs/config"
+	"github.com/go-4devs/config"
 )
 
 var _ config.Factory = New("", nil)

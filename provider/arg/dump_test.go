@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"gitoa.ru/go-4devs/config/provider/arg"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/provider/arg"
+	"github.com/go-4devs/config/test/require"
 )
 
 func TestDumpReference(t *testing.T) {
