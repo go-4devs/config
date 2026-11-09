@@ -1,4 +1,4 @@
-// read{{.FuncName}} {{.Description}}.
+// read{{.FuncName}} reads {{.Description}}.
 func (i {{.ParentStruct}}) read{{.FuncName}}(ctx context.Context) (v {{.Type}},e error) {
 	val, err := i.Value(ctx, {{ .Keys "i" }})
 	if err != nil {
@@ -14,12 +14,12 @@ func (i {{.ParentStruct}}) read{{.FuncName}}(ctx context.Context) (v {{.Type}},e
 	{{ .Value "val" "v" }}
 }
 
-// Read{{.FuncName}} {{.Description}}.
+// Read{{.FuncName}} reads {{.Description}}.
 func (i {{.ParentStruct}}) Read{{.FuncName}}({{if not .SkipContext}} ctx context.Context {{end}}) ({{.Type}}, error) {
     return i.read{{.FuncName}}({{if .SkipContext}}i.ctx{{else}}ctx{{end}})
 }
 
-// {{.FuncName}} {{.Description}}.
+// {{.FuncName}} returns {{.Description}}.
 func (i {{.ParentStruct}}) {{.FuncName}}({{if not .SkipContext}} ctx context.Context {{end}}) {{.Type}} {
     val, err := i.read{{.FuncName}}({{ if .SkipContext }}i.ctx{{else}}ctx{{ end }})
 	if err != nil {

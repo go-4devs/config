@@ -35,7 +35,7 @@ type ExampleConfig struct {
 	ctx    context.Context
 }
 
-// readTest test string.
+// readTest reads the test string.
 func (i ExampleConfig) readTest(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "test")
 	if err != nil {
@@ -47,12 +47,12 @@ func (i ExampleConfig) readTest(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadTest test string.
+// ReadTest reads the test string.
 func (i ExampleConfig) ReadTest() (string, error) {
 	return i.readTest(i.ctx)
 }
 
-// Test test string.
+// Test returns the test string.
 func (i ExampleConfig) Test() string {
 	val, err := i.readTest(i.ctx)
 	if err != nil {
@@ -66,12 +66,12 @@ type UserConfig struct {
 	ExampleConfig
 }
 
-// User configure user.
+// User returns the user settings.
 func (i ExampleConfig) User() User {
 	return UserConfig{i}
 }
 
-// readName name.
+// readName reads the user name.
 func (i UserConfig) readName(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "user", "name")
 	if err != nil {
@@ -84,12 +84,12 @@ func (i UserConfig) readName(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadName name.
+// ReadName reads the user name.
 func (i UserConfig) ReadName(ctx context.Context) (string, error) {
 	return i.readName(ctx)
 }
 
-// Name name.
+// Name returns the user name.
 func (i UserConfig) Name(ctx context.Context) string {
 	val, err := i.readName(ctx)
 	if err != nil {
@@ -99,7 +99,7 @@ func (i UserConfig) Name(ctx context.Context) string {
 	return val
 }
 
-// readPass password.
+// readPass reads the user password.
 func (i UserConfig) readPass(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "user", "pass")
 	if err != nil {
@@ -111,12 +111,12 @@ func (i UserConfig) readPass(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadPass password.
+// ReadPass reads the user password.
 func (i UserConfig) ReadPass(ctx context.Context) (string, error) {
 	return i.readPass(ctx)
 }
 
-// Pass password.
+// Pass returns the user password.
 func (i UserConfig) Pass(ctx context.Context) string {
 	val, err := i.readPass(ctx)
 	if err != nil {
@@ -130,12 +130,12 @@ type LogConfig struct {
 	ExampleConfig
 }
 
-// Log configure logger.
+// Log returns the logger settings.
 func (i ExampleConfig) Log() LogConfig {
 	return LogConfig{i}
 }
 
-// readLevel log level.
+// readLevel reads the log level.
 func (i LogConfig) readLevel(ctx context.Context) (v Level, e error) {
 	val, err := i.Value(ctx, "log", "level")
 	if err != nil {
@@ -152,12 +152,12 @@ func (i LogConfig) readLevel(ctx context.Context) (v Level, e error) {
 	return v, v.UnmarshalText([]byte(pval))
 }
 
-// ReadLevel log level.
+// ReadLevel reads the log level.
 func (i LogConfig) ReadLevel(ctx context.Context) (Level, error) {
 	return i.readLevel(ctx)
 }
 
-// Level log level.
+// Level returns the log level.
 func (i LogConfig) Level(ctx context.Context) Level {
 	val, err := i.readLevel(ctx)
 	if err != nil {
@@ -172,12 +172,12 @@ type LogServiceConfig struct {
 	service string
 }
 
-// Service servise logger.
+// Service returns the logger service.
 func (i LogConfig) Service(key string) LogServiceConfig {
 	return LogServiceConfig{i, key}
 }
 
-// readLevel log level.
+// readLevel reads the log level.
 func (i LogServiceConfig) readLevel(ctx context.Context) (v Level, e error) {
 	val, err := i.Value(ctx, "log", i.service, "level")
 	if err != nil {
@@ -193,12 +193,12 @@ func (i LogServiceConfig) readLevel(ctx context.Context) (v Level, e error) {
 	return v, v.UnmarshalText([]byte(pval))
 }
 
-// ReadLevel log level.
+// ReadLevel reads the log level.
 func (i LogServiceConfig) ReadLevel(ctx context.Context) (Level, error) {
 	return i.readLevel(ctx)
 }
 
-// Level log level.
+// Level returns the log level.
 func (i LogServiceConfig) Level(ctx context.Context) Level {
 	val, err := i.readLevel(ctx)
 	if err != nil {

@@ -57,7 +57,8 @@ func (c *Client) Name() string {
 	return "client"
 }
 
-// Value get value by name.
+// Value returns the value at path.
+// The next provider is used when the current one returns ErrNotFound or ErrInitFactory.
 func (c *Client) Value(ctx context.Context, path ...string) (Value, error) {
 	var (
 		value Value

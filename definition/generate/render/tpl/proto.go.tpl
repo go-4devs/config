@@ -3,7 +3,7 @@ type {{.StructName}} struct {
     {{ .Name }} string
 }
 
-// {{.FuncName}} {{.Description}}.
+// {{.FuncName}} returns {{.Description}}.
 func (i {{.ParentStruct}}) {{.FuncName}}(key string) {{.StructName}} {
 	return {{.StructName}}{i,key}
 }

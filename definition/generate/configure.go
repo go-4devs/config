@@ -123,15 +123,15 @@ func NewMemoryProvider(file string, opts ...func(*memory.Map) error) (*memory.Ma
 
 func Configure(_ context.Context, def config.Definition) error {
 	def.Add(
-		option.String(OptionFile, "set file", option.Required),
-		option.String(optionPrefix, "struct prefix"),
-		option.String(optionSuffix, "struct suffix", option.Default("Config")),
-		option.Bool(optionSkipContext, "skip contect to method"),
-		option.String(optionBuildTags, "add build tags"),
-		option.String(optionOutName, "set out name"),
-		option.New(optionMethod, "set method", []string{}, view.WithFuncName("methods")),
-		option.New(optionLeaveTemp, "leave temp files example:[bootstrap,config]", []string{}, view.WithFuncName("LeaveTemps")),
-		option.String(optionFullPkg, "set full pkg"),
+		option.String(OptionFile, "the configure file", option.Required),
+		option.String(optionPrefix, "the struct name prefix"),
+		option.String(optionSuffix, "the struct name suffix", option.Default("Config")),
+		option.Bool(optionSkipContext, "whether generated methods skip context"),
+		option.String(optionBuildTags, "the build tags"),
+		option.String(optionOutName, "the output file name"),
+		option.New(optionMethod, "the configure method names", []string{}, view.WithFuncName("methods")),
+		option.New(optionLeaveTemp, "the temporary files to keep, such as bootstrap and config", []string{}, view.WithFuncName("LeaveTemps")),
+		option.String(optionFullPkg, "the full package path"),
 	)
 
 	return nil

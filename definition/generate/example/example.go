@@ -12,7 +12,7 @@ import (
 
 //go:generate go run ../../../cmd/config/main.go config:generate
 
-// User reads the user settings.
+// User returns the user settings.
 type User interface {
 	// Name returns the user name.
 	Name(ctx context.Context) string
@@ -36,15 +36,15 @@ func (l *Level) UnmarshalText(in []byte) error {
 
 func Example(_ context.Context, def configs.Definition) error {
 	def.Add(
-		option.String("test", "test string", view.WithSkipContext),
-		group.New("user", "configure user",
-			option.String("name", "name", option.Default("4devs")),
-			option.String("pass", "password"),
+		option.String("test", "the test string", view.WithSkipContext),
+		group.New("user", "the user settings",
+			option.String("name", "the user name", option.Default("4devs")),
+			option.String("pass", "the user password"),
 		).With(view.WithContext, view.WithInterface[User]()),
 
-		group.New("log", "configure logger",
-			option.New("level", "log level", Level(""), option.Default(Level("info"))),
-			proto.New("service", "servise logger", option.New("level", "log level", Level(""))),
+		group.New("log", "the logger settings",
+			option.New("level", "the log level", Level(""), option.Default(Level("info"))),
+			proto.New("service", "the logger service", option.New("level", "the log level", Level(""))),
 		),
 	)
 
