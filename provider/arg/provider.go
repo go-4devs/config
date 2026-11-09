@@ -27,26 +27,6 @@ var (
 	_ config.BindProvider = (*Argv)(nil)
 )
 
-// Deprecated: use WithArgs.
-func WithSkip(skip int) func(*Argv) {
-	return func(ar *Argv) {
-		res := 2
-
-		switch {
-		case skip > 0 && len(os.Args) > skip:
-			res = skip
-		case skip > 0:
-			res = len(os.Args)
-		case len(os.Args) == 1:
-			res = 1
-		case len(os.Args) > 1 && os.Args[1][0] == '-':
-			res = 1
-		}
-
-		ar.args = os.Args[res:]
-	}
-}
-
 // WithArgs sets the arguments to parse instead of os.Args.
 func WithArgs(args []string) func(*Argv) {
 	return func(a *Argv) {
