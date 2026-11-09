@@ -2,6 +2,7 @@ package chain
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"gitoa.ru/go-4devs/config"
@@ -21,13 +22,26 @@ func New(c ...config.Provider) Providers {
 type chain []config.Provider
 
 func (c chain) Value(ctx context.Context, name ...string) (config.Value, error) {
+	var err error
+
 	for _, in := range c {
-		if val, err := in.Value(ctx, name...); err == nil {
+		var val config.Value
+
+		val, err = in.Value(ctx, name...)
+		if err == nil {
 			return val, nil
+		}
+
+		if !errors.Is(err, config.ErrNotFound) {
+			break
 		}
 	}
 
-	return nil, fmt.Errorf("%w", config.ErrNotFound)
+	if err == nil {
+		err = config.ErrNotFound
+	}
+
+	return nil, fmt.Errorf("%w", err)
 }
 
 func (c chain) Bind(ctx context.Context, def config.Variables) error {

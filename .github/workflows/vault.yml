@@ -1,0 +1,50 @@
+name: Go Action
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'provider/vault/**'
+      - '.github/workflows/vault.yml'
+  pull_request:
+    paths:
+      - 'provider/vault/**'
+      - '.github/workflows/vault.yml'
+
+jobs:
+  goaction:
+    runs-on: ubuntu-latest
+    services:
+      vault:
+        image: hashicorp/vault:1.13.3
+        ports:
+          - 8200:8200
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: dev
+          VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+        options: --cap-add=IPC_LOCK
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.3'
+          cache-dependency-path: provider/vault/go.sum
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.15.0
+          args: --verbose
+          working-directory: ./provider/vault
+
+      - name: Wait for vault
+        run: timeout 30s bash -c 'until (echo >/dev/tcp/127.0.0.1/8200) &>/dev/null; do sleep 1; done'
+
+      - name: Run go test
+        run: go test ./...
+        working-directory: ./provider/vault

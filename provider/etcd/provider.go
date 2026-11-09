@@ -2,6 +2,7 @@ package etcd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -107,17 +108,35 @@ func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, pat
 	go func(ctx context.Context, key string, callback config.WatchCallback) {
 		watch := p.client.Watch(ctx, key, client.WithPrevKV(), client.WithPrefix())
 		for w := range watch {
-			kvs, olds := p.getEventKvs(w.Events)
-			if len(kvs) > 0 {
-				newVar, _ := p.resolve(key, kvs)
-				oldVar, _ := p.resolve(key, olds)
-
-				if err := callback(ctx, oldVar, newVar); err != nil {
-					p.log(ctx, "watch callback[%v] %v:%v", p.Name(), path, err)
-				}
+			if errors.Is(p.notify(ctx, key, w.Events, callback), config.ErrStopWatch) {
+				return
 			}
 		}
 	}(ctx, p.Key(path), callback)
+
+	return nil
+}
+
+func (p *Provider) notify(ctx context.Context, key string, events []*client.Event, callback config.WatchCallback) error {
+	kvs, olds := p.getEventKvs(events)
+
+	newVar, err := p.resolve(key, kvs)
+	if err != nil {
+		return err
+	}
+
+	oldVar, err := p.resolve(key, olds)
+	if err != nil {
+		oldVar = nil
+	}
+
+	if err = callback(ctx, oldVar, newVar); err != nil {
+		if errors.Is(err, config.ErrStopWatch) {
+			return err
+		}
+
+		p.log(ctx, "watch callback[%v] %v:%v", p.Name(), key, err)
+	}
 
 	return nil
 }
@@ -127,22 +146,20 @@ func (p *Provider) getEventKvs(events []*client.Event) ([]*pb.KeyValue, []*pb.Ke
 	old := make([]*pb.KeyValue, 0, len(events))
 
 	for i := range events {
-		kvs = append(kvs, events[i].Kv)
-		old = append(old, events[i].PrevKv)
+		kvs = append(kvs, events[i].GetKv())
+		old = append(old, events[i].GetPrevKv())
 	}
 
 	return kvs, old
 }
 
-//nolint:nilnil
 func (p *Provider) resolve(key string, kvs []*pb.KeyValue) (config.Value, error) {
 	for _, kv := range kvs {
-		switch {
-		case kv == nil:
-			return nil, nil
-		case string(kv.Key) == key:
-			return value.JBytes(kv.Value), nil
+		if kv == nil || string(kv.GetKey()) != key {
+			continue
 		}
+
+		return value.JString(kv.GetValue()), nil
 	}
 
 	return nil, fmt.Errorf("%w: name %s", config.ErrValueNotFound, key)

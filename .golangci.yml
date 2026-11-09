@@ -6,8 +6,10 @@ linters:
     - depguard
     - ireturn
     - gochecknoglobals
-    # deprecated
+    # deprecated, replaced by wsl_v5, exhaustruct_v5, gomodguard_v2
     - wsl
+    - exhaustruct
+    - gomodguard
   settings:
     recvcheck:
       disable-builtin: true
@@ -23,6 +25,7 @@ linters:
     goconst:
       min-len: 2
       min-occurrences: 2
+      ignore-tests: true
     cyclop:
       max-complexity: 15
     gocyclo:
@@ -51,6 +54,7 @@ linters:
       - linters:
           - exhaustivestruct
           - exhaustruct
+          - exhaustruct_v5
           - funlen
           - mnd
           - tenv
@@ -60,6 +64,7 @@ linters:
       - linters:
           - exhaustivestruct
           - exhaustruct
+          - exhaustruct_v5
           - mnd
           - varnamelen
           - wrapcheck

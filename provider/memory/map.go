@@ -31,6 +31,9 @@ type Map struct {
 }
 
 func (m *Map) Len() int {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	return len(m.vals)
 }
 
@@ -61,6 +64,9 @@ func (m *Map) Name() string {
 }
 
 func (m *Map) HasOption(key ...string) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	_, ok := m.idx.Index(key)
 
 	return ok
@@ -81,11 +87,13 @@ func (m *Map) SetOption(val any, key ...string) {
 }
 
 func (m *Map) AppendOption(val string, keys ...string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	id, ok := m.idx.Index(keys)
 	if !ok {
-		data := value.Strings{val}
-
-		m.SetOption(data, keys...)
+		m.idx.Add(len(m.vals), keys)
+		m.vals = append(m.vals, value.New(value.Strings{val}))
 
 		return nil
 	}
@@ -95,7 +103,7 @@ func (m *Map) AppendOption(val string, keys ...string) error {
 		return fmt.Errorf("%w:%T", config.ErrWrongType, m.vals[id])
 	}
 
-	m.SetOption(old.Append(val), keys...)
+	m.vals[id] = value.New(old.Append(val))
 
 	return nil
 }

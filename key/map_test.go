@@ -31,12 +31,53 @@ func TestMap_ByPath(t *testing.T) {
 		t.Errorf("idx exp:%v got:%v", othID, idx)
 	}
 
-	if nidx, nok := data.Index(key.ByPath("new-service-test", "-")); !nok && nidx != newID {
-		t.Errorf("idx exp:%v got:%v", newID, nidx)
+	if nidx, nok := data.Index(key.ByPath("new-service-test", "-")); !nok || nidx != newID {
+		t.Errorf("idx exp:%v got:%v ok:%v", newID, nidx, nok)
 	}
 
-	if gidx, gok := data.Index(key.ByPath("new-group", "-")); !gok && gidx != grpID {
-		t.Errorf("idx %v exp:%v got:%v", gok, grpID, gidx)
+	if gidx, gok := data.Index(key.ByPath("new-group", "-")); !gok || gidx != grpID {
+		t.Errorf("idx exp:%v got:%v ok:%v", grpID, gidx, gok)
+	}
+
+	const (
+		portID = 9
+		vID    = 8
+		verbID = 7
+	)
+
+	data.Add(portID, []string{"port"})
+	data.Add(vID, []string{"v"})
+	data.Add(verbID, []string{"verbose"})
+
+	if pidx, pok := data.Index(key.ByPath("portX", "-")); pok {
+		t.Errorf("portX matched %v", pidx)
+	}
+
+	if vidx, vok := data.Index(key.ByPath("verbose", "-")); !vok || vidx != verbID {
+		t.Errorf("idx exp:%v got:%v ok:%v", verbID, vidx, vok)
+	}
+
+	if sidx, sok := data.Index(key.ByPath("v", "-")); !sok || sidx != vID {
+		t.Errorf("idx exp:%v got:%v ok:%v", vID, sidx, sok)
+	}
+}
+
+func TestMap_TrailingWild(t *testing.T) {
+	t.Parallel()
+
+	const id = 1
+
+	data := key.Map{}
+	data.Add(id, []string{"user", "{id}"})
+
+	idx, ok := data.Index([]string{"user", "5"})
+	if !ok || idx != id {
+		t.Fatalf("idx exp:%v got:%v ok:%v", id, idx, ok)
+	}
+
+	idx, ok = data.Index(key.ByPath("user-5", "-"))
+	if !ok || idx != id {
+		t.Fatalf("path idx exp:%v got:%v ok:%v", id, idx, ok)
 	}
 }
 
@@ -62,8 +103,8 @@ func TestMap_Add(t *testing.T) {
 		t.Errorf("idx exp:%v got:%v", expID, idx)
 	}
 
-	if nidx, nok := data.Index([]string{"new"}); !nok && nidx != newID {
-		t.Errorf("idx exp:%v got:%v", newID, nidx)
+	if nidx, nok := data.Index([]string{"new"}); !nok || nidx != newID {
+		t.Errorf("idx exp:%v got:%v ok:%v", newID, nidx, nok)
 	}
 }
 

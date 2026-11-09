@@ -121,7 +121,7 @@ func dataRender(view ViewData) DataRender {
 		}
 	}
 
-	return render[reflect.TypeOf((any)(nil))]
+	return render[reflect.TypeOf(any(nil))]
 }
 
 //nolint:gochecknoglobals
@@ -139,7 +139,7 @@ var render = map[reflect.Type]DataRender{
 	reflect.TypeFor[int64]():                    NewDataRender(internalType, anyValue),
 	reflect.TypeFor[time.Duration]():            NewDataRender(durationType, renderDataDuration),
 	reflect.TypeFor[time.Time]():                NewDataRender(timeType, renderDataTime),
-	reflect.TypeOf((any)(nil)):                  NewDataRender(anyType, anyValue),
+	reflect.TypeOf(any(nil)):                    NewDataRender(anyType, anyValue),
 }
 
 //nolint:gochecknoglobals

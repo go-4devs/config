@@ -7,7 +7,7 @@ import (
 	"gitoa.ru/go-4devs/config"
 )
 
-var _ config.Value = (String)("")
+var _ config.Value = String("")
 
 type String string
 

@@ -79,18 +79,24 @@ func (p *WrapProvider) Bind(ctx context.Context, data Variables) error {
 }
 
 func (p *WrapProvider) init(ctx context.Context) error {
-	if atomic.LoadUint32(&p.done) == 0 {
-		if !p.mu.TryLock() {
-			return fmt.Errorf("%w", ErrInitFactory)
-		}
-		defer atomic.StoreUint32(&p.done, 1)
-		defer p.mu.Unlock()
-
-		var err error
-		if p.provider, err = p.factory(ctx); err != nil {
-			return fmt.Errorf("init provider factory:%w", err)
-		}
+	if atomic.LoadUint32(&p.done) == 1 {
+		return nil
 	}
+
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if atomic.LoadUint32(&p.done) == 1 {
+		return nil
+	}
+
+	provider, err := p.factory(ctx)
+	if err != nil {
+		return fmt.Errorf("init provider factory:%w", err)
+	}
+
+	p.provider = provider
+	atomic.StoreUint32(&p.done, 1)
 
 	return nil
 }
