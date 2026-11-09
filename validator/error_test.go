@@ -24,6 +24,7 @@ func TestSentinelsWrapInvalid(t *testing.T) {
 		validator.ErrJSON,
 		validator.ErrURL,
 		validator.ErrURI,
+		validator.ErrHostname,
 		validator.ErrRegex,
 		validator.ErrEnum,
 	}
