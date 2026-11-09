@@ -23,42 +23,65 @@ func NotBlank(fn param.Params, in config.Value) error {
 	return ErrNotBlank
 }
 
-func sliceByType(vType any, in config.Value) error {
-	switch vType.(type) {
-	case string:
-		return sliceBy[string](in)
-	case int:
-		return sliceBy[int](in)
-	case int64:
-		return sliceBy[int64](in)
-	case uint:
-		return sliceBy[uint](in)
-	case uint64:
-		return sliceBy[uint64](in)
-	case float64:
-		return sliceBy[float64](in)
-	case bool:
-		return sliceBy[bool](in)
-	case time.Duration:
-		return sliceBy[time.Duration](in)
-	case time.Time:
-		return sliceBy[time.Time](in)
-	default:
-		return sliceBy[any](in)
+func filled(fn param.Params, in config.Value) (bool, error) {
+	dataType := param.Type(fn)
+	if !option.IsSlice(fn) {
+		return notBlank(dataType, in), nil
 	}
+
+	size, err := sliceLen(dataType, in)
+	if err != nil {
+		return false, err
+	}
+
+	return size > 0, nil
 }
 
-func sliceBy[T any](in config.Value) error {
-	var data []T
-	if err := in.Unmarshal(&data); err != nil {
-		return fmt.Errorf("%w:%w", ErrNotBlank, err)
+func sliceByType(vType any, in config.Value) error {
+	size, err := sliceLen(vType, in)
+	if err != nil {
+		return err
 	}
 
-	if len(data) > 0 {
+	if size > 0 {
 		return nil
 	}
 
 	return fmt.Errorf("%w", ErrNotBlank)
+}
+
+func sliceLen(vType any, in config.Value) (int, error) {
+	switch vType.(type) {
+	case string:
+		return sliceCount[string](in)
+	case int:
+		return sliceCount[int](in)
+	case int64:
+		return sliceCount[int64](in)
+	case uint:
+		return sliceCount[uint](in)
+	case uint64:
+		return sliceCount[uint64](in)
+	case float64:
+		return sliceCount[float64](in)
+	case bool:
+		return sliceCount[bool](in)
+	case time.Duration:
+		return sliceCount[time.Duration](in)
+	case time.Time:
+		return sliceCount[time.Time](in)
+	default:
+		return sliceCount[any](in)
+	}
+}
+
+func sliceCount[T any](in config.Value) (int, error) {
+	var data []T
+	if err := in.Unmarshal(&data); err != nil {
+		return 0, fmt.Errorf("%w:%w", ErrNotBlank, err)
+	}
+
+	return len(data), nil
 }
 
 func notBlank(vType any, in config.Value) bool {
