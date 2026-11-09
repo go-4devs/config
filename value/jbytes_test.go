@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/test/require"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/test/require"
+	"github.com/go-4devs/config/value"
 )
 
 func TestJBytes_String(t *testing.T) {

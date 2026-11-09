@@ -5,8 +5,8 @@ import (
 	"sync"
 	"testing"
 
-	"gitoa.ru/go-4devs/config/provider/memory"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/provider/memory"
+	"github.com/go-4devs/config/test/require"
 )
 
 func TestAppendOptionConcurrent(t *testing.T) {

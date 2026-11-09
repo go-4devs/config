@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitoa.ru/go-4devs/config"
+	"github.com/go-4devs/config"
 )
 
 var _ config.Value = (*JBytes)(nil)

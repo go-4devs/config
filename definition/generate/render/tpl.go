@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"gitoa.ru/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config/definition/generate/view"
 )
 
 //go:embed tpl/*

@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gitoa.ru/go-4devs/config/definition/generate"
+	"github.com/go-4devs/config/definition/generate"
 )
 
 func TestParseMethodsChecksEveryArg(t *testing.T) {

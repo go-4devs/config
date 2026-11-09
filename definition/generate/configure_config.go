@@ -1,10 +1,11 @@
-// Code generated gitoa.ru/go-4devs/config DO NOT EDIT.
+// Code generated github.com/go-4devs/config DO NOT EDIT.
 package generate
 
 import (
 	"context"
 	"fmt"
-	"gitoa.ru/go-4devs/config"
+
+	"github.com/go-4devs/config"
 )
 
 func WithConfigureConfigHandle(fn func(context.Context, error)) func(*ConfigureConfig) {

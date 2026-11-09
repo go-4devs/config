@@ -3,8 +3,8 @@ package render
 import (
 	"strings"
 
-	"gitoa.ru/go-4devs/config/definition/generate/pkg"
-	"gitoa.ru/go-4devs/config/key"
+	"github.com/go-4devs/config/definition/generate/pkg"
+	"github.com/go-4devs/config/key"
 )
 
 // Keys returns the generated argument list for a value path.

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"sync"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/key"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/key"
+	"github.com/go-4devs/config/value"
 )
 
 const NameMap = "map"

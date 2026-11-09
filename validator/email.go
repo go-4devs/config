@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/mail"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/param"
 )
 
 // ErrEmail is returned when the text is not an email address.

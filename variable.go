@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 
-	"gitoa.ru/go-4devs/config/key"
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config/key"
+	"github.com/go-4devs/config/param"
 )
 
 // NewVar returns a variable for opt. Its key is the option name.

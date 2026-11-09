@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/provider/memory"
-	"gitoa.ru/go-4devs/config/validator"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/definition/option"
+	"github.com/go-4devs/config/provider/memory"
+	"github.com/go-4devs/config/validator"
 )
 
 func ExampleFileExists() {

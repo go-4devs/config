@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/param"
 )
 
 // WithParamProcess sets the function applied to a stored value.

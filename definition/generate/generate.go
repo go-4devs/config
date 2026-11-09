@@ -10,10 +10,10 @@ import (
 	"text/template"
 	"unicode"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/definition/generate/pkg"
-	"gitoa.ru/go-4devs/config/definition/generate/render"
-	"gitoa.ru/go-4devs/config/definition/generate/view"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/definition/generate/pkg"
+	"github.com/go-4devs/config/definition/generate/render"
+	"github.com/go-4devs/config/definition/generate/view"
 )
 
 //go:embed tpl/*
@@ -25,7 +25,7 @@ var initTpl = template.Must(template.New("tpls").ParseFS(tpls, "tpl/*.tpl")).Loo
 func Run(_ context.Context, fullPkg string, w io.Writer, defs ...config.Options) error {
 	data := Data{
 		Packages: pkg.NewImports(fullPkg).
-			Adds("fmt", "context", "gitoa.ru/go-4devs/config"),
+			Adds("fmt", "context", "github.com/go-4devs/config"),
 	}
 
 	var buff bytes.Buffer

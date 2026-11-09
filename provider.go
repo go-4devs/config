@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config/param"
 )
 
 type Provider interface {

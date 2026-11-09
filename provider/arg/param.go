@@ -3,7 +3,7 @@ package arg
 import (
 	"sync/atomic"
 
-	"gitoa.ru/go-4devs/config/param"
+	"github.com/go-4devs/config/param"
 )
 
 type keyParam int

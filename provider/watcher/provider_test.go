@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/provider/watcher"
-	"gitoa.ru/go-4devs/config/test/require"
-	"gitoa.ru/go-4devs/config/value"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/provider/watcher"
+	"github.com/go-4devs/config/test/require"
+	"github.com/go-4devs/config/value"
 )
 
 var _ config.Provider = (*provider)(nil)

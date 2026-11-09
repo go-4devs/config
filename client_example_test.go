@@ -8,12 +8,12 @@ import (
 	"sync"
 	"time"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/provider/arg"
-	"gitoa.ru/go-4devs/config/provider/env"
-	"gitoa.ru/go-4devs/config/provider/factory"
-	"gitoa.ru/go-4devs/config/provider/watcher"
-	"gitoa.ru/go-4devs/config/test"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/provider/arg"
+	"github.com/go-4devs/config/provider/env"
+	"github.com/go-4devs/config/provider/factory"
+	"github.com/go-4devs/config/provider/watcher"
+	"github.com/go-4devs/config/test"
 )
 
 func ExampleClient_Value() {
