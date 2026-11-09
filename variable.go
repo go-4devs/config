@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/go-4devs/config/key"
 	"github.com/go-4devs/config/param"
@@ -56,7 +57,7 @@ func (v Variable) With(opt Option) Variable {
 	return Variable{
 		parent: &v,
 		Option: opt,
-		names:  append(v.Key(), opt.Name()),
+		names:  append(slices.Clone(v.Key()), opt.Name()),
 	}
 }
 
