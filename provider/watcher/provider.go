@@ -15,11 +15,13 @@ var (
 	_ config.WatchProvider = (*Provider)(nil)
 )
 
-// New returns a provider that polls the inner provider.
-func New(duration time.Duration, provider config.Provider, opts ...Option) *Provider {
+const defaultInterval = 10 * time.Minute
+
+// New returns a provider that polls the inner provider every 10 minutes.
+func New(provider config.Provider, opts ...Option) *Provider {
 	prov := &Provider{
 		Provider: provider,
-		duration: duration,
+		duration: defaultInterval,
 		logger:   slog.ErrorContext,
 	}
 
@@ -28,6 +30,17 @@ func New(duration time.Duration, provider config.Provider, opts ...Option) *Prov
 	}
 
 	return prov
+}
+
+// WithDuration sets the poll interval. A duration that is not positive is replaced with 10 minutes.
+func WithDuration(duration time.Duration) Option {
+	if duration <= 0 {
+		duration = defaultInterval
+	}
+
+	return func(p *Provider) {
+		p.duration = duration
+	}
 }
 
 // WithLogger sets the function used when a poll fails.
