@@ -159,7 +159,7 @@ func (p *Provider) resolve(key string, kvs []*pb.KeyValue) (config.Value, error)
 			continue
 		}
 
-		return value.JBytes(kv.GetValue()), nil
+		return value.JString(kv.GetValue()), nil
 	}
 
 	return nil, fmt.Errorf("%w: name %s", config.ErrValueNotFound, key)

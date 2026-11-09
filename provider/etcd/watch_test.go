@@ -41,7 +41,7 @@ func TestNotifyFindsKeyAndStops(t *testing.T) {
 
 	err := p.notify(context.Background(), key, []*client.Event{
 		{Kv: nil},
-		{Kv: &pb.KeyValue{Key: []byte(key), Value: []byte(`"ok"`)}},
+		{Kv: &pb.KeyValue{Key: []byte(key), Value: []byte("ok")}},
 	}, func(_ context.Context, oldVar, newVar config.Value) error {
 		if oldVar != nil {
 			t.Fatal("old value")
