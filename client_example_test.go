@@ -69,7 +69,7 @@ func ExampleClient_Watch() {
 	_ = os.Setenv("FDEVS_CONFIG_EXAMPLE_ENABLE", "true")
 
 	watcher, err := config.New(
-		watcher.New(time.Microsecond, env.New(test.Namespace, test.AppName)),
+		watcher.New(env.New(test.Namespace, test.AppName), watcher.WithDuration(time.Microsecond)),
 	)
 	if err != nil {
 		log.Print(err)

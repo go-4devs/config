@@ -16,9 +16,10 @@ type (
 
 // Chain returns params searched from the last argument to the first. The first stored key wins.
 func Chain(vals ...Params) Params {
-	slices.Reverse(vals)
+	ordered := slices.Clone(vals)
+	slices.Reverse(ordered)
 
-	return chain(vals)
+	return chain(ordered)
 }
 
 // With returns params that store val under key and fall back to parent.

@@ -15,6 +15,7 @@ var (
 	ErrToManyArgs     = errors.New("to many args")
 	ErrWrongType      = errors.New("wrong type")
 	ErrInvalidName    = errors.New("ivalid name")
+	ErrDuplicateName  = errors.New("duplicate name")
 	ErrUnexpectedType = errors.New("unexpected type")
 	ErrRequired       = errors.New("required")
 )

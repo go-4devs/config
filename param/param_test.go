@@ -27,6 +27,24 @@ func TestChainReplace(t *testing.T) {
 	}
 }
 
+func TestChainLeavesInputOrder(t *testing.T) {
+	t.Parallel()
+
+	first := param.With(param.New(), "k", "first")
+	second := param.With(param.New(), "k", "second")
+	items := []param.Params{first, second}
+
+	data, ok := param.String(param.Chain(items...), "k")
+	if !ok || data != "second" {
+		t.Fatalf("got %q ok %v", data, ok)
+	}
+
+	got, ok := param.String(items[0], "k")
+	if !ok || got != "first" {
+		t.Fatalf("input changed: %q ok %v", got, ok)
+	}
+}
+
 func TestChainExtend(t *testing.T) {
 	t.Parallel()
 

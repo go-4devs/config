@@ -74,28 +74,11 @@ func Default(in any) param.Option {
 	return param.WithDefault(in)
 }
 
-// Deprecated: use param.WithDescription.
-func Description(in string) param.Option {
-	return param.WithDescription(in)
-}
-
 // HasDefaut reports whether a default value is stored.
 func HasDefaut(fn param.Params) bool {
 	_, ok := param.Default(fn)
 
 	return ok
-}
-
-// Deprecated: use param.Position.
-func DataPosition(fn param.Params) (uint64, bool) {
-	pos := param.Position(fn)
-
-	return pos, pos != 0
-}
-
-// Deprecated: use param.Default.
-func DataDefaut(fn param.Params) (any, bool) {
-	return param.Default(fn)
 }
 
 // IsSlice reports whether the option is a slice.
@@ -124,9 +107,4 @@ func IsRequired(fn param.Params) bool {
 	data, ok := param.Bool(paramRequired, fn)
 
 	return ok && data
-}
-
-// Deprecated: use param.Description.
-func DataDescription(fn param.Params) string {
-	return param.Description(fn)
 }

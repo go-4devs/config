@@ -44,6 +44,28 @@ func TestProvider(t *testing.T) {
 	test.Run(t, prov, read)
 }
 
+func TestValueReadsNextArg(t *testing.T) {
+	t.Parallel()
+
+	got, err := arg.New(arg.WithArgs([]string{"--listen", "8080"})).Value(context.Background(), "listen")
+	require.NoError(t, err)
+	require.Equal(t, "8080", got.String())
+}
+
+func TestValueRejectsLoneDash(t *testing.T) {
+	t.Parallel()
+
+	_, err := arg.New(arg.WithArgs([]string{"-"})).Value(context.Background(), "listen")
+	require.ErrorIs(t, err, config.ErrInvalidValue)
+}
+
+func TestBindRejectsEmptyArg(t *testing.T) {
+	t.Parallel()
+
+	err := arg.New(arg.WithArgs([]string{""})).Bind(context.Background(), testVariables(t))
+	require.ErrorIs(t, err, config.ErrInvalidValue)
+}
+
 func TestProviderBind(t *testing.T) {
 	t.Parallel()
 

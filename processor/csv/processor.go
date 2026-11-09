@@ -92,9 +92,9 @@ func WithParse(fn func(data []string) config.Value) param.Option {
 
 // Csv reads one CSV record from the string value. A value that is not a string is returned unchanged.
 func Csv(_ context.Context, in config.Value, opts ...param.Option) (config.Value, error) {
-	sval, serr := in.ParseString()
-	if serr != nil {
-		return in, nil //nolint:nilerr
+	sval, ok := csvText(in)
+	if !ok {
+		return in, nil
 	}
 
 	params := param.New(opts...)
@@ -108,6 +108,15 @@ func Csv(_ context.Context, in config.Value, opts ...param.Option) (config.Value
 	}
 
 	return csvValue(params, data)
+}
+
+func csvText(in config.Value) (string, bool) {
+	text, err := in.ParseString()
+	if err != nil {
+		return "", false
+	}
+
+	return text, true
 }
 
 func csvValue(params param.Params, data []string) (config.Value, error) {

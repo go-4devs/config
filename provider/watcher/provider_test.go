@@ -41,7 +41,7 @@ func TestWatcher(t *testing.T) {
 
 	prov := &provider{}
 
-	w := watcher.New(time.Second/3, prov)
+	w := watcher.New(prov, watcher.WithDuration(time.Second/3))
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 

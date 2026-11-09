@@ -1,6 +1,4 @@
 // Package value decode value.
-//
-//nolint:nonamedreturns
 package value
 
 import (
@@ -19,42 +17,58 @@ func (s Decode) Unmarshal(v any) error {
 }
 
 // ParseInt decodes an int.
-func (s Decode) ParseInt() (v int, err error) {
+func (s Decode) ParseInt() (int, error) {
+	var v int
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseInt64 decodes an int64.
-func (s Decode) ParseInt64() (v int64, err error) {
+func (s Decode) ParseInt64() (int64, error) {
+	var v int64
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseUint decodes a uint.
-func (s Decode) ParseUint() (v uint, err error) {
+func (s Decode) ParseUint() (uint, error) {
+	var v uint
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseUint64 decodes a uint64.
-func (s Decode) ParseUint64() (v uint64, err error) {
+func (s Decode) ParseUint64() (uint64, error) {
+	var v uint64
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseFloat64 decodes a float64.
-func (s Decode) ParseFloat64() (v float64, err error) {
+func (s Decode) ParseFloat64() (float64, error) {
+	var v float64
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseString decodes a string.
-func (s Decode) ParseString() (v string, err error) {
+func (s Decode) ParseString() (string, error) {
+	var v string
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseDuration decodes a time.Duration.
-func (s Decode) ParseDuration() (v time.Duration, err error) {
+func (s Decode) ParseDuration() (time.Duration, error) {
+	var v time.Duration
+
 	return v, s.Unmarshal(&v)
 }
 
 // ParseTime decodes a time.Time.
-func (s Decode) ParseTime() (v time.Time, err error) {
+func (s Decode) ParseTime() (time.Time, error) {
+	var v time.Time
+
 	return v, s.Unmarshal(&v)
 }
 
@@ -113,7 +127,9 @@ func (s Decode) Bool() bool {
 }
 
 // ParseBool decodes a bool.
-func (s Decode) ParseBool() (v bool, err error) {
+func (s Decode) ParseBool() (bool, error) {
+	var v bool
+
 	return v, s.Unmarshal(&v)
 }
 

@@ -3,6 +3,7 @@ package dasel
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -13,7 +14,7 @@ import (
 	"github.com/tomwright/dasel/v3/parsing"
 )
 
-var _ config.Provider = Provider{} //nolint:exhaustruct,exhaustruct_v5
+var _ config.Provider = (*Provider)(nil)
 
 const Name = "dasel"
 
@@ -60,10 +61,17 @@ type Provider struct {
 }
 
 // Value returns the single value selected by the dotted path.
+// A missing key is ErrValueNotFound.
 func (p Provider) Value(ctx context.Context, path ...string) (config.Value, error) {
 	selector := p.key(path...)
 
 	data, cnt, err := dasel.Query(ctx, p.data, selector)
+
+	missing := model.MapKeyNotFound{Key: ""}
+	if errors.As(err, &missing) {
+		return nil, fmt.Errorf("%s:%w", p.Name(), config.ErrValueNotFound)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("query: %w:%w", config.ErrInvalidValue, err)
 	}
@@ -73,7 +81,7 @@ func (p Provider) Value(ctx context.Context, path ...string) (config.Value, erro
 	}
 
 	if cnt == 0 {
-		return value.EmptyValue(), nil
+		return nil, fmt.Errorf("%s:%w", p.Name(), config.ErrValueNotFound)
 	}
 
 	val, verr := data[0].GoValue()

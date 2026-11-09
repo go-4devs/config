@@ -6,6 +6,26 @@ import (
 	"github.com/go-4devs/config/key"
 )
 
+func TestMap_EmptyPathIsMissing(t *testing.T) {
+	t.Parallel()
+
+	data := key.Map{}
+
+	if _, ok := data.Index(nil); ok {
+		t.Fatal("nil path")
+	}
+
+	data.Add(1, []string{"password"})
+
+	if _, ok := data.Index(nil); ok {
+		t.Fatal("nil path after add")
+	}
+
+	if _, ok := data.Index(key.ByPath("", "-")); ok {
+		t.Fatal("empty bypath")
+	}
+}
+
 func TestMap_ByPath(t *testing.T) {
 	t.Parallel()
 
@@ -105,6 +125,24 @@ func TestMap_Add(t *testing.T) {
 
 	if nidx, nok := data.Index([]string{"new"}); !nok || nidx != newID {
 		t.Errorf("idx exp:%v got:%v ok:%v", newID, nidx, nok)
+	}
+}
+
+func TestMap_WildKeepsSiblingFields(t *testing.T) {
+	t.Parallel()
+
+	data := key.Map{}
+	data.Add(1, []string{"end", "{service}", "after"})
+	data.Add(2, []string{"end", "{service}", "host"})
+
+	idx, ok := data.Index([]string{"end", "api", "after"})
+	if !ok || idx != 1 {
+		t.Fatalf("after idx %v ok %v", idx, ok)
+	}
+
+	idx, ok = data.Index([]string{"end", "api", "host"})
+	if !ok || idx != 2 {
+		t.Fatalf("host idx %v ok %v", idx, ok)
 	}
 }
 

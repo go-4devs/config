@@ -99,7 +99,7 @@ func (p *Provider) Key(s []string) string {
 func (p *Provider) Value(ctx context.Context, path ...string) (config.Value, error) {
 	name := p.Key(path)
 
-	resp, err := p.client.Get(ctx, name, client.WithPrefix())
+	resp, err := p.client.Get(ctx, name)
 	if err != nil {
 		return nil, fmt.Errorf("%w: key:%s, prov:%s", err, name, p.Name())
 	}
@@ -112,16 +112,20 @@ func (p *Provider) Value(ctx context.Context, path ...string) (config.Value, err
 	return val, nil
 }
 
-// Watch reports changes of the key. The callback is not called for other keys under the prefix. ErrStopWatch stops the watch.
+// Watch reports changes of the key. ErrStopWatch stops the watch.
 func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, path ...string) error {
+	watchCtx, cancel := context.WithCancel(ctx)
+
 	go func(ctx context.Context, key string, callback config.WatchCallback) {
-		watch := p.client.Watch(ctx, key, client.WithPrevKV(), client.WithPrefix())
+		defer cancel()
+
+		watch := p.client.Watch(ctx, key, client.WithPrevKV())
 		for w := range watch {
 			if errors.Is(p.notify(ctx, key, w.Events, callback), config.ErrStopWatch) {
 				return
 			}
 		}
-	}(ctx, p.Key(path), callback)
+	}(watchCtx, p.Key(path), callback)
 
 	return nil
 }

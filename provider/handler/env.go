@@ -56,9 +56,9 @@ func (e EnvHandler) Value(ctx context.Context, key ...string) (config.Value, err
 		return nil, fmt.Errorf("get %v:%w", e.Name(), err)
 	}
 
-	data, serr := val.ParseString()
-	if serr != nil || !strings.HasPrefix(data, envPreffix) || !strings.HasSuffix(data, envSuffix) {
-		return val, nil //nolint:nilerr
+	data, ok := envRef(val)
+	if !ok {
+		return val, nil
 	}
 
 	pval, perr := e.Process(ctx, value.String(data[len(envPreffix):len(data)-len(envSuffix)]))
@@ -67,4 +67,13 @@ func (e EnvHandler) Value(ctx context.Context, key ...string) (config.Value, err
 	}
 
 	return pval, nil
+}
+
+func envRef(val config.Value) (string, bool) {
+	data, err := val.ParseString()
+	if err != nil || !strings.HasPrefix(data, envPreffix) || !strings.HasSuffix(data, envSuffix) {
+		return "", false
+	}
+
+	return data, true
 }

@@ -1,7 +1,6 @@
 package arg
 
 import (
-	"bytes"
 	"encoding"
 	"encoding/json"
 	"errors"
@@ -17,7 +16,9 @@ import (
 )
 
 const (
-	defaultSpace = 2
+	defaultSpace     = 2
+	flagNameRepeat   = 2
+	shortColumnWidth = 4
 )
 
 // ResolveStyle returns the dump style stored on params.
@@ -98,7 +99,6 @@ func (d Dump) Reference(w io.Writer, opt config.Options) error {
 	return nil
 }
 
-//nolint:mnd
 func (d Dump) keyMaxLen(views ...View) int {
 	var maxLen int
 
@@ -107,14 +107,14 @@ func (d Dump) keyMaxLen(views ...View) int {
 
 		if !vi.IsArgument() {
 			if !vi.IsBool() {
-				vlen = vlen*2 + 1
+				vlen = vlen*flagNameRepeat + 1
 			}
 
 			if def := vi.Default(); def != "" {
 				vlen += d.space
 			}
 
-			vlen += 4 + d.space
+			vlen += shortColumnWidth + d.space
 		}
 
 		if vlen > maxLen {
@@ -172,7 +172,6 @@ func (d Dump) writeArguments(w io.Writer, style ViewStyle, args ...View) error {
 	return nil
 }
 
-//nolint:gocognit,gocyclo,cyclop
 func (d Dump) writeOptions(w io.Writer, style ViewStyle, opts ...View) error {
 	_, err := fmt.Fprintf(w, "\n%sOptions:%s\n",
 		style.Comment.Start,
@@ -184,71 +183,7 @@ func (d Dump) writeOptions(w io.Writer, style ViewStyle, opts ...View) error {
 			continue
 		}
 
-		var op bytes.Buffer
-
-		_, oerr := fmt.Fprintf(&op, "%s%s", strings.Repeat(" ", d.space), style.Info.Start)
-		if oerr != nil {
-			err = errors.Join(err, oerr)
-		}
-
-		if short := opt.Short(); short != "" {
-			op.WriteString("-")
-			op.WriteString(short)
-			op.WriteString(", ")
-		} else {
-			op.WriteString("    ")
-		}
-
-		op.WriteString("--")
-		op.WriteString(opt.Name(d.sep))
-
-		if !opt.IsBool() {
-			if !opt.IsRequired() {
-				op.WriteString("[")
-			}
-
-			op.WriteString("=")
-			op.WriteString(strings.ToUpper(opt.Name(d.sep)))
-
-			if !opt.IsRequired() {
-				op.WriteString("]")
-			}
-		}
-
-		_, oerr = fmt.Fprintf(&op, "%s", style.Info.End)
-		if oerr != nil {
-			err = errors.Join(err, oerr)
-		}
-
-		olen, oerr := w.Write(op.Bytes())
-		if oerr != nil {
-			err = errors.Join(err, oerr)
-		}
-
-		_, oerr = fmt.Fprintf(w, "%s%s",
-			strings.Repeat(" ", style.ILen()+d.space-olen),
-			opt.Description(),
-		)
-		if oerr != nil {
-			err = errors.Join(err, oerr)
-		}
-
-		if def := opt.Default(); def != "" {
-			oerr = d.writeDefault(w, style, def)
-			if oerr != nil {
-				err = errors.Join(err, oerr)
-			}
-		}
-
-		if opt.IsSlice() {
-			_, oerr = fmt.Fprintf(w, "%s  (multiple values allowed)%s", style.Comment.Start, style.Comment.End)
-			if oerr != nil {
-				err = errors.Join(err, oerr)
-			}
-		}
-
-		_, oerr = fmt.Fprint(w, "\n")
-		if oerr != nil {
+		if oerr := d.writeOption(w, style, opt); oerr != nil {
 			err = errors.Join(err, oerr)
 		}
 	}
@@ -258,6 +193,80 @@ func (d Dump) writeOptions(w io.Writer, style ViewStyle, opts ...View) error {
 	}
 
 	return nil
+}
+
+func (d Dump) writeOption(w io.Writer, style ViewStyle, opt View) error {
+	label := d.optionLabel(opt, style)
+
+	olen, err := io.WriteString(w, label)
+	if err != nil {
+		return fmt.Errorf("option label:%w", err)
+	}
+
+	_, err = fmt.Fprintf(w, "%s%s",
+		strings.Repeat(" ", style.ILen()+d.space-olen),
+		opt.Description(),
+	)
+	if err != nil {
+		return fmt.Errorf("option description:%w", err)
+	}
+
+	if def := opt.Default(); def != "" {
+		if derr := d.writeDefault(w, style, def); derr != nil {
+			return derr
+		}
+	}
+
+	if opt.IsSlice() {
+		_, err = fmt.Fprintf(w, "%s  (multiple values allowed)%s", style.Comment.Start, style.Comment.End)
+		if err != nil {
+			return fmt.Errorf("option slice:%w", err)
+		}
+	}
+
+	_, err = fmt.Fprint(w, "\n")
+	if err != nil {
+		return fmt.Errorf("option end:%w", err)
+	}
+
+	return nil
+}
+
+func (d Dump) optionLabel(opt View, style ViewStyle) string {
+	var label strings.Builder
+
+	label.WriteString(strings.Repeat(" ", d.space))
+	label.WriteString(style.Info.Start)
+
+	if short := opt.Short(); short != "" {
+		label.WriteString("-")
+		label.WriteString(short)
+		label.WriteString(", ")
+	} else {
+		label.WriteString(strings.Repeat(" ", shortColumnWidth))
+	}
+
+	label.WriteString("--")
+
+	name := opt.Name(d.sep)
+	label.WriteString(name)
+	label.WriteString(optionValue(opt, name))
+	label.WriteString(style.Info.End)
+
+	return label.String()
+}
+
+func optionValue(opt View, name string) string {
+	if opt.IsBool() {
+		return ""
+	}
+
+	value := "=" + strings.ToUpper(name)
+	if opt.IsRequired() {
+		return value
+	}
+
+	return "[" + value + "]"
 }
 
 func (d Dump) writeDefault(w io.Writer, style ViewStyle, data string) error {

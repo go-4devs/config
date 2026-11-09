@@ -27,26 +27,6 @@ var (
 	_ config.BindProvider = (*Argv)(nil)
 )
 
-// Deprecated: use WithArgs.
-func WithSkip(skip int) func(*Argv) {
-	return func(ar *Argv) {
-		res := 2
-
-		switch {
-		case skip > 0 && len(os.Args) > skip:
-			res = skip
-		case skip > 0:
-			res = len(os.Args)
-		case len(os.Args) == 1:
-			res = 1
-		case len(os.Args) > 1 && os.Args[1][0] == '-':
-			res = 1
-		}
-
-		ar.args = os.Args[res:]
-	}
-}
-
 // WithArgs sets the arguments to parse instead of os.Args.
 func WithArgs(args []string) func(*Argv) {
 	return func(a *Argv) {
@@ -100,6 +80,7 @@ func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
 }
 
 // Bind parses flags and positional arguments into the option map. A bool short flag may be clustered, as in -xzv.
+// An empty argument returns ErrInvalidValue.
 func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 	options := true
 
@@ -112,6 +93,8 @@ func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 		switch {
 		case options && arg == doubleDash:
 			options = false
+		case options && arg == "":
+			return fmt.Errorf("%w: bad flag syntax: %s", config.ErrInvalidValue, arg)
 		case options && len(arg) > 2 && arg[0:2] == doubleDash:
 			err = i.parseLongOption(arg[2:], def)
 		case options && arg[0:1] == "-":
@@ -225,21 +208,11 @@ func (i *Argv) parseShortOption(arg string, def config.Variables) error {
 func (i *Argv) parseArgument(arg string, def config.Variables) error {
 	opt, err := def.ByParam(PosArgument(i.pos))
 	if err != nil {
-		var maxArgs uint64
-		if i.pos > 0 {
-			maxArgs -= i.pos
-		}
-
 		if errors.Is(err, config.ErrNotFound) {
-			return fmt.Errorf("argument[%s] by pos[%d] max[%d]: %w",
-				arg,
-				i.pos+1,
-				maxArgs,
-				config.ErrNotFound,
-			)
+			return fmt.Errorf("argument[%s] by pos[%d]: %w", arg, i.pos+1, config.ErrNotFound)
 		}
 
-		return fmt.Errorf("find argiment by pos[%d] max[%d]: %w", i.pos+1, maxArgs, err)
+		return fmt.Errorf("find argiment by pos[%d]: %w", i.pos+1, err)
 	}
 
 	i.pos++
@@ -256,16 +229,23 @@ func (i *Argv) parse() error {
 		return nil
 	}
 
-	for _, arg := range i.args {
-		name, value, err := i.parseOne(arg)
+	for idx := 0; idx < len(i.args); idx++ {
+		name, value, err := i.parseOne(i.args[idx])
 		if err != nil {
 			return err
 		}
 
-		if name != "" {
-			if err := i.AppendOption(value, name); err != nil {
-				return fmt.Errorf("append %v: %w", name, err)
-			}
+		if name == "" {
+			continue
+		}
+
+		if value == "" && idx+1 < len(i.args) && !strings.HasPrefix(i.args[idx+1], "-") {
+			idx++
+			value = i.args[idx]
+		}
+
+		if err = i.AppendOption(value, name); err != nil {
+			return fmt.Errorf("append %v: %w", name, err)
 		}
 	}
 
@@ -274,6 +254,10 @@ func (i *Argv) parse() error {
 
 // parseOne return name, value, error.
 func (i *Argv) parseOne(arg string) (string, string, error) {
+	if arg == "" || arg == "-" {
+		return "", "", fmt.Errorf("%w: bad flag syntax: %s", config.ErrInvalidValue, arg)
+	}
+
 	if arg[0] != '-' {
 		return "", "", nil
 	}
