@@ -8,6 +8,7 @@ import (
 
 var _ config.Group = New("", "")
 
+// New returns a group whose name is a {name} wildcard.
 func New(name string, desc string, opts ...config.Option) Proto {
 	return Proto{
 		name:   key.Wild(name),
@@ -23,10 +24,12 @@ type Proto struct {
 	name string
 }
 
+// Options returns the child options.
 func (p Proto) Options() []config.Option {
 	return p.opts
 }
 
+// Name returns the wildcard name.
 func (p Proto) Name() string {
 	return p.name
 }

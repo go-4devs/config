@@ -19,12 +19,14 @@ const Name = "dasel"
 
 type Option func(*Provider)
 
+// WithName sets the provider name.
 func WithName(in string) Option {
 	return func(p *Provider) {
 		p.name = in
 	}
 }
 
+// New returns a provider for the document. A read error is ErrInitFactory.
 func New(in []byte, format parsing.Format, opts ...Option) (Provider, error) {
 	reader, err := format.NewReader(parsing.DefaultReaderOptions())
 	if err != nil {
@@ -57,6 +59,7 @@ type Provider struct {
 	name string
 }
 
+// Value returns the single value selected by the dotted path.
 func (p Provider) Value(ctx context.Context, path ...string) (config.Value, error) {
 	selector := p.key(path...)
 
@@ -86,6 +89,7 @@ func (p Provider) Value(ctx context.Context, path ...string) (config.Value, erro
 	return value.JBytes(res), nil
 }
 
+// Name returns the provider name.
 func (p Provider) Name() string {
 	return p.name
 }

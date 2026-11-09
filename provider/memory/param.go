@@ -8,12 +8,14 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// WithParamProcess sets the function applied to a stored value.
 func WithParamProcess(process config.ProcessFunc) func(*Param) {
 	return func(p *Param) {
 		p.process = process
 	}
 }
 
+// NewParam returns a provider that fills its map from resolve during Bind.
 func NewParam(
 	name string,
 	resolve func(param.Params) (any, bool),
@@ -42,6 +44,7 @@ type Param struct {
 	param   func(p param.Params) (any, bool)
 }
 
+// Value returns the stored value after the process function.
 func (p *Param) Value(ctx context.Context, key ...string) (config.Value, error) {
 	v, err := p.data.Value(ctx, key...)
 	if err != nil {
@@ -56,6 +59,7 @@ func (p *Param) Value(ctx context.Context, key ...string) (config.Value, error) 
 	return pv, nil
 }
 
+// Bind stores resolve(opt) under each variable key.
 func (p *Param) Bind(_ context.Context, def config.Variables) error {
 	for _, opt := range def.Variables() {
 		if data, ok := p.param(opt); ok {
@@ -66,6 +70,7 @@ func (p *Param) Bind(_ context.Context, def config.Variables) error {
 	return nil
 }
 
+// Name returns the provider name.
 func (p *Param) Name() string {
 	return p.name
 }

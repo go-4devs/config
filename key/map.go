@@ -23,10 +23,12 @@ type Map struct {
 	children map[string]*Map
 }
 
+// ByPath returns the lookup key for a name split by sep.
 func ByPath(name, sep string) []string {
 	return []string{prefixByPath, name, sep}
 }
 
+// Index returns the stored index for path. A byPath key matches the longest name.
 func (m *Map) Index(path []string) (int, bool) {
 	if data, ok := m.find(path); ok {
 		return data.idx, true
@@ -41,6 +43,7 @@ func (m *Map) Index(path []string) (int, bool) {
 	return 0, false
 }
 
+// Add stores idx at path. A trailing {name} segment is a wildcard.
 func (m *Map) Add(idx int, path []string) {
 	m.add(path).idx = idx
 }

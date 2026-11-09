@@ -47,18 +47,21 @@ func WithSkip(skip int) func(*Argv) {
 	}
 }
 
+// WithArgs sets the arguments to parse instead of os.Args.
 func WithArgs(args []string) func(*Argv) {
 	return func(a *Argv) {
 		a.args = args
 	}
 }
 
+// WithName sets the provider name.
 func WithName(name string) func(*Argv) {
 	return func(a *Argv) {
 		a.name = name
 	}
 }
 
+// New returns a provider for command-line arguments. The default arguments are os.Args without the program name.
 func New(opts ...func(*Argv)) *Argv {
 	arg := &Argv{
 		args: os.Args[1:],
@@ -82,6 +85,7 @@ type Argv struct {
 	name string
 }
 
+// Value parses the arguments and returns the stored value.
 func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
 	if err := i.parse(); err != nil {
 		return nil, fmt.Errorf("parse:%w", err)
@@ -95,6 +99,7 @@ func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
 	return data, nil
 }
 
+// Bind parses flags and positional arguments into the option map. A bool short flag may be clustered, as in -xzv.
 func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 	options := true
 
@@ -131,10 +136,12 @@ func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 	return nil
 }
 
+// Name returns the provider name.
 func (i *Argv) Name() string {
 	return i.name
 }
 
+// DumpReference writes flag help for opt.
 func (i *Argv) DumpReference(_ context.Context, w io.Writer, opt config.Options) error {
 	return NewDump().Reference(w, opt)
 }

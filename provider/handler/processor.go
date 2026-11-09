@@ -21,12 +21,14 @@ const (
 	processorKey pkey = iota + 1
 )
 
+// FormatFn stores a process function that also receives opts.
 func FormatFn(fn config.ProcessFunc, opts ...param.Option) param.Option {
 	return Process(config.ProcessFunc(func(ctx context.Context, in config.Value, _ ...param.Option) (config.Value, error) {
 		return fn(ctx, in, opts...)
 	}))
 }
 
+// Process stores the processor on the option.
 func Process(fn config.Processor) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, processorKey, fn)
@@ -44,6 +46,7 @@ func getProcess(in param.Params) (config.Processor, bool) {
 	return data, tok
 }
 
+// Processor returns a provider that runs the processor stored on each variable.
 func Processor(parent config.Provider) *ProcessHandler {
 	handler := &ProcessHandler{
 		WrapProvider: memory.Wrap(parent),
@@ -61,6 +64,7 @@ type ProcessHandler struct {
 	process []config.Processor
 }
 
+// Bind records the processor of each variable, then binds the inner provider.
 func (p *ProcessHandler) Bind(ctx context.Context, vars config.Variables) error {
 	for _, one := range vars.Variables() {
 		process, ok := getProcess(one)
@@ -80,6 +84,7 @@ func (p *ProcessHandler) Bind(ctx context.Context, vars config.Variables) error 
 	return nil
 }
 
+// Value returns the parent value after its processor.
 func (p *ProcessHandler) Value(ctx context.Context, key ...string) (config.Value, error) {
 	pval, perr := p.Provider.Value(ctx, key...)
 	if perr != nil {

@@ -35,7 +35,7 @@ type ConfigureConfig struct {
 	ctx    context.Context
 }
 
-// readFile set file.
+// readFile reads the configure file.
 func (i ConfigureConfig) readFile(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "file")
 	if err != nil {
@@ -47,12 +47,12 @@ func (i ConfigureConfig) readFile(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadFile set file.
+// ReadFile reads the configure file.
 func (i ConfigureConfig) ReadFile() (string, error) {
 	return i.readFile(i.ctx)
 }
 
-// File set file.
+// File returns the configure file.
 func (i ConfigureConfig) File() string {
 	val, err := i.readFile(i.ctx)
 	if err != nil {
@@ -62,7 +62,7 @@ func (i ConfigureConfig) File() string {
 	return val
 }
 
-// readPrefix struct prefix.
+// readPrefix reads the struct name prefix.
 func (i ConfigureConfig) readPrefix(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "prefix")
 	if err != nil {
@@ -74,12 +74,12 @@ func (i ConfigureConfig) readPrefix(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadPrefix struct prefix.
+// ReadPrefix reads the struct name prefix.
 func (i ConfigureConfig) ReadPrefix() (string, error) {
 	return i.readPrefix(i.ctx)
 }
 
-// Prefix struct prefix.
+// Prefix returns the struct name prefix.
 func (i ConfigureConfig) Prefix() string {
 	val, err := i.readPrefix(i.ctx)
 	if err != nil {
@@ -89,7 +89,7 @@ func (i ConfigureConfig) Prefix() string {
 	return val
 }
 
-// readSuffix struct suffix.
+// readSuffix reads the struct name suffix.
 func (i ConfigureConfig) readSuffix(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "suffix")
 	if err != nil {
@@ -102,12 +102,12 @@ func (i ConfigureConfig) readSuffix(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadSuffix struct suffix.
+// ReadSuffix reads the struct name suffix.
 func (i ConfigureConfig) ReadSuffix() (string, error) {
 	return i.readSuffix(i.ctx)
 }
 
-// Suffix struct suffix.
+// Suffix returns the struct name suffix.
 func (i ConfigureConfig) Suffix() string {
 	val, err := i.readSuffix(i.ctx)
 	if err != nil {
@@ -117,7 +117,7 @@ func (i ConfigureConfig) Suffix() string {
 	return val
 }
 
-// readSkipContext skip contect to method.
+// readSkipContext reads whether generated methods skip context.
 func (i ConfigureConfig) readSkipContext(ctx context.Context) (v bool, e error) {
 	val, err := i.Value(ctx, "skip-context")
 	if err != nil {
@@ -129,12 +129,12 @@ func (i ConfigureConfig) readSkipContext(ctx context.Context) (v bool, e error) 
 
 }
 
-// ReadSkipContext skip contect to method.
+// ReadSkipContext reads whether generated methods skip context.
 func (i ConfigureConfig) ReadSkipContext() (bool, error) {
 	return i.readSkipContext(i.ctx)
 }
 
-// SkipContext skip contect to method.
+// SkipContext returns whether generated methods skip context.
 func (i ConfigureConfig) SkipContext() bool {
 	val, err := i.readSkipContext(i.ctx)
 	if err != nil {
@@ -144,7 +144,7 @@ func (i ConfigureConfig) SkipContext() bool {
 	return val
 }
 
-// readBuildTags add build tags.
+// readBuildTags reads the build tags.
 func (i ConfigureConfig) readBuildTags(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "build-tags")
 	if err != nil {
@@ -156,12 +156,12 @@ func (i ConfigureConfig) readBuildTags(ctx context.Context) (v string, e error) 
 
 }
 
-// ReadBuildTags add build tags.
+// ReadBuildTags reads the build tags.
 func (i ConfigureConfig) ReadBuildTags() (string, error) {
 	return i.readBuildTags(i.ctx)
 }
 
-// BuildTags add build tags.
+// BuildTags returns the build tags.
 func (i ConfigureConfig) BuildTags() string {
 	val, err := i.readBuildTags(i.ctx)
 	if err != nil {
@@ -171,7 +171,7 @@ func (i ConfigureConfig) BuildTags() string {
 	return val
 }
 
-// readOutName set out name.
+// readOutName reads the output file name.
 func (i ConfigureConfig) readOutName(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "out-name")
 	if err != nil {
@@ -183,12 +183,12 @@ func (i ConfigureConfig) readOutName(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadOutName set out name.
+// ReadOutName reads the output file name.
 func (i ConfigureConfig) ReadOutName() (string, error) {
 	return i.readOutName(i.ctx)
 }
 
-// OutName set out name.
+// OutName returns the output file name.
 func (i ConfigureConfig) OutName() string {
 	val, err := i.readOutName(i.ctx)
 	if err != nil {
@@ -198,7 +198,7 @@ func (i ConfigureConfig) OutName() string {
 	return val
 }
 
-// readMethods set method.
+// readMethods reads the configure method names.
 func (i ConfigureConfig) readMethods(ctx context.Context) (v []string, e error) {
 	val, err := i.Value(ctx, "method")
 	if err != nil {
@@ -209,12 +209,12 @@ func (i ConfigureConfig) readMethods(ctx context.Context) (v []string, e error) 
 	return v, val.Unmarshal(&v)
 }
 
-// ReadMethods set method.
+// ReadMethods reads the configure method names.
 func (i ConfigureConfig) ReadMethods() ([]string, error) {
 	return i.readMethods(i.ctx)
 }
 
-// Methods set method.
+// Methods returns the configure method names.
 func (i ConfigureConfig) Methods() []string {
 	val, err := i.readMethods(i.ctx)
 	if err != nil {
@@ -224,7 +224,7 @@ func (i ConfigureConfig) Methods() []string {
 	return val
 }
 
-// readLeaveTemps leave temp files example:[bootstrap,config].
+// readLeaveTemps reads the temporary files to keep, such as bootstrap and config.
 func (i ConfigureConfig) readLeaveTemps(ctx context.Context) (v []string, e error) {
 	val, err := i.Value(ctx, "leave-temp")
 	if err != nil {
@@ -235,12 +235,12 @@ func (i ConfigureConfig) readLeaveTemps(ctx context.Context) (v []string, e erro
 	return v, val.Unmarshal(&v)
 }
 
-// ReadLeaveTemps leave temp files example:[bootstrap,config].
+// ReadLeaveTemps reads the temporary files to keep, such as bootstrap and config.
 func (i ConfigureConfig) ReadLeaveTemps() ([]string, error) {
 	return i.readLeaveTemps(i.ctx)
 }
 
-// LeaveTemps leave temp files example:[bootstrap,config].
+// LeaveTemps returns the temporary files to keep, such as bootstrap and config.
 func (i ConfigureConfig) LeaveTemps() []string {
 	val, err := i.readLeaveTemps(i.ctx)
 	if err != nil {
@@ -250,7 +250,7 @@ func (i ConfigureConfig) LeaveTemps() []string {
 	return val
 }
 
-// readFullPkg set full pkg.
+// readFullPkg reads the full package path.
 func (i ConfigureConfig) readFullPkg(ctx context.Context) (v string, e error) {
 	val, err := i.Value(ctx, "full-pkg")
 	if err != nil {
@@ -262,12 +262,12 @@ func (i ConfigureConfig) readFullPkg(ctx context.Context) (v string, e error) {
 
 }
 
-// ReadFullPkg set full pkg.
+// ReadFullPkg reads the full package path.
 func (i ConfigureConfig) ReadFullPkg() (string, error) {
 	return i.readFullPkg(i.ctx)
 }
 
-// FullPkg set full pkg.
+// FullPkg returns the full package path.
 func (i ConfigureConfig) FullPkg() string {
 	val, err := i.readFullPkg(i.ctx)
 	if err != nil {

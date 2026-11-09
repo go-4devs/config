@@ -11,6 +11,7 @@ import (
 
 const NameWatch = "yaml_watch"
 
+// NewWatch returns a provider that reads the YAML file on every Value call.
 func NewWatch(name string, opts ...Option) *Watch {
 	wath := Watch{
 		file: name,
@@ -27,10 +28,12 @@ type Watch struct {
 	name string
 }
 
+// Name returns the provider name.
 func (p *Watch) Name() string {
 	return p.name
 }
 
+// Value reads the file and returns the value at path.
 func (p *Watch) Value(ctx context.Context, path ...string) (config.Value, error) {
 	in, err := os.ReadFile(p.file)
 	if err != nil {

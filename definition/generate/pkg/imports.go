@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// NewImports returns an import set for the generated package.
 func NewImports(pkg string) *Packages {
 	imp := Packages{
 		data: make(map[string]string),
@@ -20,6 +21,7 @@ type Packages struct {
 	pkg  string
 }
 
+// Imports returns the registered imports.
 func (i *Packages) Imports() []Import {
 	imports := make([]Import, 0, len(i.data))
 	for name, alias := range i.data {
@@ -32,6 +34,7 @@ func (i *Packages) Imports() []Import {
 	return imports
 }
 
+// Short returns the name used for fullType in generated code.
 func (i *Packages) Short(fullType string) (string, error) {
 	idx := strings.LastIndexByte(fullType, '.')
 	if idx == -1 {
@@ -45,6 +48,7 @@ func (i *Packages) Short(fullType string) (string, error) {
 	return "", fmt.Errorf("%w alias for pkg %v", ErrNotFound, fullType[:idx])
 }
 
+// AddType registers the package of fullType and returns the name used in generated code.
 func (i *Packages) AddType(fullType string) (string, error) {
 	idx := strings.LastIndexByte(fullType, '.')
 	if idx == -1 {
@@ -60,6 +64,7 @@ func (i *Packages) AddType(fullType string) (string, error) {
 	return imp.Alias + fullType[idx:], nil
 }
 
+// Adds registers the packages.
 func (i *Packages) Adds(pkgs ...string) *Packages {
 	for _, pkg := range pkgs {
 		i.Add(pkg)
@@ -68,6 +73,7 @@ func (i *Packages) Adds(pkgs ...string) *Packages {
 	return i
 }
 
+// Add registers pkg. The generated package itself is imported with an empty alias.
 func (i *Packages) Add(pkg string) Import {
 	if pkg == i.pkg {
 		return Import{
@@ -100,6 +106,7 @@ func (i *Packages) Add(pkg string) Import {
 	}
 }
 
+// Pkg returns the last element of the generated package path.
 func (i *Packages) Pkg() string {
 	return Pkg(i.pkg)
 }
@@ -109,10 +116,12 @@ type Import struct {
 	Package string
 }
 
+// Pkg returns the last element of the import path.
 func (i Import) Pkg() string {
 	return Pkg(i.Package)
 }
 
+// String returns the import clause.
 func (i Import) String() string {
 	if i.Alias == i.Pkg() {
 		return fmt.Sprintf("%q", i.Package)
@@ -121,6 +130,7 @@ func (i Import) String() string {
 	return fmt.Sprintf("%s %q", i.Alias, i.Package)
 }
 
+// Pkg returns the last element of the import path.
 func Pkg(fullPkg string) string {
 	if _, name, ok := strings.CutLast(fullPkg, "/"); ok {
 		return name

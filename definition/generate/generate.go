@@ -21,6 +21,7 @@ var tpls embed.FS
 
 var initTpl = template.Must(template.New("tpls").ParseFS(tpls, "tpl/*.tpl")).Lookup("init.go.tpl")
 
+// Run writes the generated helpers for defs.
 func Run(_ context.Context, fullPkg string, w io.Writer, defs ...config.Options) error {
 	data := Data{
 		Packages: pkg.NewImports(fullPkg).
@@ -52,14 +53,17 @@ type Data struct {
 	*pkg.Packages
 }
 
+// StructName returns name as an exported Go identifier.
 func (f Data) StructName(name string) string {
 	return FuncName(name)
 }
 
+// FuncName returns in as an exported Go identifier.
 func (f Data) FuncName(in string) string {
 	return FuncName(in)
 }
 
+// FuncName returns name as an exported Go identifier.
 func FuncName(name string) string {
 	data := strings.Builder{}
 	toUp := true

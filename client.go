@@ -8,6 +8,7 @@ import (
 
 var _ Providers = (*Client)(nil)
 
+// Must returns a client for the providers and panics if New fails.
 func Must(providers ...any) *Client {
 	client, err := New(providers...)
 	if err != nil {
@@ -17,6 +18,8 @@ func Must(providers ...any) *Client {
 	return client
 }
 
+// New returns a client that reads the providers in order.
+// A provider may be a Provider or a Factory. A Factory is created on first use.
 func New(providers ...any) (*Client, error) {
 	client := &Client{
 		providers: make([]Provider, len(providers)),
@@ -53,11 +56,13 @@ type Client struct {
 	chain     []Providers
 }
 
+// Name returns the client name.
 func (c *Client) Name() string {
 	return "client"
 }
 
-// Value get value by name.
+// Value returns the value at path.
+// The next provider is used when the current one returns ErrNotFound or ErrInitFactory.
 func (c *Client) Value(ctx context.Context, path ...string) (Value, error) {
 	var (
 		value Value
@@ -78,6 +83,8 @@ func (c *Client) Value(ctx context.Context, path ...string) (Value, error) {
 	return value, nil
 }
 
+// Watch calls Watch on every provider that implements WatchProvider.
+// ErrNotFound and ErrInitFactory from a provider are skipped.
 func (c *Client) Watch(ctx context.Context, callback WatchCallback, path ...string) error {
 	for idx, prov := range c.providers {
 		provider, ok := prov.(WatchProvider)
@@ -98,6 +105,7 @@ func (c *Client) Watch(ctx context.Context, callback WatchCallback, path ...stri
 	return nil
 }
 
+// Bind calls Bind on every provider that implements BindProvider.
 func (c *Client) Bind(ctx context.Context, data Variables) error {
 	for idx, prov := range c.providers {
 		provider, ok := prov.(BindProvider)
@@ -113,6 +121,7 @@ func (c *Client) Bind(ctx context.Context, data Variables) error {
 	return nil
 }
 
+// ByName returns the provider with that name.
 func (c *Client) ByName(name string) (Provider, error) {
 	if idx, ok := c.name[name]; ok {
 		return c.providers[idx], nil
@@ -127,6 +136,7 @@ func (c *Client) ByName(name string) (Provider, error) {
 	return nil, fmt.Errorf("provider[%v]:%w", c.Name(), ErrNotFound)
 }
 
+// Names returns the provider names, including names from nested provider lists.
 func (c *Client) Names() []string {
 	names := make([]string, 0, len(c.providers))
 	for name := range c.name {

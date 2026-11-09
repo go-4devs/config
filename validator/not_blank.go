@@ -9,6 +9,7 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// NotBlank rejects a zero value. A slice must be non-empty.
 func NotBlank(fn param.Params, in config.Value) error {
 	dataType := param.Type(fn)
 	if option.IsSlice(fn) {

@@ -16,6 +16,7 @@ import (
 
 var cache = sync.Map{}
 
+// ByPath returns the import path of the file or directory.
 func ByPath(ctx context.Context, fname string, isDir bool) (string, error) {
 	if !filepath.IsAbs(fname) {
 		pwd, err := os.Getwd()

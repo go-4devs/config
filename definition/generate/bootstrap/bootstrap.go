@@ -21,6 +21,7 @@ type Boot struct {
 	Configure []string
 }
 
+// Pkg returns the last element of the package path.
 func (b Boot) Pkg() string {
 	return pkg.Pkg(b.FullPkg())
 }
@@ -34,6 +35,7 @@ type Config interface {
 	FullPkg() string
 }
 
+// Bootstrap writes a temporary program that calls the configure functions.
 func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 	fInfo, err := os.Stat(cfg.File())
 	if err != nil {

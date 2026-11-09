@@ -17,12 +17,14 @@ const (
 
 var _ config.Provider = (*Provider)(nil)
 
+// WithName sets the provider name.
 func WithName(name string) Option {
 	return func(p *Provider) {
 		p.name = name
 	}
 }
 
+// NewFile reads path and returns a YAML provider.
 func NewFile(name string, opts ...Option) (*Provider, error) {
 	in, err := os.ReadFile(name)
 	if err != nil {
@@ -32,6 +34,7 @@ func NewFile(name string, opts ...Option) (*Provider, error) {
 	return New(in, opts...)
 }
 
+// New returns a provider for the YAML bytes.
 func New(yml []byte, opts ...Option) (*Provider, error) {
 	var data yaml.Node
 	if err := yaml.Unmarshal(yml, &data); err != nil {
@@ -60,14 +63,17 @@ type Provider struct {
 	name string
 }
 
+// Name returns the provider name.
 func (p *Provider) Name() string {
 	return p.name
 }
 
+// Value returns the value at path.
 func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error) {
 	return p.data.read(p.Name(), path)
 }
 
+// With returns a provider for the same name and the given YAML node.
 func (p *Provider) With(data *yaml.Node) *Provider {
 	return &Provider{
 		data: node{Node: data},

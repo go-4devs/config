@@ -20,6 +20,7 @@ const (
 	defaultSpace = 2
 )
 
+// ResolveStyle returns the dump style stored on params.
 func ResolveStyle(params param.Params) ViewStyle {
 	var vs ViewStyle
 
@@ -31,6 +32,7 @@ func ResolveStyle(params param.Params) ViewStyle {
 	return vs
 }
 
+// WithStyle stores the comment and info styles used by a dump.
 func WithStyle(comment, info Style) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, paramDumpReferenceView, ViewStyle{
@@ -47,6 +49,7 @@ type ViewStyle struct {
 	MLen    int
 }
 
+// ILen returns the info style length plus the padding.
 func (v ViewStyle) ILen() int {
 	return v.Info.Len() + v.MLen
 }
@@ -56,10 +59,12 @@ type Style struct {
 	End   string
 }
 
+// Len returns the length of the style markers.
 func (s Style) Len() int {
 	return len(s.End) + len(s.Start)
 }
 
+// NewDump returns a dump that writes flag help.
 func NewDump() Dump {
 	return Dump{
 		sep:   dash,
@@ -72,6 +77,7 @@ type Dump struct {
 	space int
 }
 
+// Reference writes arguments and options to w.
 func (d Dump) Reference(w io.Writer, opt config.Options) error {
 	views := NewViews(opt, nil)
 	style := ResolveStyle(opt)
@@ -267,6 +273,7 @@ func (d Dump) writeDefault(w io.Writer, style ViewStyle, data string) error {
 	return nil
 }
 
+// NewViews returns dump views for opts, including options inside groups.
 func NewViews(opts config.Options, parent *View) Views {
 	views := make(Views, 0, len(opts.Options()))
 	for _, opt := range opts.Options() {
@@ -288,6 +295,7 @@ func newViews(opt config.Option, parent *View) []View {
 
 type Views []View
 
+// Arguments returns positional views ordered by position.
 func (v Views) Arguments() []View {
 	args := make([]View, 0, len(v))
 
@@ -304,6 +312,7 @@ func (v Views) Arguments() []View {
 	return args
 }
 
+// Options returns flag views ordered by position.
 func (v Views) Options() []View {
 	opts := make([]View, 0, len(v))
 
@@ -320,6 +329,7 @@ func (v Views) Options() []View {
 	return opts
 }
 
+// NewView returns a dump view for one option.
 func NewView(params config.Option, parent *View) View {
 	pos, ok := ParamArgument(params)
 
@@ -354,22 +364,27 @@ type View struct {
 	parent     *View
 }
 
+// Name joins the path with delimiter.
 func (v View) Name(delimiter string) string {
 	return strings.Join(v.keys, delimiter)
 }
 
+// IsArgument reports whether the view is a positional argument.
 func (v View) IsArgument() bool {
 	return v.isArgument
 }
 
+// Keys returns the option path.
 func (v View) Keys() []string {
 	return v.keys
 }
 
+// Pos returns the position.
 func (v View) Pos() uint64 {
 	return v.pos
 }
 
+// Default returns the default value as text.
 func (v View) Default() string {
 	data, ok := param.Default(v.Params)
 	if !ok {
@@ -392,28 +407,34 @@ func (v View) Default() string {
 	return fmt.Sprintf("%v", data)
 }
 
+// Description returns the option description.
 func (v View) Description() string {
 	return param.Description(v.Params)
 }
 
+// IsHidden reports whether the option is hidden.
 func (v View) IsHidden() bool {
 	return option.IsHidden(v.Params)
 }
 
+// Short returns the one-letter flag name.
 func (v View) Short() string {
 	short, _ := option.ParamShort(v.Params)
 
 	return short
 }
 
+// IsRequired reports whether the option is hidden.
 func (v View) IsRequired() bool {
 	return option.IsHidden(v.Params)
 }
 
+// IsBool reports whether the option is a bool flag.
 func (v View) IsBool() bool {
 	return option.IsBool(v.Params)
 }
 
+// IsSlice reports whether the option is a slice.
 func (v View) IsSlice() bool {
 	return option.IsSlice(v.Params)
 }

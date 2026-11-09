@@ -5,6 +5,7 @@ import (
 	"unicode"
 )
 
+// AliasName returns a Go identifier for a package path element.
 func AliasName(name string) string {
 	data := strings.Builder{}
 	toUp := false

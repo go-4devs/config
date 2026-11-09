@@ -7,6 +7,8 @@ import (
 	"sync/atomic"
 )
 
+// WrapFactory returns a provider that calls fn.Create once, on the first read.
+// A failed create is retried by the next call. Concurrent callers wait for that create.
 func WrapFactory(fn Factory, prov Provider) *WrapProvider {
 	return &WrapProvider{
 		factory: func(ctx context.Context) (Provider, error) {
@@ -27,6 +29,7 @@ type WrapProvider struct {
 	name     string
 }
 
+// Watch creates the provider and watches path when the provider implements WatchProvider.
 func (p *WrapProvider) Watch(ctx context.Context, callback WatchCallback, path ...string) error {
 	if err := p.init(ctx); err != nil {
 		return fmt.Errorf("init read:%w", err)
@@ -44,6 +47,7 @@ func (p *WrapProvider) Watch(ctx context.Context, callback WatchCallback, path .
 	return nil
 }
 
+// Value creates the provider and returns its value at path.
 func (p *WrapProvider) Value(ctx context.Context, path ...string) (Value, error) {
 	if err := p.init(ctx); err != nil {
 		return nil, fmt.Errorf("init read:%w", err)
@@ -57,10 +61,12 @@ func (p *WrapProvider) Value(ctx context.Context, path ...string) (Value, error)
 	return variable, nil
 }
 
+// Name returns the factory name.
 func (p *WrapProvider) Name() string {
 	return p.name
 }
 
+// Bind creates the provider and binds data when the provider implements BindProvider.
 func (p *WrapProvider) Bind(ctx context.Context, data Variables) error {
 	if err := p.init(ctx); err != nil {
 		return fmt.Errorf("init bind: %w", err)
