@@ -14,7 +14,7 @@ on:
 
 jobs:
   goaction:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     services:
       vault:
         image: hashicorp/vault:1.13.3

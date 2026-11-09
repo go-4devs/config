@@ -14,7 +14,7 @@ on:
 
 jobs:
   goaction:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     services:
       etcd:
         image: quay.io/coreos/etcd:v3.6.7

@@ -23,7 +23,7 @@ on:
 
 jobs:
   goaction:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
