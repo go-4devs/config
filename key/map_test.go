@@ -6,6 +6,26 @@ import (
 	"github.com/go-4devs/config/key"
 )
 
+func TestMap_EmptyPathIsMissing(t *testing.T) {
+	t.Parallel()
+
+	data := key.Map{}
+
+	if _, ok := data.Index(nil); ok {
+		t.Fatal("nil path")
+	}
+
+	data.Add(1, []string{"password"})
+
+	if _, ok := data.Index(nil); ok {
+		t.Fatal("nil path after add")
+	}
+
+	if _, ok := data.Index(key.ByPath("", "-")); ok {
+		t.Fatal("empty bypath")
+	}
+}
+
 func TestMap_ByPath(t *testing.T) {
 	t.Parallel()
 

@@ -4,14 +4,12 @@ import (
 	"strings"
 )
 
-const (
-	prefixByPath = "byPath"
-	wrongIDx     = -1
-)
+const prefixByPath = "byPath"
 
 func newMap() *Map {
 	return &Map{
-		idx:      wrongIDx,
+		idx:      0,
+		valid:    false,
 		wild:     nil,
 		children: nil,
 	}
@@ -19,6 +17,7 @@ func newMap() *Map {
 
 type Map struct {
 	idx      int
+	valid    bool
 	wild     *Map
 	children map[string]*Map
 }
@@ -45,7 +44,9 @@ func (m *Map) Index(path []string) (int, bool) {
 
 // Add stores idx at path. A trailing {name} segment is a wildcard.
 func (m *Map) Add(idx int, path []string) {
-	m.add(path).idx = idx
+	node := m.add(path)
+	node.idx = idx
+	node.valid = true
 }
 
 func (m *Map) add(path []string) *Map {
@@ -122,6 +123,10 @@ func (m *Map) byPath(path, sep string) (*Map, bool) {
 }
 
 func (m *Map) find(path []string) (*Map, bool) {
+	if len(path) == 0 {
+		return m, m.isValid()
+	}
+
 	name := path[0]
 
 	last := len(path) == 1
@@ -150,5 +155,5 @@ func (m *Map) find(path []string) (*Map, bool) {
 }
 
 func (m *Map) isValid() bool {
-	return m.idx != wrongIDx
+	return m.valid
 }
