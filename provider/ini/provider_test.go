@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"gitoa.ru/go-4devs/config/provider/ini"
-	"gitoa.ru/go-4devs/config/test"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/provider/ini"
+	"github.com/go-4devs/config/test"
+	"github.com/go-4devs/config/test/require"
 	lib "gopkg.in/ini.v1"
 )
 

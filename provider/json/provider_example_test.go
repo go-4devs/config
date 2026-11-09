@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/provider/json"
-	"gitoa.ru/go-4devs/config/test"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/provider/json"
+	"github.com/go-4devs/config/test"
 )
 
 func ExampleClient_Value() {

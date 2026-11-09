@@ -1,10 +1,10 @@
-module gitoa.ru/go-4devs/config/provider/vault
+module github.com/go-4devs/config/provider/vault
 
 go 1.27.3
 
 require (
+	github.com/go-4devs/config v0.0.17
 	github.com/hashicorp/vault/api v1.23.0
-	gitoa.ru/go-4devs/config v0.0.15
 )
 
 require (

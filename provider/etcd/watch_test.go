@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"gitoa.ru/go-4devs/config"
+	"github.com/go-4devs/config"
 	pb "go.etcd.io/etcd/api/v3/mvccpb"
 	client "go.etcd.io/etcd/client/v3"
 )

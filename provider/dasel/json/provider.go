@@ -1,8 +1,8 @@
 package json
 
 import (
+	"github.com/go-4devs/config/provider/dasel"
 	"github.com/tomwright/dasel/v3/parsing/json"
-	"gitoa.ru/go-4devs/config/provider/dasel"
 )
 
 const Name = "dasel:json"

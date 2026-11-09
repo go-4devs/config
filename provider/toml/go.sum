@@ -1,4 +1,4 @@
+github.com/go-4devs/config v0.0.17 h1:+XyNlP5suKFScJWxbB1cStbXdev0yqxU9X0QC5ui/LU=
+github.com/go-4devs/config v0.0.17/go.mod h1:XgIlF8un2/CRtr+uKHbRvj5ygkrFLAoGxFYtMW+DEe4=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
-gitoa.ru/go-4devs/config v0.0.15 h1:2jUc6Mh5/maNZqkx6uR8Ei0+z22j/kzmH9phQHaGfT8=
-gitoa.ru/go-4devs/config v0.0.15/go.mod h1:cLW1+4E4uM4Pw+z4RuKEKbO1Lz6UTs2b2fTPyeEgTx8=

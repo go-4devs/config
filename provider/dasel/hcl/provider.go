@@ -1,8 +1,8 @@
 package hcl
 
 import (
+	"github.com/go-4devs/config/provider/dasel"
 	"github.com/tomwright/dasel/v3/parsing/hcl"
-	"gitoa.ru/go-4devs/config/provider/dasel"
 )
 
 const Name = "dasel:hcl"

@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	djson "gitoa.ru/go-4devs/config/provider/dasel/json"
-	"gitoa.ru/go-4devs/config/test"
-	"gitoa.ru/go-4devs/config/test/require"
+	djson "github.com/go-4devs/config/provider/dasel/json"
+	"github.com/go-4devs/config/test"
+	"github.com/go-4devs/config/test/require"
 )
 
 //go:embed fixture/*
