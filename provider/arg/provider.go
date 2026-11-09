@@ -274,6 +274,10 @@ func (i *Argv) parse() error {
 
 // parseOne return name, value, error.
 func (i *Argv) parseOne(arg string) (string, string, error) {
+	if arg == "" || arg == "-" {
+		return "", "", fmt.Errorf("%w: bad flag syntax: %s", config.ErrInvalidValue, arg)
+	}
+
 	if arg[0] != '-' {
 		return "", "", nil
 	}

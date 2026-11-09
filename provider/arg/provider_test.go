@@ -44,6 +44,13 @@ func TestProvider(t *testing.T) {
 	test.Run(t, prov, read)
 }
 
+func TestValueRejectsLoneDash(t *testing.T) {
+	t.Parallel()
+
+	_, err := arg.New(arg.WithArgs([]string{"-"})).Value(context.Background(), "listen")
+	require.ErrorIs(t, err, config.ErrInvalidValue)
+}
+
 func TestProviderBind(t *testing.T) {
 	t.Parallel()
 

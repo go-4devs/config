@@ -99,7 +99,7 @@ func (p *Provider) Key(s []string) string {
 func (p *Provider) Value(ctx context.Context, path ...string) (config.Value, error) {
 	name := p.Key(path)
 
-	resp, err := p.client.Get(ctx, name, client.WithPrefix())
+	resp, err := p.client.Get(ctx, name)
 	if err != nil {
 		return nil, fmt.Errorf("%w: key:%s, prov:%s", err, name, p.Name())
 	}
