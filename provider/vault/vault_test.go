@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-4devs/config/test"
 	"github.com/hashicorp/vault/api"
-	"gitoa.ru/go-4devs/config/test"
 )
 
 const token = "dev"

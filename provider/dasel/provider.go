@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/value"
 	dasel "github.com/tomwright/dasel/v3"
 	"github.com/tomwright/dasel/v3/model"
 	"github.com/tomwright/dasel/v3/parsing"
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/value"
 )
 
 var _ config.Provider = Provider{} //nolint:exhaustruct,exhaustruct_v5

@@ -1,10 +1,10 @@
-module gitoa.ru/go-4devs/config/provider/dasel
+module github.com/go-4devs/config/provider/dasel
 
 go 1.27.3
 
 require (
+	github.com/go-4devs/config v0.0.17
 	github.com/tomwright/dasel/v3 v3.11.2
-	gitoa.ru/go-4devs/config v0.0.15
 )
 
 require (

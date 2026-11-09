@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	dhcl "gitoa.ru/go-4devs/config/provider/dasel/hcl"
-	"gitoa.ru/go-4devs/config/test"
-	"gitoa.ru/go-4devs/config/test/require"
+	dhcl "github.com/go-4devs/config/provider/dasel/hcl"
+	"github.com/go-4devs/config/test"
+	"github.com/go-4devs/config/test/require"
 )
 
 //go:embed fixture/*

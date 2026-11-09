@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"gitoa.ru/go-4devs/config"
-	"gitoa.ru/go-4devs/config/provider/etcd"
+	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/provider/etcd"
 )
 
 func ExampleClient_Value() {

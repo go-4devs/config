@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"gitoa.ru/go-4devs/config/provider/vault"
-	"gitoa.ru/go-4devs/config/test"
-	"gitoa.ru/go-4devs/config/test/require"
+	"github.com/go-4devs/config/provider/vault"
+	"github.com/go-4devs/config/test"
+	"github.com/go-4devs/config/test/require"
 )
 
 func TestProvider(t *testing.T) {
