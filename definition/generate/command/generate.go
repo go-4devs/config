@@ -6,22 +6,25 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/go-4devs/config"
 	"github.com/go-4devs/config/definition/generate"
+	"github.com/go-4devs/config/provider/chain"
 	"github.com/go-4devs/config/provider/memory"
 	gconfig "gitoa.ru/go-4devs/config"
 	ggenerate "gitoa.ru/go-4devs/config/definition/generate"
-	gchain "gitoa.ru/go-4devs/config/provider/chain"
 	"gitoa.ru/go-4devs/console/command"
 	"gitoa.ru/go-4devs/console/output"
 )
 
 const Name = "config:generate"
 
+type ExecuteFn func(ctx context.Context, input config.Provider, output output.Output) error
+
 // Handle fills generator settings from the source file.
-func Handle(ctx context.Context, in gconfig.Provider, out output.Output, next command.ExecuteFn) error {
+func Handle(ctx context.Context, in config.Provider, out output.Output, next ExecuteFn) error {
 	var name string
 
-	value, err := in.Value(ctx, ggenerate.OptionFile)
+	value, err := in.Value(ctx, generate.OptionFile)
 	if err == nil {
 		name = value.String()
 	}
@@ -35,27 +38,23 @@ func Handle(ctx context.Context, in gconfig.Provider, out output.Output, next co
 		return fmt.Errorf("parse:%w", err)
 	}
 
-	mem, merr := ggenerate.NewMemoryProvider(name,
-		ggenerate.WithOutName(parser.OutName()),
-		ggenerate.WithFullPkg(parser.FullPkg()),
-		ggenerate.WithMethods(parser.Methods()...),
+	mem, merr := generate.NewMemoryProvider(name,
+		generate.WithOutName(parser.OutName()),
+		generate.WithFullPkg(parser.FullPkg()),
+		generate.WithMethods(parser.Methods()...),
 	)
 	if merr != nil {
 		return fmt.Errorf("mem provider:%w", merr)
 	}
 
-	return next(ctx, gchain.New(in, mem), out)
+	return next(ctx, chain.New(in, mem), out)
 }
 
 // Execute runs the generator.
-func Execute(ctx context.Context, in gconfig.Provider, _ output.Output) error {
-	mem, err := localSettings(ctx, in)
-	if err != nil {
-		return err
-	}
+func Execute(ctx context.Context, in config.Provider, _ output.Output) error {
+	cfg := generate.NewConfigureConfig(ctx, in, generate.WithConfigureConfigHandle(func(context.Context, error) {}))
 
-	cfg := generate.NewConfigureConfig(ctx, mem, generate.WithConfigureConfigHandle(func(context.Context, error) {}))
-	if err = generate.Generate(ctx, cfg); err != nil {
+	if err := generate.Generate(ctx, cfg); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -67,10 +66,19 @@ func Command() command.Command {
 	return command.New(
 		Name,
 		"generate helper for configure command",
-		Execute,
+		func(context.Context, gconfig.Provider, output.Output) error { return nil },
 		command.Configure(ggenerate.Configure),
-		command.Handle(Handle),
+		command.Handle(run),
 	)
+}
+
+func run(ctx context.Context, in gconfig.Provider, out output.Output, _ command.ExecuteFn) error {
+	base, err := localSettings(ctx, in)
+	if err != nil {
+		return err
+	}
+
+	return Handle(ctx, base, out, Execute)
 }
 
 func localSettings(ctx context.Context, in gconfig.Provider) (*memory.Map, error) {
