@@ -108,6 +108,24 @@ func TestMap_Add(t *testing.T) {
 	}
 }
 
+func TestMap_WildKeepsSiblingFields(t *testing.T) {
+	t.Parallel()
+
+	data := key.Map{}
+	data.Add(1, []string{"end", "{service}", "after"})
+	data.Add(2, []string{"end", "{service}", "host"})
+
+	idx, ok := data.Index([]string{"end", "api", "after"})
+	if !ok || idx != 1 {
+		t.Fatalf("after idx %v ok %v", idx, ok)
+	}
+
+	idx, ok = data.Index([]string{"end", "api", "host"})
+	if !ok || idx != 2 {
+		t.Fatalf("host idx %v ok %v", idx, ok)
+	}
+}
+
 func TestMap_Wild(t *testing.T) {
 	t.Parallel()
 

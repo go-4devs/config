@@ -56,7 +56,9 @@ func (m *Map) add(path []string) *Map {
 	name, path := path[0], path[1:]
 
 	if IsWild(name) {
-		m.wild = newMap()
+		if m.wild == nil {
+			m.wild = newMap()
+		}
 
 		return m.wild.add(path)
 	}
