@@ -80,6 +80,7 @@ func (i *Argv) Value(ctx context.Context, key ...string) (config.Value, error) {
 }
 
 // Bind parses flags and positional arguments into the option map. A bool short flag may be clustered, as in -xzv.
+// An empty argument returns ErrInvalidValue.
 func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 	options := true
 
@@ -92,6 +93,8 @@ func (i *Argv) Bind(ctx context.Context, def config.Variables) error {
 		switch {
 		case options && arg == doubleDash:
 			options = false
+		case options && arg == "":
+			return fmt.Errorf("%w: bad flag syntax: %s", config.ErrInvalidValue, arg)
 		case options && len(arg) > 2 && arg[0:2] == doubleDash:
 			err = i.parseLongOption(arg[2:], def)
 		case options && arg[0:1] == "-":

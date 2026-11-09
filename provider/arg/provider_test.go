@@ -51,6 +51,13 @@ func TestValueRejectsLoneDash(t *testing.T) {
 	require.ErrorIs(t, err, config.ErrInvalidValue)
 }
 
+func TestBindRejectsEmptyArg(t *testing.T) {
+	t.Parallel()
+
+	err := arg.New(arg.WithArgs([]string{""})).Bind(context.Background(), testVariables(t))
+	require.ErrorIs(t, err, config.ErrInvalidValue)
+}
+
 func TestProviderBind(t *testing.T) {
 	t.Parallel()
 
