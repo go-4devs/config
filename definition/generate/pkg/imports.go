@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -21,7 +22,7 @@ type Packages struct {
 	pkg  string
 }
 
-// Imports returns the registered imports.
+// Imports returns the registered imports, standard library first.
 func (i *Packages) Imports() []Import {
 	imports := make([]Import, 0, len(i.data))
 	for name, alias := range i.data {
@@ -31,7 +32,49 @@ func (i *Packages) Imports() []Import {
 		})
 	}
 
+	slices.SortFunc(imports, func(left, right Import) int {
+		if left.stdlib() != right.stdlib() {
+			if left.stdlib() {
+				return -1
+			}
+
+			return 1
+		}
+
+		return strings.Compare(left.Package, right.Package)
+	})
+
 	return imports
+}
+
+// ImportBlock returns the import declaration, with a blank line before third-party packages.
+func (i *Packages) ImportBlock() string {
+	var block strings.Builder
+
+	block.WriteString("import (\n")
+
+	wroteStd := false
+	separated := false
+
+	for _, imp := range i.Imports() {
+		if !imp.stdlib() && wroteStd && !separated {
+			block.WriteByte('\n')
+
+			separated = true
+		}
+
+		if imp.stdlib() {
+			wroteStd = true
+		}
+
+		block.WriteByte('\t')
+		block.WriteString(imp.String())
+		block.WriteByte('\n')
+	}
+
+	block.WriteString(")\n")
+
+	return block.String()
 }
 
 // Short returns the name used for fullType in generated code.
@@ -128,6 +171,10 @@ func (i Import) String() string {
 	}
 
 	return fmt.Sprintf("%s %q", i.Alias, i.Package)
+}
+
+func (i Import) stdlib() bool {
+	return !strings.Contains(i.Package, ".")
 }
 
 // Pkg returns the last element of the import path.

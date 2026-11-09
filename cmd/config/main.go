@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"gitoa.ru/go-4devs/config/definition/generate/command"
+	"github.com/go-4devs/config/definition/generate/command"
 	"gitoa.ru/go-4devs/console"
 )
 
