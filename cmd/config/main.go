@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/go-4devs/config/definition/generate/command"
-	"gitoa.ru/go-4devs/console"
+	"github.com/go-4devs/console"
 )
 
 func main() {
