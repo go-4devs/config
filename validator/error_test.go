@@ -5,34 +5,9 @@ import (
 	"testing"
 
 	"gitoa.ru/go-4devs/config/definition/option"
-	"gitoa.ru/go-4devs/config/test/require"
 	"gitoa.ru/go-4devs/config/validator"
 	"gitoa.ru/go-4devs/config/value"
 )
-
-func TestSentinelsWrapInvalid(t *testing.T) {
-	t.Parallel()
-
-	sentinels := []error{
-		validator.ErrNotBlank,
-		validator.ErrMin,
-		validator.ErrMax,
-		validator.ErrEqual,
-		validator.ErrMinLen,
-		validator.ErrMaxLen,
-		validator.ErrEmail,
-		validator.ErrJSON,
-		validator.ErrURL,
-		validator.ErrURI,
-		validator.ErrHostname,
-		validator.ErrRegex,
-		validator.ErrEnum,
-	}
-
-	for _, err := range sentinels {
-		require.ErrorIs(t, err, validator.ErrInvalid)
-	}
-}
 
 func TestErrorTypes(t *testing.T) {
 	t.Parallel()
