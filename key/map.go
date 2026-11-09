@@ -46,6 +46,10 @@ func (m *Map) Add(idx int, path []string) {
 }
 
 func (m *Map) add(path []string) *Map {
+	if len(path) == 0 {
+		return m
+	}
+
 	name, path := path[0], path[1:]
 
 	if IsWild(name) {
@@ -109,7 +113,7 @@ func (m *Map) byPath(path, sep string) (*Map, bool) {
 		return m.wild.byPath(rest, sep)
 	}
 
-	return m, m.isValid()
+	return m.wild, m.wild.isValid()
 }
 
 func (m *Map) find(path []string) (*Map, bool) {
@@ -122,6 +126,10 @@ func (m *Map) find(path []string) (*Map, bool) {
 
 	data, ok := m.children[name]
 	if !ok && m.wild != nil {
+		if last {
+			return m.wild, m.wild.isValid()
+		}
+
 		return m.wild.find(path)
 	}
 

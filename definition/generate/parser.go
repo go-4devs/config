@@ -111,8 +111,12 @@ func importAlias(file *ast.File, params []reflect.Type) map[int][]string {
 func hasFields(fields *ast.FieldList, params []reflect.Type, alias map[int][]string) bool {
 	for idx, one := range fields.List {
 		iparam := params[idx]
-		if ident, iok := one.Type.(*ast.Ident); iok && iparam.String() == ident.String() {
-			return true
+		if ident, iok := one.Type.(*ast.Ident); iok {
+			if iparam.String() != ident.String() {
+				return false
+			}
+
+			continue
 		}
 
 		selector, sok := one.Type.(*ast.SelectorExpr)

@@ -62,6 +62,25 @@ func TestMap_ByPath(t *testing.T) {
 	}
 }
 
+func TestMap_TrailingWild(t *testing.T) {
+	t.Parallel()
+
+	const id = 1
+
+	data := key.Map{}
+	data.Add(id, []string{"user", "{id}"})
+
+	idx, ok := data.Index([]string{"user", "5"})
+	if !ok || idx != id {
+		t.Fatalf("idx exp:%v got:%v ok:%v", id, idx, ok)
+	}
+
+	idx, ok = data.Index(key.ByPath("user-5", "-"))
+	if !ok || idx != id {
+		t.Fatalf("path idx exp:%v got:%v ok:%v", id, idx, ok)
+	}
+}
+
 func TestMap_Add(t *testing.T) {
 	t.Parallel()
 
