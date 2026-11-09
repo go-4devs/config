@@ -208,21 +208,11 @@ func (i *Argv) parseShortOption(arg string, def config.Variables) error {
 func (i *Argv) parseArgument(arg string, def config.Variables) error {
 	opt, err := def.ByParam(PosArgument(i.pos))
 	if err != nil {
-		var maxArgs uint64
-		if i.pos > 0 {
-			maxArgs -= i.pos
-		}
-
 		if errors.Is(err, config.ErrNotFound) {
-			return fmt.Errorf("argument[%s] by pos[%d] max[%d]: %w",
-				arg,
-				i.pos+1,
-				maxArgs,
-				config.ErrNotFound,
-			)
+			return fmt.Errorf("argument[%s] by pos[%d]: %w", arg, i.pos+1, config.ErrNotFound)
 		}
 
-		return fmt.Errorf("find argiment by pos[%d] max[%d]: %w", i.pos+1, maxArgs, err)
+		return fmt.Errorf("find argiment by pos[%d]: %w", i.pos+1, err)
 	}
 
 	i.pos++
@@ -239,16 +229,23 @@ func (i *Argv) parse() error {
 		return nil
 	}
 
-	for _, arg := range i.args {
-		name, value, err := i.parseOne(arg)
+	for idx := 0; idx < len(i.args); idx++ {
+		name, value, err := i.parseOne(i.args[idx])
 		if err != nil {
 			return err
 		}
 
-		if name != "" {
-			if err := i.AppendOption(value, name); err != nil {
-				return fmt.Errorf("append %v: %w", name, err)
-			}
+		if name == "" {
+			continue
+		}
+
+		if value == "" && idx+1 < len(i.args) && !strings.HasPrefix(i.args[idx+1], "-") {
+			idx++
+			value = i.args[idx]
+		}
+
+		if err = i.AppendOption(value, name); err != nil {
+			return fmt.Errorf("append %v: %w", name, err)
 		}
 	}
 

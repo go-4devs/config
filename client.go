@@ -90,12 +90,17 @@ func (c *Client) Value(ctx context.Context, path ...string) (Value, error) {
 
 // Watch calls Watch on every provider that implements WatchProvider.
 // ErrNotFound and ErrInitFactory from a provider are skipped.
+// ErrNotFound is returned when no provider implements Watch.
 func (c *Client) Watch(ctx context.Context, callback WatchCallback, path ...string) error {
+	found := false
+
 	for idx, prov := range c.providers {
 		provider, ok := prov.(WatchProvider)
 		if !ok {
 			continue
 		}
+
+		found = true
 
 		err := provider.Watch(ctx, callback, path...)
 		if err != nil {
@@ -105,6 +110,10 @@ func (c *Client) Watch(ctx context.Context, callback WatchCallback, path ...stri
 
 			return fmt.Errorf("client: failed watch by provider[%d]: %w", idx, err)
 		}
+	}
+
+	if !found {
+		return fmt.Errorf("%w", ErrNotFound)
 	}
 
 	return nil

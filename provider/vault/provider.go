@@ -99,11 +99,6 @@ func (p *Provider) Value(_ context.Context, key ...string) (config.Value, error)
 		return nil, fmt.Errorf("%w: path:%s, field:%s, provider:%s", config.ErrValueNotFound, path, field, p.Name())
 	}
 
-	if len(secret.Warnings) > 0 {
-		return nil,
-			fmt.Errorf("%w: warn: %s, path:%s, field:%s, provider:%s", config.ErrValueNotFound, secret.Warnings, path, field, p.Name())
-	}
-
 	data, ok := secret.Data["data"].(map[string]any)
 	if !ok {
 		return nil, fmt.Errorf("%w: path:%s, field:%s, provider:%s", config.ErrValueNotFound, path, field, p.Name())
