@@ -7,6 +7,33 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// Optional runs next when NotBlank would accept the value.
+func Optional(next Validator) Validator {
+	return func(fn param.Params, in config.Value) error {
+		ok, err := filled(fn, in)
+		if err != nil {
+			return err
+		}
+
+		if !ok {
+			return nil
+		}
+
+		return next(fn, in)
+	}
+}
+
+// When runs next when cond succeeds. Otherwise it skips next.
+func When(cond, next Validator) Validator {
+	return func(fn param.Params, in config.Value) error {
+		if cond(fn, in) == nil {
+			return next(fn, in)
+		}
+
+		return nil
+	}
+}
+
 // Chain returns a validator that runs v and stops on the first error.
 func Chain(v ...Validator) Validator {
 	return func(vr param.Params, in config.Value) error {
