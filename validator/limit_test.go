@@ -2,6 +2,7 @@ package validator_test
 
 import (
 	"testing"
+	"time"
 
 	"gitoa.ru/go-4devs/config/definition/option"
 	"gitoa.ru/go-4devs/config/test/require"
@@ -26,6 +27,12 @@ func TestMinMax(t *testing.T) {
 	require.ErrorIs(t, validator.Min(0.5)(flt, value.New(0.1)), validator.ErrMin)
 	require.ErrorIs(t, validator.Min(1)(option.String("name", "name"), value.New("a")), validator.ErrInvalid)
 	require.ErrorIs(t, validator.Min(int64(1))(opt, value.New(1)), validator.ErrInvalid)
+
+	wait := option.Duration("wait", "wait")
+	require.NoError(t, validator.Min(time.Second)(wait, value.New(time.Second)))
+	require.ErrorIs(t, validator.Min(time.Second)(wait, value.New(time.Millisecond)), validator.ErrMin)
+	require.ErrorIs(t, validator.Max(time.Second)(wait, value.New(2*time.Second)), validator.ErrMax)
+	require.ErrorIs(t, validator.Min(int64(1))(wait, value.New(time.Second)), validator.ErrInvalid)
 
 	wide := option.Uint64("id", "id")
 	require.NoError(t, validator.Max(uint64(1<<54))(wide, value.New(uint64(1<<54))))

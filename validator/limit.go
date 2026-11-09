@@ -3,13 +3,14 @@ package validator
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"gitoa.ru/go-4devs/config"
 	"gitoa.ru/go-4devs/config/param"
 )
 
 type number interface {
-	int | int64 | uint | uint64 | float64
+	int | int64 | uint | uint64 | float64 | time.Duration
 }
 
 var (
@@ -18,13 +19,15 @@ var (
 )
 
 // Min returns a validator that rejects values below limit.
-// The option type must be the same type as limit: int, int64, uint, uint64, or float64. The bound is inclusive.
+// The option type must be the same type as limit: int, int64, uint, uint64, float64, or time.Duration.
+// The bound is inclusive.
 func Min[T number](limit T) Validator {
 	return bound(limit, func(num T) bool { return num < limit }, ErrMin)
 }
 
 // Max returns a validator that rejects values above limit.
-// The option type must be the same type as limit: int, int64, uint, uint64, or float64. The bound is inclusive.
+// The option type must be the same type as limit: int, int64, uint, uint64, float64, or time.Duration.
+// The bound is inclusive.
 func Max[T number](limit T) Validator {
 	return bound(limit, func(num T) bool { return num > limit }, ErrMax)
 }
@@ -66,6 +69,8 @@ func numberOf[T number](fn param.Params, in config.Value) (T, error) {
 		num, err = in.ParseUint64()
 	case float64:
 		num, err = in.ParseFloat64()
+	case time.Duration:
+		num, err = in.ParseDuration()
 	default:
 		return zero, ErrInvalid
 	}
