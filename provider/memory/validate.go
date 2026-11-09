@@ -2,6 +2,7 @@ package memory
 
 import (
 	"context"
+	"errors"
 
 	"github.com/go-4devs/config"
 	"github.com/go-4devs/config/definition/option"
@@ -28,8 +29,12 @@ type Validate struct {
 func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 	for _, opt := range def.Variables() {
 		val, err := a.Value(ctx, opt.Key()...)
-		if err != nil {
+		if errors.Is(err, config.ErrNotFound) {
 			continue
+		}
+
+		if err != nil {
+			return option.Err(err, opt.Key()) //nolint:wrapcheck
 		}
 
 		if err = validator.Validate(opt.Key(), opt, val); err != nil {
