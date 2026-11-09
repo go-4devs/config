@@ -74,23 +74,39 @@ func (m *Map) byPath(path, sep string) (*Map, bool) {
 		return m, m.isValid()
 	}
 
-	for name := range m.children {
-		if after, ok := strings.CutPrefix(path, name); ok {
-			data := m.children[name]
-			if len(after) == 0 || len(after) == len(sep) {
-				return data, data.isValid()
-			}
+	var (
+		best    *Map
+		bestLen int
+	)
 
-			return data.byPath(after[len(sep):], sep)
+	for name, data := range m.children {
+		after, ok := strings.CutPrefix(path, name)
+		if !ok || after != "" && (sep == "" || !strings.HasPrefix(after, sep)) {
+			continue
 		}
+
+		next, nok := data, data.isValid()
+		if after != "" {
+			next, nok = data.byPath(after[len(sep):], sep)
+		}
+
+		if !nok || len(name) <= bestLen {
+			continue
+		}
+
+		best, bestLen = next, len(name)
 	}
 
-	if m.wild == nil {
-		return m, m.isValid()
+	if best != nil {
+		return best, true
 	}
 
-	if idx := strings.Index(path, sep); idx != -1 {
-		return m.wild.byPath(path[idx+1:], sep)
+	if m.wild == nil || sep == "" {
+		return m, false
+	}
+
+	if _, rest, ok := strings.Cut(path, sep); ok {
+		return m.wild.byPath(rest, sep)
 	}
 
 	return m, m.isValid()
