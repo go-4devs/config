@@ -78,8 +78,8 @@ func (i *Packages) Add(pkg string) Import {
 
 	alias := pkg
 
-	if idx := strings.LastIndexByte(pkg, '/'); idx != -1 {
-		alias = AliasName(pkg[idx+1:])
+	if _, name, ok := strings.CutLast(pkg, "/"); ok {
+		alias = AliasName(name)
 	}
 
 	if al, ok := i.data[pkg]; ok {
@@ -122,8 +122,8 @@ func (i Import) String() string {
 }
 
 func Pkg(fullPkg string) string {
-	if idx := strings.LastIndex(fullPkg, "/"); idx != -1 {
-		return fullPkg[idx+1:]
+	if _, name, ok := strings.CutLast(fullPkg, "/"); ok {
+		return name
 	}
 
 	return fullPkg

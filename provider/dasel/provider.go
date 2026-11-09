@@ -13,7 +13,7 @@ import (
 	"gitoa.ru/go-4devs/config/value"
 )
 
-var _ config.Provider = Provider{} //nolint:exhaustruct
+var _ config.Provider = Provider{} //nolint:exhaustruct,exhaustruct_v5
 
 const Name = "dasel"
 

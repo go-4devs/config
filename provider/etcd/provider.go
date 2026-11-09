@@ -127,8 +127,8 @@ func (p *Provider) getEventKvs(events []*client.Event) ([]*pb.KeyValue, []*pb.Ke
 	old := make([]*pb.KeyValue, 0, len(events))
 
 	for i := range events {
-		kvs = append(kvs, events[i].Kv)
-		old = append(old, events[i].PrevKv)
+		kvs = append(kvs, events[i].GetKv())
+		old = append(old, events[i].GetPrevKv())
 	}
 
 	return kvs, old
@@ -140,8 +140,8 @@ func (p *Provider) resolve(key string, kvs []*pb.KeyValue) (config.Value, error)
 		switch {
 		case kv == nil:
 			return nil, nil
-		case string(kv.Key) == key:
-			return value.JBytes(kv.Value), nil
+		case string(kv.GetKey()) == key:
+			return value.JBytes(kv.GetValue()), nil
 		}
 	}
 

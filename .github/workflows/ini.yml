@@ -22,13 +22,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.5'
+          go-version: '1.27.3'
           cache-dependency-path: provider/ini/go.sum
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.11.4
+          version: v2.15.0
           args: --verbose
           working-directory: ./provider/ini
 

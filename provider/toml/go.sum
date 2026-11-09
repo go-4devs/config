@@ -1,6 +1,4 @@
-github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
-github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
-gitoa.ru/go-4devs/config v0.0.4 h1:mTD0w34PcmVHWaOr/4+zkhYSvcuHiJaBa/bJBuUHcLI=
-gitoa.ru/go-4devs/config v0.0.4/go.mod h1:UINWnObZA0nLiJro+TtavUBBvN0cSt17aRHOk20pP74=
-gitoa.ru/go-4devs/config v0.0.5 h1:9GnQ1G6ebpkXe1tAeb3va/GIx7eBrMuJBYra47OXl+w=
-gitoa.ru/go-4devs/config v0.0.5/go.mod h1:UINWnObZA0nLiJro+TtavUBBvN0cSt17aRHOk20pP74=
+github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
+github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
+gitoa.ru/go-4devs/config v0.0.15 h1:2jUc6Mh5/maNZqkx6uR8Ei0+z22j/kzmH9phQHaGfT8=
+gitoa.ru/go-4devs/config v0.0.15/go.mod h1:cLW1+4E4uM4Pw+z4RuKEKbO1Lz6UTs2b2fTPyeEgTx8=
