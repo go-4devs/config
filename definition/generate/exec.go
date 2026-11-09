@@ -24,6 +24,7 @@ type GConfig interface {
 	bootstrap.Config
 }
 
+// Generate builds the temporary program and writes the formatted result.
 func Generate(ctx context.Context, cfg GConfig) error {
 	path, err := bootstrap.Bootstrap(ctx, cfg)
 

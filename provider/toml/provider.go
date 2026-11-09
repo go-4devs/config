@@ -19,12 +19,14 @@ var _ config.Provider = (*Provider)(nil)
 
 type Option func(*Provider)
 
+// WithName sets the provider name.
 func WithName(in string) Option {
 	return func(p *Provider) {
 		p.name = in
 	}
 }
 
+// New returns a provider for the TOML bytes.
 func New(in []byte, opts ...Option) (*Provider, error) {
 	var data Data
 	if err := toml.Unmarshal(in, &data); err != nil {
@@ -48,10 +50,12 @@ type Provider struct {
 	name string
 }
 
+// Name returns the provider name.
 func (p *Provider) Name() string {
 	return p.name
 }
 
+// Value returns the value at path as JSON bytes.
 func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error) {
 	val, err := p.data.Value(path...)
 	if err != nil {
@@ -68,6 +72,7 @@ func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error
 
 type Data map[string]any
 
+// Value returns the nested map value at path.
 func (d Data) Value(path ...string) (any, error) {
 	if len(path) == 1 {
 		val, ok := d[path[0]]

@@ -22,22 +22,26 @@ var _ config.Provider = (*Provider)(nil)
 
 type SecretOption func(*Provider)
 
+// WithSecretResolve sets how a path becomes a secret path and a field.
 func WithSecretResolve(f func(key []string) (string, string)) SecretOption {
 	return func(s *Provider) { s.resolve = f }
 }
 
+// WithName sets the provider name.
 func WithName(name string) SecretOption {
 	return func(p *Provider) {
 		p.name = name
 	}
 }
 
+// WithPrefix sets the secret path prefix.
 func WithPrefix(prefix string) SecretOption {
 	return func(p *Provider) {
 		p.prefix = prefix
 	}
 }
 
+// New returns a Vault provider for namespace and appName.
 func New(namespace, appName string, client *api.Client, opts ...SecretOption) *Provider {
 	prov := Provider{
 		client: client,
@@ -67,10 +71,12 @@ type Provider struct {
 	prefix  string
 }
 
+// Name returns the provider name.
 func (p *Provider) Name() string {
 	return p.name
 }
 
+// Key returns the secret path and the field name.
 func (p *Provider) Key(in []string) (string, string) {
 	path, val := p.resolve(in)
 	if path == "" {
@@ -80,6 +86,7 @@ func (p *Provider) Key(in []string) (string, string) {
 	return p.prefix + Separator + path, val
 }
 
+// Value returns the secret field.
 func (p *Provider) Value(_ context.Context, key ...string) (config.Value, error) {
 	path, field := p.Key(key)
 

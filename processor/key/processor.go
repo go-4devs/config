@@ -13,12 +13,14 @@ type pkey int
 
 const paramKey pkey = iota
 
+// WithKey stores the map key to read.
 func WithKey(in string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, paramKey, in)
 	}
 }
 
+// Key returns the map field selected by WithKey.
 func Key(_ context.Context, in config.Value, opts ...param.Option) (config.Value, error) {
 	data := make(map[string]any, 0)
 	if err := in.Unmarshal(&data); err != nil {

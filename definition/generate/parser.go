@@ -17,6 +17,7 @@ import (
 
 const NameSuffix = "_config.go"
 
+// Parse reads the configure functions from the Go file.
 func Parse(ctx context.Context, name string) (Parser, error) {
 	var parse Parser
 
@@ -47,6 +48,7 @@ func Parse(ctx context.Context, name string) (Parser, error) {
 	return parse, nil
 }
 
+// NewParseMethods returns functions whose parameters and results match.
 func NewParseMethods(file string, params []reflect.Type, results []reflect.Type) ([]string, error) {
 	pfile, err := parser.ParseFile(token.NewFileSet(), file, nil, parser.ParseComments)
 	if err != nil {
@@ -143,14 +145,17 @@ type Parser struct {
 	methods []string
 }
 
+// OutName returns the generated file name.
 func (p Parser) OutName() string {
 	return strings.ReplaceAll(p.file, ".go", NameSuffix)
 }
 
+// FullPkg returns the package import path.
 func (p Parser) FullPkg() string {
 	return p.fullPkg
 }
 
+// Methods returns the configure function names.
 func (p Parser) Methods() []string {
 	return p.methods
 }

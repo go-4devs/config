@@ -19,18 +19,21 @@ const (
 
 var _ config.Provider = (*Provider)(nil)
 
+// WithKey sets the function that joins a path into a JSON key.
 func WithKey(fn func(...string) string) Option {
 	return func(p *Provider) {
 		p.key = fn
 	}
 }
 
+// WithName sets the provider name.
 func WithName(name string) Option {
 	return func(p *Provider) {
 		p.name = name
 	}
 }
 
+// New returns a provider for the JSON bytes.
 func New(json []byte, opts ...Option) *Provider {
 	provider := Provider{
 		key: func(s ...string) string {
@@ -47,6 +50,7 @@ func New(json []byte, opts ...Option) *Provider {
 	return &provider
 }
 
+// NewFile reads path and returns a JSON provider.
 func NewFile(path string, opts ...Option) (*Provider, error) {
 	file, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
@@ -64,10 +68,12 @@ type Provider struct {
 	name string
 }
 
+// Name returns the provider name.
 func (p *Provider) Name() string {
 	return p.name
 }
 
+// Value returns the JSON value at path.
 func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error) {
 	key := p.key(path...)
 	if val := gjson.GetBytes(p.data, key); val.Exists() {

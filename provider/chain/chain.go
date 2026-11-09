@@ -15,12 +15,14 @@ type Providers interface {
 	config.Providers
 }
 
+// New returns a provider that reads c in order.
 func New(c ...config.Provider) Providers {
 	return chain(c)
 }
 
 type chain []config.Provider
 
+// Value returns the first value. The next provider is used only when the error is ErrNotFound.
 func (c chain) Value(ctx context.Context, name ...string) (config.Value, error) {
 	var err error
 
@@ -44,6 +46,7 @@ func (c chain) Value(ctx context.Context, name ...string) (config.Value, error) 
 	return nil, fmt.Errorf("%w", err)
 }
 
+// Bind calls Bind on every provider that implements BindProvider.
 func (c chain) Bind(ctx context.Context, def config.Variables) error {
 	for _, input := range c {
 		if prov, ok := input.(config.BindProvider); ok {
@@ -56,10 +59,12 @@ func (c chain) Bind(ctx context.Context, def config.Variables) error {
 	return nil
 }
 
+// Name returns "chain".
 func (c chain) Name() string {
 	return Name
 }
 
+// ByName returns this chain or a nested provider with that name.
 func (c chain) ByName(name string) (config.Provider, error) {
 	if c.Name() == name {
 		return c, nil
@@ -83,6 +88,7 @@ func (c chain) ByName(name string) (config.Provider, error) {
 	return nil, fmt.Errorf("prov[%v]:%w", c.Name(), config.ErrNotFound)
 }
 
+// Names returns the provider names, including nested provider lists.
 func (c chain) Names() []string {
 	names := make([]string, 0, len(c))
 	for _, prov := range c {

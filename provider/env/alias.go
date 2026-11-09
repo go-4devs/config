@@ -15,10 +15,12 @@ const (
 	NameDepr  = "edeprecated"
 )
 
+// NewAlias returns a provider that reads the environment variable named by an alias.
 func NewAlias() *memory.Param {
 	return memory.NewParam(NameAlias, ParamAlias, memory.WithParamProcess(env.Env))
 }
 
+// NewDeprecated returns a provider that reads a deprecated environment variable and calls notice.
 func NewDeprecated(notice func(context.Context, string, ...any)) *memory.Param {
 	return memory.NewParam(NameDepr, ParamDeprecated, memory.WithParamProcess(deprNotice(notice)))
 }

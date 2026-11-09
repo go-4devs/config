@@ -7,6 +7,7 @@ import (
 	"gitoa.ru/go-4devs/config/key"
 )
 
+// Keys returns the generated argument list for a value path.
 func Keys(keys []string, val string) string {
 	if len(keys) == 0 {
 		return ""

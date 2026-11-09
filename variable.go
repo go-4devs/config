@@ -7,6 +7,7 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// NewVar returns a variable for opt. Its key is the option name.
 func NewVar(opt Option) Variable {
 	names := make([]string, 0, 1)
 	if name := opt.Name(); name != "" {
@@ -27,6 +28,7 @@ type Variable struct {
 	names  []string
 }
 
+// Param returns the option parameter. A missing key is taken from the parent variable.
 func (v Variable) Param(key any) (any, bool) {
 	if data, ok := v.Option.Param(key); ok {
 		return data, ok
@@ -39,14 +41,17 @@ func (v Variable) Param(key any) (any, bool) {
 	return nil, false
 }
 
+// Key returns the path of option names from the root to this variable.
 func (v Variable) Key() []string {
 	return v.names
 }
 
+// Type returns the option value type.
 func (v Variable) Type() any {
 	return param.Type(v)
 }
 
+// With returns a child variable. Its key is this key plus the option name.
 func (v Variable) With(opt Option) Variable {
 	return Variable{
 		parent: &v,
@@ -55,6 +60,7 @@ func (v Variable) With(opt Option) Variable {
 	}
 }
 
+// NewVars returns variables for opts. Options inside a group use the group path.
 func NewVars(opts ...Option) Vars {
 	vars := newVars(opts...)
 	pos := key.Map{}
@@ -103,10 +109,12 @@ type Vars struct {
 	pos  key.Map
 }
 
+// Variables returns the variables.
 func (d Vars) Variables() []Variable {
 	return d.vars
 }
 
+// ByName returns the variable at path.
 func (d Vars) ByName(path ...string) (Variable, error) {
 	if idx, ok := d.pos.Index(path); ok {
 		return d.vars[idx], nil
@@ -115,6 +123,8 @@ func (d Vars) ByName(path ...string) (Variable, error) {
 	return Variable{}, ErrNotFound
 }
 
+// ByParam returns the only variable accepted by fn.
+// ErrNotFound is returned when none match, and ErrToManyArgs when several match.
 func (d Vars) ByParam(fn param.Has) (Variable, error) {
 	opts := d.filter(fn)
 	switch {

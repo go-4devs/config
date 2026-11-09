@@ -21,44 +21,52 @@ const (
 	viewParamInterface
 )
 
+// WithFuncName sets the generated function name.
 func WithFuncName(name string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamFunctName, name)
 	}
 }
 
+// WithStructName sets the generated struct name.
 func WithStructName(name string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamStructName, name)
 	}
 }
 
+// WithStructPrefix sets the prefix of a generated struct name.
 func WithStructPrefix(prefix string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamStructPrefix, prefix)
 	}
 }
 
+// WithStructSuffix sets the suffix of a generated struct name.
 func WithStructSuffix(suffix string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamStructSuffix, suffix)
 	}
 }
 
+// WithInterface sets the type returned by the generated group method.
 func WithInterface[T any]() param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamInterface, reflect.TypeFor[T]())
 	}
 }
 
+// WithSkipContext marks generated methods that do not take context.
 func WithSkipContext(p param.Params) param.Params {
 	return param.With(p, viewParamSkipContext, true)
 }
 
+// WithContext marks generated methods that take context.
 func WithContext(p param.Params) param.Params {
 	return param.With(p, viewParamSkipContext, false)
 }
 
+// IsSkipContext reports whether generated methods omit context.
 func IsSkipContext(p param.Params) bool {
 	data, has := p.Param(viewParamSkipContext)
 
@@ -73,12 +81,14 @@ func IsSkipContext(p param.Params) bool {
 
 type Option func(*View)
 
+// WithParent sets the parent view.
 func WithParent(in *View) Option {
 	return func(v *View) {
 		v.parent = in
 	}
 }
 
+// NewViews returns a view tree for the options.
 func NewViews(option config.Options, opts ...Option) View {
 	view := newView(option, opts...)
 
@@ -103,6 +113,7 @@ func newView(params param.Params, opts ...Option) View {
 	return vi
 }
 
+// NewView returns a view for one option. A group includes its children.
 func NewView(opt config.Option, opts ...Option) View {
 	vi := newView(opt, opts...)
 
@@ -122,6 +133,7 @@ type View struct {
 	parent   *View
 }
 
+// Types returns the option value types in this view and its children.
 func (v View) Types() []any {
 	types := make([]any, 0)
 	if v.Type() != "" {
@@ -135,14 +147,17 @@ func (v View) Types() []any {
 	return types
 }
 
+// Kind returns the dynamic type stored in the view.
 func (v View) Kind() reflect.Type {
 	return reflect.TypeOf(v.Params)
 }
 
+// Views returns the child views.
 func (v View) Views() []View {
 	return v.children
 }
 
+// Param returns the parameter as text, walking to the parent when it is missing.
 func (v View) Param(key any) string {
 	data, has := v.Params.Param(key)
 	if has {
@@ -156,6 +171,7 @@ func (v View) Param(key any) string {
 	return ""
 }
 
+// ClildSkipContext reports whether any child omits context.
 func (v View) ClildSkipContext() bool {
 	for _, child := range v.children {
 		if child.SkipContext() {
@@ -166,6 +182,7 @@ func (v View) ClildSkipContext() bool {
 	return false
 }
 
+// SkipContext reports whether this view or a parent omits context.
 func (v View) SkipContext() bool {
 	if IsSkipContext(v.Params) {
 		return true
@@ -178,6 +195,7 @@ func (v View) SkipContext() bool {
 	return false
 }
 
+// Name returns the option name.
 func (v View) Name() string {
 	if data, ok := v.Params.(interface{ Name() string }); ok {
 		return data.Name()
@@ -186,6 +204,7 @@ func (v View) Name() string {
 	return ""
 }
 
+// Keys returns the path of option names.
 func (v View) Keys() []string {
 	keys := make([]string, 0, 1)
 	if v.parent != nil {
@@ -199,10 +218,12 @@ func (v View) Keys() []string {
 	return keys
 }
 
+// Type returns the option value type.
 func (v View) Type() any {
 	return param.Type(v.Params)
 }
 
+// FuncName returns the configured function name, or the option name.
 func (v View) FuncName() string {
 	data, ok := v.Params.Param(viewParamFunctName)
 	name, valid := data.(string)
@@ -214,6 +235,7 @@ func (v View) FuncName() string {
 	return name
 }
 
+// StructName returns the configured struct name, or the path joined with the prefix and suffix.
 func (v View) StructName() string {
 	name, ok := param.String(v.Params, viewParamStructName)
 	if ok {
@@ -237,6 +259,7 @@ func (v View) StructName() string {
 	return strings.Join(keys, "_")
 }
 
+// InterfaceType returns the type set by WithInterface.
 func (v View) InterfaceType() reflect.Type {
 	data, ok := v.Params.Param(viewParamInterface)
 	if !ok {
@@ -248,6 +271,7 @@ func (v View) InterfaceType() reflect.Type {
 	return typ
 }
 
+// ParentStruct returns the parent struct name.
 func (v View) ParentStruct() string {
 	if v.parent == nil {
 		return ""
@@ -256,10 +280,12 @@ func (v View) ParentStruct() string {
 	return v.parent.StructName()
 }
 
+// Description returns the option description.
 func (v View) Description() string {
 	return param.Description(v.Params)
 }
 
+// Default returns the default value.
 func (v View) Default() any {
 	data, ok := param.Default(v.Params)
 	if !ok {
@@ -269,6 +295,7 @@ func (v View) Default() any {
 	return data
 }
 
+// HasDefault reports whether a default value is set.
 func (v View) HasDefault() bool {
 	return option.HasDefaut(v.Params)
 }

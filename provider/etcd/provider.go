@@ -28,30 +28,35 @@ type Client interface {
 	client.Watcher
 }
 
+// WithName sets the provider name.
 func WithName(name string) func(*Provider) {
 	return func(p *Provider) {
 		p.name = name
 	}
 }
 
+// WithLog sets the function used for watch errors.
 func WithLog(fn func(context.Context, string, ...any)) func(*Provider) {
 	return func(p *Provider) {
 		p.log = fn
 	}
 }
 
+// WithPrefix sets the key prefix.
 func WithPrefix(prefix string) func(*Provider) {
 	return func(p *Provider) {
 		p.prefix = prefix
 	}
 }
 
+// WithKey sets the function that joins a path into an etcd key.
 func WithKey(fn func(...string) string) func(*Provider) {
 	return func(p *Provider) {
 		p.key = fn
 	}
 }
 
+// New returns an etcd provider for namespace and appName.
 func New(namespace, appName string, client Client, opts ...func(*Provider)) *Provider {
 	prov := Provider{
 		client: client,
@@ -80,14 +85,17 @@ type Provider struct {
 	log    func(context.Context, string, ...any)
 }
 
+// Name returns the provider name.
 func (p *Provider) Name() string {
 	return p.name
 }
 
+// Key returns the full etcd key for the path.
 func (p *Provider) Key(s []string) string {
 	return p.prefix + Separator + p.key(s...)
 }
 
+// Value returns the raw string stored at the key.
 func (p *Provider) Value(ctx context.Context, path ...string) (config.Value, error) {
 	name := p.Key(path)
 
@@ -104,6 +112,7 @@ func (p *Provider) Value(ctx context.Context, path ...string) (config.Value, err
 	return val, nil
 }
 
+// Watch reports changes of the key. The callback is not called for other keys under the prefix. ErrStopWatch stops the watch.
 func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, path ...string) error {
 	go func(ctx context.Context, key string, callback config.WatchCallback) {
 		watch := p.client.Watch(ctx, key, client.WithPrevKV(), client.WithPrefix())

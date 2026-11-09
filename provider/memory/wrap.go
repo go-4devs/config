@@ -14,6 +14,7 @@ var (
 	_ config.Providers    = Wrap(nil)
 )
 
+// Wrap returns a provider that forwards Bind, DumpReference, ByName and Names.
 func Wrap(prov config.Provider) WrapProvider {
 	return WrapProvider{
 		Provider: prov,
@@ -24,6 +25,7 @@ type WrapProvider struct {
 	config.Provider
 }
 
+// Bind calls Bind when the inner provider implements it.
 func (w WrapProvider) Bind(ctx context.Context, data config.Variables) error {
 	if prov, ok := w.Provider.(config.BindProvider); ok {
 		if err := prov.Bind(ctx, data); err != nil {
@@ -34,6 +36,7 @@ func (w WrapProvider) Bind(ctx context.Context, data config.Variables) error {
 	return nil
 }
 
+// DumpReference calls DumpReference when the inner provider implements it.
 func (w WrapProvider) DumpReference(ctx context.Context, in io.Writer, opts config.Options) error {
 	if prov, ok := w.Provider.(config.DumpProvider); ok {
 		err := prov.DumpReference(ctx, in, opts)
@@ -45,6 +48,7 @@ func (w WrapProvider) DumpReference(ctx context.Context, in io.Writer, opts conf
 	return nil
 }
 
+// ByName returns a nested provider when the inner provider has one.
 func (w WrapProvider) ByName(name string) (config.Provider, error) {
 	if prov, ok := w.Provider.(config.Providers); ok {
 		out, err := prov.ByName(name)
@@ -58,6 +62,7 @@ func (w WrapProvider) ByName(name string) (config.Provider, error) {
 	return nil, fmt.Errorf("%w", config.ErrNotFound)
 }
 
+// Names returns nested provider names when the inner provider has them.
 func (w WrapProvider) Names() []string {
 	if prov, ok := w.Provider.(config.Providers); ok {
 		return prov.Names()

@@ -10,6 +10,7 @@ import (
 
 var _ config.BindProvider = (*Map)(nil)
 
+// Valid returns a provider that checks values during Bind.
 func Valid(in config.Provider) Validate {
 	return Validate{
 		Provider: in,
@@ -23,6 +24,7 @@ type Validate struct {
 	name string
 }
 
+// Bind reads each variable and validates it. A missing value is skipped.
 func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 	for _, opt := range def.Variables() {
 		val, err := a.Value(ctx, opt.Key()...)
@@ -38,6 +40,7 @@ func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 	return nil
 }
 
+// Name returns the provider name.
 func (a Validate) Name() string {
 	if a.name != "" {
 		return a.name

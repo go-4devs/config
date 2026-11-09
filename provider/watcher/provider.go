@@ -15,6 +15,7 @@ var (
 	_ config.WatchProvider = (*Provider)(nil)
 )
 
+// New returns a provider that polls the inner provider.
 func New(duration time.Duration, provider config.Provider, opts ...Option) *Provider {
 	prov := &Provider{
 		Provider: provider,
@@ -29,6 +30,7 @@ func New(duration time.Duration, provider config.Provider, opts ...Option) *Prov
 	return prov
 }
 
+// WithLogger sets the function used when a poll fails.
 func WithLogger(l func(context.Context, string, ...any)) Option {
 	return func(p *Provider) {
 		p.logger = l
@@ -44,6 +46,7 @@ type Provider struct {
 	logger   func(context.Context, string, ...any)
 }
 
+// Watch polls the value and calls callback when it changes. ErrStopWatch stops the poll.
 func (p *Provider) Watch(ctx context.Context, callback config.WatchCallback, key ...string) error {
 	old, err := p.Value(ctx, key...)
 	if err != nil {

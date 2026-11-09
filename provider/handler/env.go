@@ -23,12 +23,14 @@ const (
 
 type EnvOption func(*EnvHandler)
 
+// WithEnvProcessor sets the function that reads an environment placeholder.
 func WithEnvProcessor(proc config.Processor) EnvOption {
 	return func(eh *EnvHandler) {
 		eh.Processor = proc
 	}
 }
 
+// Env returns a provider that resolves %env(NAME)% strings from the parent value.
 func Env(parent config.Provider, opts ...EnvOption) EnvHandler {
 	handler := EnvHandler{
 		WrapProvider: memory.Wrap(parent),
@@ -47,6 +49,7 @@ type EnvHandler struct {
 	config.Processor
 }
 
+// Value returns the parent value. A %env(NAME)% string is replaced with that environment variable.
 func (e EnvHandler) Value(ctx context.Context, key ...string) (config.Value, error) {
 	val, err := e.Provider.Value(ctx, key...)
 	if err != nil {

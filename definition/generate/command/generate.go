@@ -14,6 +14,7 @@ import (
 
 const Name = "config:generate"
 
+// Handle fills generator settings from the source file.
 func Handle(ctx context.Context, in config.Provider, out output.Output, next command.ExecuteFn) error {
 	var name string
 
@@ -43,6 +44,7 @@ func Handle(ctx context.Context, in config.Provider, out output.Output, next com
 	return next(ctx, chain.New(in, mem), out)
 }
 
+// Execute runs the generator.
 func Execute(ctx context.Context, in config.Provider, _ output.Output) error {
 	cfg := generate.NewConfigureConfig(ctx, in, generate.WithConfigureConfigHandle(func(context.Context, error) {}))
 
@@ -53,6 +55,7 @@ func Execute(ctx context.Context, in config.Provider, _ output.Output) error {
 	return nil
 }
 
+// Command returns the config:generate console command.
 func Command() command.Command {
 	return command.New(
 		Name,

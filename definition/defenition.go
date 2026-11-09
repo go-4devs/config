@@ -7,6 +7,7 @@ import (
 
 var _ config.Options = (*Definition)(nil)
 
+// New returns a definition that holds opts.
 func New(opts ...config.Option) *Definition {
 	return &Definition{
 		options: opts,
@@ -20,14 +21,17 @@ type Definition struct {
 	options []config.Option
 }
 
+// Add appends options.
 func (d *Definition) Add(opts ...config.Option) {
 	d.options = append(d.options, opts...)
 }
 
+// Options returns the options.
 func (d *Definition) Options() []config.Option {
 	return d.options
 }
 
+// With returns a copy whose parameters are chained with params.
 func (d *Definition) With(params param.Params) *Definition {
 	def := &Definition{
 		options: make([]config.Option, len(d.options)),

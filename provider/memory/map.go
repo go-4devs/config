@@ -14,6 +14,7 @@ const NameMap = "map"
 
 var _ config.BindProvider = (*Map)(nil)
 
+// NewMap returns an empty in-memory provider.
 func NewMap(name string) *Map {
 	return &Map{
 		name: name,
@@ -30,6 +31,7 @@ type Map struct {
 	name string
 }
 
+// Len returns the number of stored values.
 func (m *Map) Len() int {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -37,6 +39,7 @@ func (m *Map) Len() int {
 	return len(m.vals)
 }
 
+// Value returns the value stored under key.
 func (m *Map) Value(_ context.Context, key ...string) (config.Value, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -51,10 +54,12 @@ func (m *Map) Value(_ context.Context, key ...string) (config.Value, error) {
 	return val, nil
 }
 
+// Bind does nothing.
 func (m *Map) Bind(_ context.Context, _ config.Variables) error {
 	return nil
 }
 
+// Name returns the provider name.
 func (m *Map) Name() string {
 	if m.name != "" {
 		return m.name
@@ -63,6 +68,7 @@ func (m *Map) Name() string {
 	return NameMap
 }
 
+// HasOption reports whether key is stored.
 func (m *Map) HasOption(key ...string) bool {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -72,6 +78,7 @@ func (m *Map) HasOption(key ...string) bool {
 	return ok
 }
 
+// SetOption stores val under key.
 func (m *Map) SetOption(val any, key ...string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -86,6 +93,7 @@ func (m *Map) SetOption(val any, key ...string) {
 	m.vals = append(m.vals, value.New(val))
 }
 
+// AppendOption appends val to the string list stored under key.
 func (m *Map) AppendOption(val string, keys ...string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()

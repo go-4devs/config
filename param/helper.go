@@ -1,5 +1,6 @@
 package param
 
+// String returns the parameter as a string.
 func String(fn Params, key any) (string, bool) {
 	val, ok := fn.Param(key)
 	if !ok {
@@ -11,6 +12,7 @@ func String(fn Params, key any) (string, bool) {
 	return data, ok
 }
 
+// Rune returns the parameter as a rune.
 func Rune(fn Params, key any) (rune, bool) {
 	val, ok := fn.Param(key)
 	if !ok {
@@ -22,6 +24,7 @@ func Rune(fn Params, key any) (rune, bool) {
 	return data, dok
 }
 
+// Bool returns the parameter as a bool.
 func Bool(key any, fn Params) (bool, bool) {
 	val, ok := fn.Param(key)
 	if !ok {
@@ -33,6 +36,7 @@ func Bool(key any, fn Params) (bool, bool) {
 	return data, ok
 }
 
+// Uint64 returns the parameter as a uint64.
 func Uint64(key any, fn Params) (uint64, bool) {
 	data, ok := fn.Param(key)
 	if !ok {

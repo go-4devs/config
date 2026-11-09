@@ -24,6 +24,7 @@ const (
 	optionLeaveTemp   = "leave-temp"
 )
 
+// WithPrefix sets the generated struct name prefix.
 func WithPrefix(in string) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		err := m.AppendOption(in, optionPrefix)
@@ -35,6 +36,7 @@ func WithPrefix(in string) func(*memory.Map) error {
 	}
 }
 
+// WithSuffix sets the generated struct name suffix.
 func WithSuffix(in string) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		err := m.AppendOption(in, optionSuffix)
@@ -46,6 +48,7 @@ func WithSuffix(in string) func(*memory.Map) error {
 	}
 }
 
+// WithSkipContext sets whether generated methods omit context.
 func WithSkipContext(in bool) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		err := m.AppendOption(strconv.FormatBool(in), optionSkipContext)
@@ -57,6 +60,7 @@ func WithSkipContext(in bool) func(*memory.Map) error {
 	}
 }
 
+// WithBuildTags sets the build tags for the generator.
 func WithBuildTags(in string) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		err := m.AppendOption(in, optionBuildTags)
@@ -68,6 +72,7 @@ func WithBuildTags(in string) func(*memory.Map) error {
 	}
 }
 
+// WithOutName sets the generated file name.
 func WithOutName(in string) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		err := m.AppendOption(in, optionOutName)
@@ -79,6 +84,7 @@ func WithOutName(in string) func(*memory.Map) error {
 	}
 }
 
+// WithMethods sets the configure functions to generate.
 func WithMethods(methods ...string) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		for _, method := range methods {
@@ -92,6 +98,7 @@ func WithMethods(methods ...string) func(*memory.Map) error {
 	}
 }
 
+// WithFullPkg sets the full package path of the generated file.
 func WithFullPkg(in string) func(*memory.Map) error {
 	return func(m *memory.Map) error {
 		err := m.AppendOption(in, optionFullPkg)
@@ -103,6 +110,7 @@ func WithFullPkg(in string) func(*memory.Map) error {
 	}
 }
 
+// NewMemoryProvider returns the generator settings, including the source file.
 func NewMemoryProvider(file string, opts ...func(*memory.Map) error) (*memory.Map, error) {
 	cfg := new(memory.Map)
 
@@ -121,6 +129,7 @@ func NewMemoryProvider(file string, opts ...func(*memory.Map) error) (*memory.Ma
 	return cfg, nil
 }
 
+// Configure declares the generator options.
 func Configure(_ context.Context, def config.Definition) error {
 	def.Add(
 		option.String(OptionFile, "the configure file", option.Required),

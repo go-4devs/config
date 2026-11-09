@@ -30,6 +30,7 @@ var (
 	parceTpls = template.Must(template.New("data").ParseFS(tplFS, "tpl/data/*.go.tpl"))
 )
 
+// Template returns a renderer for tpl.
 func Template(tpl *template.Template) Execute {
 	return func(w io.Writer, v view.View, rnd Rendering) error {
 		if err := tpl.Execute(w, NewViewData(rnd, v)); err != nil {

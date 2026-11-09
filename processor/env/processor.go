@@ -12,6 +12,7 @@ import (
 
 var _ config.ProcessFunc = Env
 
+// Env reads the environment variable named by the string value.
 func Env(_ context.Context, in config.Value, _ ...param.Option) (config.Value, error) {
 	key, err := in.ParseString()
 	if err != nil {

@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Value returns the generated code that parses a value.
 func Value(name, val string, data ViewData) string {
 	rnd := renderType(data)
 
@@ -22,6 +23,7 @@ func Value(name, val string, data ViewData) string {
 	return res
 }
 
+// Type returns the Go type name, including its package alias.
 func Type(data ViewData) string {
 	dt := data.View.Type()
 	rtype := reflect.TypeOf(dt)
@@ -46,6 +48,7 @@ func Type(data ViewData) string {
 	return slice + short
 }
 
+// Data returns the generated code for a default value.
 func Data(val any, name string, view ViewData) string {
 	fn := renderData(view)
 
@@ -239,6 +242,7 @@ type ValueData struct {
 	Value   string
 }
 
+// FuncType returns the exported name of the value type.
 func (v ValueData) FuncType() string {
 	name := v.Type()
 
@@ -250,14 +254,17 @@ type DataRender struct {
 	renderValue func(data any, view ValueData) (string, error)
 }
 
+// Type returns the generated parse code.
 func (d DataRender) Type(data ValueData) (string, error) {
 	return d.renderType(data)
 }
 
+// Value returns the generated default-value code.
 func (d DataRender) Value(data any, view ValueData) (string, error) {
 	return d.renderValue(data, view)
 }
 
+// NewDataRender returns a renderer for a value type.
 func NewDataRender(rendeType func(data ValueData) (string, error), renderValue func(data any, view ValueData) (string, error)) DataRender {
 	if rendeType == nil {
 		rendeType = anyType
