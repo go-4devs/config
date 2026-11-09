@@ -25,8 +25,8 @@ func TestEnum(t *testing.T) {
 	}
 
 	iErr := enum(vars, invalidValue)
-	if !errors.Is(iErr, validator.ErrInvalid) {
-		t.Errorf("expected err:%s, got: %s", validator.ErrInvalid, iErr)
+	if !errors.Is(iErr, validator.ErrEnum) {
+		t.Errorf("expected err:%s, got: %s", validator.ErrEnum, iErr)
 	}
 }
 
@@ -72,9 +72,9 @@ func TestEnumStringer(t *testing.T) {
 	require.NoError(t, check(opt, value.New("red")))
 	require.NoError(t, check(opt, value.JString("blue")))
 	require.NoError(t, check(opt, value.New(colorBlue)))
-	require.ErrorIs(t, check(opt, value.New("green")), validator.ErrInvalid)
-	require.ErrorIs(t, check(opt, value.New(color(9))), validator.ErrInvalid)
-	require.ErrorIs(t, validator.Enum(colorRed)(opt, value.New("blue")), validator.ErrInvalid)
+	require.ErrorIs(t, check(opt, value.New("green")), validator.ErrEnum)
+	require.ErrorIs(t, check(opt, value.New(color(9))), validator.ErrEnum)
+	require.ErrorIs(t, validator.Enum(colorRed)(opt, value.New("blue")), validator.ErrEnum)
 	require.ErrorIs(t, check(option.String("name", "name"), value.New("red")), validator.ErrInvalid)
 	require.ErrorIs(t, check(opt, value.New(1)), validator.ErrInvalid)
 }

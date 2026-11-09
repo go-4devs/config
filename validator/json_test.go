@@ -17,7 +17,7 @@ func TestJSON(t *testing.T) {
 	require.NoError(t, validator.JSON(opt, value.New(`{"a":1}`)))
 	require.NoError(t, validator.JSON(opt, value.JString(`[1]`)))
 	require.NoError(t, validator.JSON(opt, value.New("null")))
-	require.ErrorIs(t, validator.JSON(opt, value.New("{")), validator.ErrInvalid)
-	require.ErrorIs(t, validator.JSON(opt, value.New("")), validator.ErrInvalid)
+	require.ErrorIs(t, validator.JSON(opt, value.New("{")), validator.ErrJSON)
+	require.ErrorIs(t, validator.JSON(opt, value.New("")), validator.ErrJSON)
 	require.ErrorIs(t, validator.JSON(option.Int("port", "port"), value.New(1)), validator.ErrInvalid)
 }

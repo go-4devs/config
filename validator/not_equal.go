@@ -1,7 +1,6 @@
 package validator
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"time"
@@ -11,7 +10,23 @@ import (
 )
 
 // ErrEqual is returned when the value equals the excluded one.
-var ErrEqual = errors.New("equal to excluded value")
+var ErrEqual = fmt.Errorf("%w: equal to excluded value", ErrInvalid)
+
+// NotEqualError is returned when Got equals Want.
+type NotEqualError[T any] struct {
+	Want T
+	Got  T
+}
+
+// Error returns the excluded value and the received value.
+func (e NotEqualError[T]) Error() string {
+	return fmt.Sprintf("%s: want other than %v, given %v", ErrEqual, e.Want, e.Got)
+}
+
+// Unwrap returns ErrEqual.
+func (e NotEqualError[T]) Unwrap() error {
+	return ErrEqual
+}
 
 // NotEqual returns a validator that rejects want.
 // The option type must be the same type as want.
@@ -23,7 +38,7 @@ func NotEqual[T any](want T) Validator {
 		}
 
 		if reflect.DeepEqual(got, want) {
-			return NewError(ErrEqual, got, want)
+			return NotEqualError[T]{Want: want, Got: got}
 		}
 
 		return nil

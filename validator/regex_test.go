@@ -17,8 +17,8 @@ func TestRegex(t *testing.T) {
 
 	require.NoError(t, check(opt, value.New("ada")))
 	require.NoError(t, check(opt, value.JString("ada")))
-	require.ErrorIs(t, check(opt, value.New("ada1")), validator.ErrInvalid)
-	require.ErrorIs(t, check(opt, value.New("")), validator.ErrInvalid)
-	require.ErrorIs(t, validator.Regex(`(`)(opt, value.New("ada")), validator.ErrInvalid)
+	require.ErrorIs(t, check(opt, value.New("ada1")), validator.ErrRegex)
+	require.ErrorIs(t, check(opt, value.New("")), validator.ErrRegex)
+	require.ErrorIs(t, validator.Regex(`(`)(opt, value.New("ada")), validator.ErrRegex)
 	require.ErrorIs(t, check(option.Int("port", "port"), value.New(1)), validator.ErrInvalid)
 }

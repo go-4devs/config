@@ -9,6 +9,21 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// NotBlankError is returned when Got is empty.
+type NotBlankError struct {
+	Got any
+}
+
+// Error returns the received value.
+func (e NotBlankError) Error() string {
+	return fmt.Sprintf("%s: want non-empty, given %v", ErrNotBlank, e.Got)
+}
+
+// Unwrap returns ErrNotBlank.
+func (e NotBlankError) Unwrap() error {
+	return ErrNotBlank
+}
+
 // NotBlank rejects a zero value. A slice must be non-empty.
 func NotBlank(fn param.Params, in config.Value) error {
 	dataType := param.Type(fn)
@@ -20,7 +35,7 @@ func NotBlank(fn param.Params, in config.Value) error {
 		return nil
 	}
 
-	return ErrNotBlank
+	return NotBlankError{Got: in.Any()}
 }
 
 func filled(fn param.Params, in config.Value) (bool, error) {
@@ -47,7 +62,7 @@ func sliceByType(vType any, in config.Value) error {
 		return nil
 	}
 
-	return fmt.Errorf("%w", ErrNotBlank)
+	return NotBlankError{Got: in.Any()}
 }
 
 func sliceLen(vType any, in config.Value) (int, error) {

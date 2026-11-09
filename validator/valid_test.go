@@ -42,7 +42,7 @@ func TestOptional(t *testing.T) {
 
 	require.NoError(t, check(auth, value.New("")))
 	require.NoError(t, check(auth, value.New(`{"a":1}`)))
-	require.ErrorIs(t, check(auth, value.New("{")), validator.ErrInvalid)
+	require.ErrorIs(t, check(auth, value.New("{")), validator.ErrJSON)
 
 	port := option.Int("port", "port")
 	atLeast := validator.Optional(validator.Min(1))
@@ -65,7 +65,7 @@ func TestWhen(t *testing.T) {
 
 	require.NoError(t, check(auth, value.New("")))
 	require.NoError(t, check(auth, value.New(`{"a":1}`)))
-	require.ErrorIs(t, check(auth, value.New("{")), validator.ErrInvalid)
+	require.ErrorIs(t, check(auth, value.New("{")), validator.ErrJSON)
 
 	num := option.Int("n", "n")
 	forbid := validator.When(validator.Chain(validator.Min(1), validator.Max(10)), validator.NotEqual(5))

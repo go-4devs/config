@@ -9,6 +9,25 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// ErrEnum is returned when the value is outside the allowed set.
+var ErrEnum = fmt.Errorf("%w: enum", ErrInvalid)
+
+// EnumError is returned when Got is outside Allowed.
+type EnumError[T any] struct {
+	Allowed []T
+	Got     string
+}
+
+// Error returns the allowed values and the received text.
+func (e EnumError[T]) Error() string {
+	return fmt.Sprintf("%s: want %v, given %v", ErrEnum, e.Allowed, e.Got)
+}
+
+// Unwrap returns ErrEnum.
+func (e EnumError[T]) Unwrap() error {
+	return ErrEnum
+}
+
 // Enum returns a validator that accepts only allowed values.
 // A string is compared as text. A fmt.Stringer is accepted when the option has the same type,
 // UnmarshalText accepts the text, and the parsed value is one of allowed.
@@ -43,7 +62,7 @@ func enumText[T any](allowed []T) Validator {
 			return nil
 		}
 
-		return NewError(ErrInvalid, val, names)
+		return EnumError[T]{Allowed: allowed, Got: val}
 	}
 }
 
@@ -76,12 +95,12 @@ func enumStringer[T any](allowed []T) Validator {
 		}
 
 		if err = parser.UnmarshalText([]byte(text)); err != nil {
-			return NewError(ErrInvalid, text, err)
+			return EnumError[T]{Allowed: allowed, Got: text}
 		}
 
 		got, ok := any(parsed).(fmt.Stringer)
 		if !ok || !slices.Contains(names, got.String()) {
-			return NewError(ErrInvalid, text, names)
+			return EnumError[T]{Allowed: allowed, Got: text}
 		}
 
 		return nil

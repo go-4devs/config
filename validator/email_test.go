@@ -16,8 +16,8 @@ func TestEmail(t *testing.T) {
 
 	require.NoError(t, validator.Email(opt, value.New("user@example.com")))
 	require.NoError(t, validator.Email(opt, value.JString("user@example.com")))
-	require.ErrorIs(t, validator.Email(opt, value.New("User <user@example.com>")), validator.ErrInvalid)
-	require.ErrorIs(t, validator.Email(opt, value.New("user")), validator.ErrInvalid)
-	require.ErrorIs(t, validator.Email(opt, value.New("")), validator.ErrInvalid)
+	require.ErrorIs(t, validator.Email(opt, value.New("User <user@example.com>")), validator.ErrEmail)
+	require.ErrorIs(t, validator.Email(opt, value.New("user")), validator.ErrEmail)
+	require.ErrorIs(t, validator.Email(opt, value.New("")), validator.ErrEmail)
 	require.ErrorIs(t, validator.Email(option.Int("port", "port"), value.New(1)), validator.ErrInvalid)
 }

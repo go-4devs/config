@@ -8,6 +8,24 @@ import (
 	"gitoa.ru/go-4devs/config/param"
 )
 
+// ErrEmail is returned when the text is not an email address.
+var ErrEmail = fmt.Errorf("%w: email", ErrInvalid)
+
+// EmailError is returned when Got is not an email address.
+type EmailError struct {
+	Got string
+}
+
+// Error returns the received text.
+func (e EmailError) Error() string {
+	return fmt.Sprintf("%s: want user@domain, given %v", ErrEmail, e.Got)
+}
+
+// Unwrap returns ErrEmail.
+func (e EmailError) Unwrap() error {
+	return ErrEmail
+}
+
 // Email rejects text that is not an email address.
 // The option type must be string. The whole text must be the address.
 func Email(fn param.Params, in config.Value) error {
@@ -22,7 +40,7 @@ func Email(fn param.Params, in config.Value) error {
 
 	addr, err := mail.ParseAddress(text)
 	if err != nil || addr.Address != text {
-		return NewError(ErrInvalid, text, "email")
+		return EmailError{Got: text}
 	}
 
 	return nil
