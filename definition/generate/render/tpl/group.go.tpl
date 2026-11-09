@@ -3,6 +3,6 @@ type {{.StructName}} struct {
 }
 
 // {{.FuncName}} {{.Description}}.
-func (i {{.ParentStruct}}) {{.FuncName}}() {{.StructName}} {
+func (i {{.ParentStruct}}) {{.FuncName}}() {{.ReturnType}} {
 	return {{.StructName}}{i}
 }

@@ -67,7 +67,7 @@ type UserConfig struct {
 }
 
 // User configure user.
-func (i ExampleConfig) User() UserConfig {
+func (i ExampleConfig) User() User {
 	return UserConfig{i}
 }
 

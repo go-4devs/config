@@ -18,6 +18,7 @@ const (
 	viewParamStructName
 	viewParamStructPrefix
 	viewParamStructSuffix
+	viewParamInterface
 )
 
 func WithFuncName(name string) param.Option {
@@ -41,6 +42,12 @@ func WithStructPrefix(prefix string) param.Option {
 func WithStructSuffix(suffix string) param.Option {
 	return func(p param.Params) param.Params {
 		return param.With(p, viewParamStructSuffix, suffix)
+	}
+}
+
+func WithInterface[T any]() param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, viewParamInterface, reflect.TypeFor[T]())
 	}
 }
 
@@ -228,6 +235,17 @@ func (v View) StructName() string {
 	}
 
 	return strings.Join(keys, "_")
+}
+
+func (v View) InterfaceType() reflect.Type {
+	data, ok := v.Params.Param(viewParamInterface)
+	if !ok {
+		return nil
+	}
+
+	typ, _ := data.(reflect.Type)
+
+	return typ
 }
 
 func (v View) ParentStruct() string {

@@ -1,6 +1,8 @@
 package render
 
 import (
+	"reflect"
+
 	"gitoa.ru/go-4devs/config/definition/generate/pkg"
 	"gitoa.ru/go-4devs/config/definition/generate/view"
 )
@@ -23,6 +25,27 @@ func (d ViewData) StructName() string {
 
 func (d ViewData) FuncName() string {
 	return d.Rendering.FuncName(d.View.FuncName())
+}
+
+func (d ViewData) ReturnType() string {
+	return typeName(d.InterfaceType(), d.AddType, d.StructName())
+}
+
+func typeName(typ reflect.Type, add func(string) (string, error), fallback string) string {
+	if typ == nil || typ.Name() == "" {
+		return fallback
+	}
+
+	if typ.PkgPath() == "" {
+		return typ.Name()
+	}
+
+	short, err := add(typ.PkgPath() + "." + typ.Name())
+	if err != nil {
+		return err.Error()
+	}
+
+	return short
 }
 
 func (d ViewData) ParentStruct() string {
