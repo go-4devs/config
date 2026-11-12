@@ -10,24 +10,28 @@ import (
 	"github.com/go-4devs/config/validator"
 )
 
-var _ config.BindProvider = (*Map)(nil)
+var _ config.BindProvider = (*Validate)(nil)
 
-// Valid returns a provider that checks values during Bind.
-func Valid(in config.Provider) Validate {
+// BindValid returns a provider that checks values during Bind.
+func BindValid(in config.BindProvider) Validate {
 	return Validate{
-		Provider: in,
-		name:     "",
+		BindProvider: in,
+		name:         "",
 	}
 }
 
 type Validate struct {
-	config.Provider
+	config.BindProvider
 
 	name string
 }
 
-// Bind reads each variable and validates it. A missing value is skipped.
+// Bind binds the inner provider, then checks each variable. A missing value is skipped.
 func (a Validate) Bind(ctx context.Context, def config.Variables) error {
+	if err := a.BindProvider.Bind(ctx, def); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
 	for _, opt := range def.Variables() {
 		val, err := a.Value(ctx, opt.Key()...)
 		if errors.Is(err, config.ErrNotFound) {
@@ -38,7 +42,7 @@ func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 			return fmt.Errorf("%w", option.Err(err, opt.Key()))
 		}
 
-		if err = validator.Validate(opt.Key(), opt, val); err != nil {
+		if err = validator.Validate(opt, val); err != nil {
 			return fmt.Errorf("%w", option.Err(err, opt.Key()))
 		}
 	}
@@ -52,5 +56,5 @@ func (a Validate) Name() string {
 		return a.name
 	}
 
-	return a.Provider.Name()
+	return a.BindProvider.Name()
 }
