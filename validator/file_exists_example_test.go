@@ -30,10 +30,10 @@ func ExampleFileExists() {
 	vars := config.NewVars(
 		option.String("path", "the file path", validator.Valid(validator.FileExists)),
 	)
-	show(memory.Valid(store).Bind(ctx, vars))
+	show(memory.BindValid(store).Bind(ctx, vars))
 
 	store.SetOption(name+"-missing", "path")
-	show(memory.Valid(store).Bind(ctx, vars))
+	show(memory.BindValid(store).Bind(ctx, vars))
 	// Output:
 	// ok
 	// invalid

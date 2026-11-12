@@ -1,8 +1,6 @@
 package validator
 
 import (
-	"fmt"
-
 	"github.com/go-4devs/config"
 	"github.com/go-4devs/config/param"
 )
@@ -59,8 +57,8 @@ func Valid(in ...Validator) param.Option {
 	}
 }
 
-// Validate runs the validators stored on fn. A failure includes key.
-func Validate(key []string, fn param.Params, in config.Value) error {
+// Validate runs the validators stored on fn.
+func Validate(fn param.Params, in config.Value) error {
 	params, ok := fn.Param(paramValid)
 	if !ok {
 		return nil
@@ -71,7 +69,7 @@ func Validate(key []string, fn param.Params, in config.Value) error {
 	for _, valid := range valids {
 		err := valid(fn, in)
 		if err != nil {
-			return fmt.Errorf("%s:%w", key, err)
+			return err
 		}
 	}
 

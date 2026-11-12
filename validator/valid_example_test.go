@@ -23,10 +23,10 @@ func ExampleValid() {
 		option.Int("port", "the listen port", validator.Valid(validator.Min(1), validator.Max(65535))),
 		option.String("auth", "the auth json", validator.Valid(validator.Optional(validator.JSON))),
 	)
-	show(memory.Valid(store).Bind(ctx, vars))
+	show(memory.BindValid(store).Bind(ctx, vars))
 
 	store.SetOption("not-email", "email")
-	show(memory.Valid(store).Bind(ctx, vars))
+	show(memory.BindValid(store).Bind(ctx, vars))
 	// Output:
 	// ok
 	// invalid
