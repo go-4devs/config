@@ -13,22 +13,19 @@ import (
 var _ config.BindProvider = (*Validate)(nil)
 
 // BindValid returns a provider that checks values during Bind.
-func BindValid(in config.BindProvider) Validate {
+func BindValid(in config.Provider) Validate {
 	return Validate{
-		BindProvider: in,
-		name:         "",
+		WrapProvider: Wrap(in),
 	}
 }
 
 type Validate struct {
-	config.BindProvider
-
-	name string
+	WrapProvider
 }
 
 // Bind binds the inner provider, then checks each variable. A missing value is skipped.
 func (a Validate) Bind(ctx context.Context, def config.Variables) error {
-	if err := a.BindProvider.Bind(ctx, def); err != nil {
+	if err := a.WrapProvider.Bind(ctx, def); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -48,13 +45,4 @@ func (a Validate) Bind(ctx context.Context, def config.Variables) error {
 	}
 
 	return nil
-}
-
-// Name returns the provider name.
-func (a Validate) Name() string {
-	if a.name != "" {
-		return a.name
-	}
-
-	return a.BindProvider.Name()
 }
