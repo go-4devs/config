@@ -52,6 +52,15 @@ func Example() error { return nil }
 	if err == nil {
 		t.Fatal("expected error")
 	}
+
+	left, gerr := filepath.Glob(filepath.Join(filepath.Dir(path), "config-bootstrap-*"))
+	if gerr != nil {
+		t.Fatal(gerr)
+	}
+
+	if len(left) != 0 {
+		t.Fatalf("temp files left: %v", left)
+	}
 }
 
 func bootstrapSource(t *testing.T, src string, methods []string) string {

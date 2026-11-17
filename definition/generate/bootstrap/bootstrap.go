@@ -57,10 +57,22 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 		return "", fmt.Errorf("pkg by path:%w", err)
 	}
 
-	tmpFile, err := os.CreateTemp(filepath.Dir(fInfo.Name()), "config-bootstrap")
+	tmpFile, err := os.CreateTemp(sourceDir(cfg.File(), fInfo.IsDir()), "config-bootstrap-*.go")
 	if err != nil {
 		return "", fmt.Errorf("create tmp file:%w", err)
 	}
+
+	name := tmpFile.Name()
+	keep := false
+
+	defer func() {
+		if keep {
+			return
+		}
+
+		_ = tmpFile.Close()
+		_ = os.Remove(name)
+	}()
 
 	tpl, err := template.ParseFS(tpls, "bootstrap.go.tpl")
 	if err != nil {
@@ -106,18 +118,21 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 		return "", fmt.Errorf("execute:%w", err)
 	}
 
-	src := tmpFile.Name()
 	if err := tmpFile.Close(); err != nil {
-		return src, fmt.Errorf("close file:%w", err)
+		return "", fmt.Errorf("close file:%w", err)
 	}
 
-	dest := src + ".go"
+	keep = true
 
-	if err := os.Rename(src, dest); err != nil {
-		return dest, fmt.Errorf("rename idt:%w", err)
+	return name, nil
+}
+
+func sourceDir(path string, isDir bool) string {
+	if isDir {
+		return path
 	}
 
-	return dest, nil
+	return filepath.Dir(path)
 }
 
 const structNameDirective = "fconfig:structname:"
