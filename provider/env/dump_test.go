@@ -47,7 +47,7 @@ FDEVS_CONFIG_EXTRA_LOG_LEVEL=info
 `
 
 	ctx := context.Background()
-	prov := env.NewHelper(env.New("fdevs", "config"))
+	prov := env.NewPrefixProvider(env.New("fdevs", "config"))
 
 	require.NoError(t, prov.Bind(ctx, config.NewVars(
 		option.String("port", "port").With(env.Prefix("other")),
@@ -81,7 +81,7 @@ func TestProvider_DumpReference_PrefixSibling(t *testing.T) {
 `
 
 	buf := bytes.NewBuffer(nil)
-	prov := env.NewHelper(env.New("fdevs", "config"))
+	prov := env.NewPrefixProvider(env.New("fdevs", "config"))
 
 	require.NoError(t, prov.DumpReference(context.Background(), buf, definition.New(
 		option.Int("port", "port").With(env.Prefix("extra")),
@@ -101,7 +101,7 @@ func TestProvider_DumpReference_PrefixMany(t *testing.T) {
 `
 
 	buf := bytes.NewBuffer(nil)
-	prov := env.NewHelper(env.New("fdevs", "config"))
+	prov := env.NewPrefixProvider(env.New("fdevs", "config"))
 
 	require.NoError(t, prov.DumpReference(context.Background(), buf, definition.New(
 		option.Int("gate", "gate").With(env.Prefix("extra", "node")),

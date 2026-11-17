@@ -22,7 +22,7 @@ func TestProvider_Prefix(t *testing.T) {
 	t.Setenv("FDEVS_CONFIG_HOST", "1111")
 
 	ctx := context.Background()
-	provider := env.NewHelper(env.New("fdevs", "config"))
+	provider := env.NewPrefixProvider(env.New("fdevs", "config"))
 
 	require.NoError(t, provider.Bind(ctx, config.NewVars(
 		option.Int("port", "port").With(env.Prefix("extra")),
