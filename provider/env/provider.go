@@ -8,17 +8,13 @@ import (
 	"strings"
 
 	"github.com/go-4devs/config"
-	"github.com/go-4devs/config/key"
-	"github.com/go-4devs/config/param"
+	"github.com/go-4devs/config/definition"
 	"github.com/go-4devs/config/value"
 )
 
 const Name = "env"
 
-var (
-	_ config.Provider     = (*Provider)(nil)
-	_ config.DumpProvider = (*Provider)(nil)
-)
+var _ config.Provider = (*Provider)(nil)
 
 type Option func(*Provider)
 
@@ -84,52 +80,6 @@ func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error
 }
 
 // DumpReference writes the variable names for opt.
-func (p *Provider) DumpReference(_ context.Context, w io.Writer, opt config.Options) error {
-	return p.writeOptions(w, opt)
-}
-
-func (p *Provider) writeOptions(w io.Writer, opt config.Options, key ...string) error {
-	for idx, option := range opt.Options() {
-		if err := p.writeOption(w, option, key...); err != nil {
-			return fmt.Errorf("option[%d]:%w", idx, err)
-		}
-	}
-
-	return nil
-}
-
-func (p *Provider) writeOption(w io.Writer, opt config.Option, keys ...string) error {
-	if desc := param.Description(opt); desc != "" {
-		if _, derr := fmt.Fprintf(w, "# %v.\n", desc); derr != nil {
-			return fmt.Errorf("write description:%w", derr)
-		}
-	}
-
-	var err error
-
-	switch one := opt.(type) {
-	case config.Group:
-		err = p.writeOptions(w, one, append(keys, one.Name())...)
-	case config.Options:
-		err = p.writeOptions(w, one, keys...)
-	default:
-		def, dok := param.Default(opt)
-
-		prefix := ""
-		if !dok || key.IsWild(keys...) {
-			prefix = "#"
-		}
-
-		if !dok {
-			def = ""
-		}
-
-		_, err = fmt.Fprintf(w, "%s%s=%v\n", prefix, p.Key(append(keys, one.Name())...), def)
-	}
-
-	if err != nil {
-		return fmt.Errorf("%w", err)
-	}
-
-	return nil
+func (p *Provider) DumpReference(_ context.Context, w io.Writer, def *definition.Definition) error {
+	return DumpReference(w, def, p.Key, EmptyPrefix)
 }

@@ -9,6 +9,7 @@ type ekey int
 const (
 	keyDeprecated ekey = iota + 1
 	keyAlias
+	keyPrefix
 )
 
 // Deprecated stores the deprecated environment variable name.
@@ -33,4 +34,23 @@ func Alias(name string) param.Option {
 // ParamAlias returns the alias environment variable name.
 func ParamAlias(in param.Params) (any, bool) {
 	return in.Param(keyAlias)
+}
+
+// Prefix stores key segments inserted before the option path.
+func Prefix(keys ...string) param.Option {
+	return func(p param.Params) param.Params {
+		return param.With(p, keyPrefix, keys)
+	}
+}
+
+// ParamPrefix returns the stored key segments.
+func ParamPrefix(in param.Params) ([]string, bool) {
+	val, ok := in.Param(keyPrefix)
+	if !ok {
+		return nil, false
+	}
+
+	keys, ok := val.([]string)
+
+	return keys, ok
 }
