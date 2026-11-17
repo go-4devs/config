@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/go-4devs/config"
+	"github.com/go-4devs/config/definition"
+	"github.com/go-4devs/config/definition/group"
 	"github.com/go-4devs/config/definition/option"
 	"github.com/go-4devs/config/param"
 	"github.com/go-4devs/config/provider/memory"
@@ -36,6 +38,26 @@ func TestParamPrefixRead(t *testing.T) {
 	_, err := prov.Value(context.Background(), "port")
 	require.NoError(t, err)
 	require.Equal(t, []string{"extra", "port"}, parent.got)
+}
+
+func TestCheckPrefix(t *testing.T) {
+	t.Parallel()
+
+	err := memory.CheckPrefix(func(_ context.Context, def *definition.Definition) {
+		def.Add(
+			option.String("port", "port").With(memory.Prefix("extra", "node")),
+			group.New("db", "db", option.String("port", "port")).With(memory.Prefix("extra")),
+		)
+	}, memory.ParamPrefix)
+	require.NoError(t, err)
+
+	err = memory.CheckPrefix(func(_ context.Context, def *definition.Definition) {
+		def.Add(
+			option.String("port", "port").With(memory.Prefix("db")),
+			group.New("db", "db", option.String("port", "port")),
+		)
+	}, memory.ParamPrefix)
+	require.ErrorIs(t, err, memory.ErrConflict)
 }
 
 type pathProvider struct {
