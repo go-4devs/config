@@ -46,6 +46,13 @@ func (o Option) Name() string {
 	return o.name
 }
 
+// With returns a copy of the option with extra parameters.
+func (o Option) With(opts ...param.Option) Option {
+	o.Params = param.Chain(o.Params, param.New(opts...))
+
+	return o
+}
+
 // String returns a string option.
 func String(name, description string, opts ...param.Option) Option {
 	return New(name, description, "", opts...)
