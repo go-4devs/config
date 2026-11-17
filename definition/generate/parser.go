@@ -15,7 +15,10 @@ import (
 	"github.com/go-4devs/config/definition/generate/pkg"
 )
 
-const NameSuffix = "_config.go"
+const (
+	NameSuffix      = "_config.go"
+	ignoreDirective = "fconfig:ignore"
+)
 
 // Parse reads the configure functions from the Go file.
 func Parse(ctx context.Context, name string) (Parser, error) {
@@ -66,7 +69,7 @@ func NewParseMethods(file string, params []reflect.Type, results []reflect.Type)
 			fn.Type != nil &&
 			(fn.Type.Params != nil && len(params) == len(fn.Type.Params.List) || len(params) == 0 && fn.Type.Params == nil) &&
 			(fn.Type.Results != nil && len(results) == len(fn.Type.Results.List) || len(results) == 0 && fn.Type.Results == nil) {
-			if hasFields(fn.Type.Params, params, paramsAlias) && hasFields(fn.Type.Results, results, resultAlias) {
+			if hasFields(fn.Type.Params, params, paramsAlias) && hasFields(fn.Type.Results, results, resultAlias) && !ignored(fn.Doc) {
 				methods = append(methods, fn.Name.String())
 			}
 		}
@@ -108,6 +111,24 @@ func importAlias(file *ast.File, params []reflect.Type) map[int][]string {
 	})
 
 	return paramsAlias
+}
+
+// ignored reports whether the doc comment contains //fconfig:ignore.
+func ignored(doc *ast.CommentGroup) bool {
+	if doc == nil {
+		return false
+	}
+
+	for _, comment := range doc.List {
+		text := strings.TrimSpace(comment.Text)
+		text = strings.TrimSpace(strings.TrimPrefix(text, "//"))
+
+		if text == ignoreDirective || text == ignoreDirective+":" {
+			return true
+		}
+	}
+
+	return false
 }
 
 func hasFields(fields *ast.FieldList, params []reflect.Type, alias map[int][]string) bool {
