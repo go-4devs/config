@@ -4,8 +4,12 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/go-4devs/config/definition/generate/pkg"
@@ -14,11 +18,16 @@ import (
 //go:embed *.tpl
 var tpls embed.FS
 
+type configure struct {
+	Name       string
+	StructName string
+}
+
 type Boot struct {
 	Config
 	*pkg.Packages
 
-	Configure []string
+	Configure []configure
 }
 
 // Pkg returns the last element of the package path.
@@ -71,9 +80,24 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 			pkgPath,
 		)
 
+	names, err := structNames(cfg.File())
+	if err != nil {
+		return "", fmt.Errorf("struct names:%w", err)
+	}
+
+	methods := cfg.Methods()
+	conf := make([]configure, len(methods))
+
+	for idx, name := range methods {
+		conf[idx] = configure{
+			Name:       name,
+			StructName: names[name],
+		}
+	}
+
 	data := Boot{
 		Packages:  imports,
-		Configure: cfg.Methods(),
+		Configure: conf,
 		Config:    cfg,
 	}
 
@@ -93,4 +117,66 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 	}
 
 	return dest, nil
+}
+
+const structNameDirective = "fconfig:structname:"
+
+// structNames reads //fconfig:structname: Name from function doc comments.
+func structNames(file string) (map[string]string, error) {
+	pfile, err := parser.ParseFile(token.NewFileSet(), file, nil, parser.ParseComments)
+	if err != nil {
+		return nil, fmt.Errorf("parse:%w", err)
+	}
+
+	names := make(map[string]string)
+
+	var invalid error
+
+	ast.Inspect(pfile, func(node ast.Node) bool {
+		fn, ok := node.(*ast.FuncDecl)
+		if !ok || fn.Recv != nil || fn.Name == nil {
+			return true
+		}
+
+		name, ok := structName(fn.Doc)
+		if !ok {
+			return true
+		}
+
+		if name == "" || !token.IsIdentifier(name) || token.IsKeyword(name) {
+			invalid = fmt.Errorf("%s: struct name %q", fn.Name.Name, name)
+
+			return false
+		}
+
+		names[fn.Name.Name] = name
+
+		return true
+	})
+
+	if invalid != nil {
+		return nil, invalid
+	}
+
+	return names, nil
+}
+
+func structName(doc *ast.CommentGroup) (string, bool) {
+	if doc == nil {
+		return "", false
+	}
+
+	for _, comment := range doc.List {
+		text := strings.TrimSpace(comment.Text)
+		text = strings.TrimSpace(strings.TrimPrefix(text, "//"))
+
+		name, ok := strings.CutPrefix(text, structNameDirective)
+		if !ok {
+			continue
+		}
+
+		return strings.TrimSpace(name), true
+	}
+
+	return "", false
 }
