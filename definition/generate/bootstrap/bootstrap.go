@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"embed"
+	"errors"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -121,6 +122,8 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 
 const structNameDirective = "fconfig:structname:"
 
+var errInvalidStructName = errors.New("invalid struct name")
+
 // structNames reads //fconfig:structname: Name from function doc comments.
 func structNames(file string) (map[string]string, error) {
 	pfile, err := parser.ParseFile(token.NewFileSet(), file, nil, parser.ParseComments)
@@ -144,7 +147,7 @@ func structNames(file string) (map[string]string, error) {
 		}
 
 		if name == "" || !token.IsIdentifier(name) || token.IsKeyword(name) {
-			invalid = fmt.Errorf("%s: struct name %q", fn.Name.Name, name)
+			invalid = fmt.Errorf("%s: %w: %q", fn.Name.Name, errInvalidStructName, name)
 
 			return false
 		}

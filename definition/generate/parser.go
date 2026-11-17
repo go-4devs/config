@@ -64,20 +64,35 @@ func NewParseMethods(file string, params []reflect.Type, results []reflect.Type)
 	var methods []string
 
 	ast.Inspect(pfile, func(anode ast.Node) bool {
-		if fn, ok := anode.(*ast.FuncDecl); ok &&
-			fn.Recv == nil &&
-			fn.Type != nil &&
-			(fn.Type.Params != nil && len(params) == len(fn.Type.Params.List) || len(params) == 0 && fn.Type.Params == nil) &&
-			(fn.Type.Results != nil && len(results) == len(fn.Type.Results.List) || len(results) == 0 && fn.Type.Results == nil) {
-			if hasFields(fn.Type.Params, params, paramsAlias) && hasFields(fn.Type.Results, results, resultAlias) && !ignored(fn.Doc) {
-				methods = append(methods, fn.Name.String())
-			}
+		fn, ok := anode.(*ast.FuncDecl)
+		if ok && isConfigure(fn, params, results, paramsAlias, resultAlias) {
+			methods = append(methods, fn.Name.String())
 		}
 
 		return true
 	})
 
 	return methods, nil
+}
+
+func isConfigure(fn *ast.FuncDecl, params, results []reflect.Type, paramsAlias, resultAlias map[int][]string) bool {
+	if fn.Recv != nil || fn.Type == nil || ignored(fn.Doc) {
+		return false
+	}
+
+	if !sameArity(fn.Type.Params, params) || !sameArity(fn.Type.Results, results) {
+		return false
+	}
+
+	return hasFields(fn.Type.Params, params, paramsAlias) && hasFields(fn.Type.Results, results, resultAlias)
+}
+
+func sameArity(fields *ast.FieldList, types []reflect.Type) bool {
+	if len(types) == 0 {
+		return fields == nil
+	}
+
+	return fields != nil && len(types) == len(fields.List)
 }
 
 func importAlias(file *ast.File, params []reflect.Type) map[int][]string {
