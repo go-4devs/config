@@ -6,20 +6,19 @@ import (
 	"slices"
 
 	"github.com/go-4devs/config"
-	"github.com/go-4devs/config/definition"
 	"github.com/go-4devs/config/key"
 	"github.com/go-4devs/config/param"
 )
 
-// DumpReference writes env names for def.
+// DumpReference writes env names for opt.
 // prefix reads key segments for an option and returns nil when the option has none.
 func DumpReference(
 	w io.Writer,
-	def *definition.Definition,
+	opt config.Options,
 	envKey func(...string) string,
 	prefix func(param.Params) ([]string, bool),
 ) error {
-	return reference{envKey: envKey, prefix: prefix, head: 0}.writeOptions(w, def)
+	return reference{envKey: envKey, prefix: prefix, head: 0}.writeOptions(w, opt)
 }
 
 // EmptyPrefix is the default reader: the option has no prefix segments.
