@@ -5,13 +5,13 @@ import (
 	"io"
 
 	"github.com/go-4devs/config"
-	"github.com/go-4devs/config/definition"
 	"github.com/go-4devs/config/provider/memory"
 )
 
 var (
 	_ config.Provider     = (*PrefixProvider)(nil)
 	_ config.BindProvider = (*PrefixProvider)(nil)
+	_ config.DumpProvider = (*PrefixProvider)(nil)
 )
 
 // NewPrefixProvider wraps provider so each variable's Prefix is part of its env name.
@@ -30,6 +30,6 @@ type PrefixProvider struct {
 }
 
 // DumpReference writes variable names. Prefix segments come from each option.
-func (h *PrefixProvider) DumpReference(_ context.Context, w io.Writer, def *definition.Definition) error {
-	return DumpReference(w, def, h.provider.Key, ParamPrefix)
+func (h *PrefixProvider) DumpReference(_ context.Context, w io.Writer, opt config.Options) error {
+	return DumpReference(w, opt, h.provider.Key, ParamPrefix)
 }

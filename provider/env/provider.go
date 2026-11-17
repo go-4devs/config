@@ -8,13 +8,15 @@ import (
 	"strings"
 
 	"github.com/go-4devs/config"
-	"github.com/go-4devs/config/definition"
 	"github.com/go-4devs/config/value"
 )
 
 const Name = "env"
 
-var _ config.Provider = (*Provider)(nil)
+var (
+	_ config.Provider     = (*Provider)(nil)
+	_ config.DumpProvider = (*Provider)(nil)
+)
 
 type Option func(*Provider)
 
@@ -80,6 +82,6 @@ func (p *Provider) Value(_ context.Context, path ...string) (config.Value, error
 }
 
 // DumpReference writes the variable names for opt.
-func (p *Provider) DumpReference(_ context.Context, w io.Writer, def *definition.Definition) error {
-	return DumpReference(w, def, p.Key, EmptyPrefix)
+func (p *Provider) DumpReference(_ context.Context, w io.Writer, opt config.Options) error {
+	return DumpReference(w, opt, p.Key, EmptyPrefix)
 }
