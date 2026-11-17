@@ -174,10 +174,10 @@ func (v View) Param(key any) string {
 	return ""
 }
 
-// ClildSkipContext reports whether any child omits context.
+// ClildSkipContext reports whether any descendant omits context.
 func (v View) ClildSkipContext() bool {
 	for _, child := range v.children {
-		if child.SkipContext() {
+		if IsSkipContext(child.Params) || child.ClildSkipContext() {
 			return true
 		}
 	}

@@ -15,7 +15,10 @@ import (
 	"github.com/go-4devs/config/definition/generate/pkg"
 )
 
-const NameSuffix = "_config.go"
+const (
+	NameSuffix      = "_config.go"
+	ignoreDirective = "fconfig:ignore"
+)
 
 // Parse reads the configure functions from the Go file.
 func Parse(ctx context.Context, name string) (Parser, error) {
@@ -61,20 +64,35 @@ func NewParseMethods(file string, params []reflect.Type, results []reflect.Type)
 	var methods []string
 
 	ast.Inspect(pfile, func(anode ast.Node) bool {
-		if fn, ok := anode.(*ast.FuncDecl); ok &&
-			fn.Recv == nil &&
-			fn.Type != nil &&
-			(fn.Type.Params != nil && len(params) == len(fn.Type.Params.List) || len(params) == 0 && fn.Type.Params == nil) &&
-			(fn.Type.Results != nil && len(results) == len(fn.Type.Results.List) || len(results) == 0 && fn.Type.Results == nil) {
-			if hasFields(fn.Type.Params, params, paramsAlias) && hasFields(fn.Type.Results, results, resultAlias) {
-				methods = append(methods, fn.Name.String())
-			}
+		fn, ok := anode.(*ast.FuncDecl)
+		if ok && isConfigure(fn, params, results, paramsAlias, resultAlias) {
+			methods = append(methods, fn.Name.String())
 		}
 
 		return true
 	})
 
 	return methods, nil
+}
+
+func isConfigure(fn *ast.FuncDecl, params, results []reflect.Type, paramsAlias, resultAlias map[int][]string) bool {
+	if fn.Recv != nil || fn.Type == nil || ignored(fn.Doc) {
+		return false
+	}
+
+	if !sameArity(fn.Type.Params, params) || !sameArity(fn.Type.Results, results) {
+		return false
+	}
+
+	return hasFields(fn.Type.Params, params, paramsAlias) && hasFields(fn.Type.Results, results, resultAlias)
+}
+
+func sameArity(fields *ast.FieldList, types []reflect.Type) bool {
+	if len(types) == 0 {
+		return fields == nil
+	}
+
+	return fields != nil && len(types) == len(fields.List)
 }
 
 func importAlias(file *ast.File, params []reflect.Type) map[int][]string {
@@ -108,6 +126,24 @@ func importAlias(file *ast.File, params []reflect.Type) map[int][]string {
 	})
 
 	return paramsAlias
+}
+
+// ignored reports whether the doc comment contains //fconfig:ignore.
+func ignored(doc *ast.CommentGroup) bool {
+	if doc == nil {
+		return false
+	}
+
+	for _, comment := range doc.List {
+		text := strings.TrimSpace(comment.Text)
+		text = strings.TrimSpace(strings.TrimPrefix(text, "//"))
+
+		if text == ignoreDirective || text == ignoreDirective+":" {
+			return true
+		}
+	}
+
+	return false
 }
 
 func hasFields(fields *ast.FieldList, params []reflect.Type, alias map[int][]string) bool {

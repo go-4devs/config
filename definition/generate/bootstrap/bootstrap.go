@@ -3,9 +3,14 @@ package bootstrap
 import (
 	"context"
 	"embed"
+	"errors"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/go-4devs/config/definition/generate/pkg"
@@ -14,11 +19,16 @@ import (
 //go:embed *.tpl
 var tpls embed.FS
 
+type configure struct {
+	Name       string
+	StructName string
+}
+
 type Boot struct {
 	Config
 	*pkg.Packages
 
-	Configure []string
+	Configure []configure
 }
 
 // Pkg returns the last element of the package path.
@@ -47,10 +57,22 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 		return "", fmt.Errorf("pkg by path:%w", err)
 	}
 
-	tmpFile, err := os.CreateTemp(filepath.Dir(fInfo.Name()), "config-bootstrap")
+	tmpFile, err := os.CreateTemp(sourceDir(cfg.File(), fInfo.IsDir()), "config-bootstrap-*.go")
 	if err != nil {
 		return "", fmt.Errorf("create tmp file:%w", err)
 	}
+
+	name := tmpFile.Name()
+	keep := false
+
+	defer func() {
+		if keep {
+			return
+		}
+
+		_ = tmpFile.Close()
+		_ = os.Remove(name)
+	}()
 
 	tpl, err := template.ParseFS(tpls, "bootstrap.go.tpl")
 	if err != nil {
@@ -71,9 +93,24 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 			pkgPath,
 		)
 
+	names, err := structNames(cfg.File())
+	if err != nil {
+		return "", fmt.Errorf("struct names:%w", err)
+	}
+
+	methods := cfg.Methods()
+	conf := make([]configure, len(methods))
+
+	for idx, name := range methods {
+		conf[idx] = configure{
+			Name:       name,
+			StructName: names[name],
+		}
+	}
+
 	data := Boot{
 		Packages:  imports,
-		Configure: cfg.Methods(),
+		Configure: conf,
 		Config:    cfg,
 	}
 
@@ -81,16 +118,83 @@ func Bootstrap(ctx context.Context, cfg Config) (string, error) {
 		return "", fmt.Errorf("execute:%w", err)
 	}
 
-	src := tmpFile.Name()
 	if err := tmpFile.Close(); err != nil {
-		return src, fmt.Errorf("close file:%w", err)
+		return "", fmt.Errorf("close file:%w", err)
 	}
 
-	dest := src + ".go"
+	keep = true
 
-	if err := os.Rename(src, dest); err != nil {
-		return dest, fmt.Errorf("rename idt:%w", err)
+	return name, nil
+}
+
+func sourceDir(path string, isDir bool) string {
+	if isDir {
+		return path
 	}
 
-	return dest, nil
+	return filepath.Dir(path)
+}
+
+const structNameDirective = "fconfig:structname:"
+
+var errInvalidStructName = errors.New("invalid struct name")
+
+// structNames reads //fconfig:structname: Name from function doc comments.
+func structNames(file string) (map[string]string, error) {
+	pfile, err := parser.ParseFile(token.NewFileSet(), file, nil, parser.ParseComments)
+	if err != nil {
+		return nil, fmt.Errorf("parse:%w", err)
+	}
+
+	names := make(map[string]string)
+
+	var invalid error
+
+	ast.Inspect(pfile, func(node ast.Node) bool {
+		fn, ok := node.(*ast.FuncDecl)
+		if !ok || fn.Recv != nil || fn.Name == nil {
+			return true
+		}
+
+		name, ok := structName(fn.Doc)
+		if !ok {
+			return true
+		}
+
+		if name == "" || !token.IsIdentifier(name) || token.IsKeyword(name) {
+			invalid = fmt.Errorf("%s: %w: %q", fn.Name.Name, errInvalidStructName, name)
+
+			return false
+		}
+
+		names[fn.Name.Name] = name
+
+		return true
+	})
+
+	if invalid != nil {
+		return nil, invalid
+	}
+
+	return names, nil
+}
+
+func structName(doc *ast.CommentGroup) (string, bool) {
+	if doc == nil {
+		return "", false
+	}
+
+	for _, comment := range doc.List {
+		text := strings.TrimSpace(comment.Text)
+		text = strings.TrimSpace(strings.TrimPrefix(text, "//"))
+
+		name, ok := strings.CutPrefix(text, structNameDirective)
+		if !ok {
+			continue
+		}
+
+		return strings.TrimSpace(name), true
+	}
+
+	return "", false
 }
