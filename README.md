@@ -58,3 +58,21 @@ func main() {
 listen from env: 8080
 replace env host by args: gitoa.ru
 ```
+
+## Generate
+
+`config:generate` calls functions with the signature `func(context.Context, config.Definition) error`. Directives belong in the comment directly above the function.
+
+`//fconfig:structname: Name` uses `Name` instead of the function name. The generated struct is still `prefix_Name_suffix`. The default suffix is `Config`, so `Example` becomes `ExampleConfig`, and the comment below becomes `ConfigExampleConfig`.
+
+```go
+//fconfig:structname: ConfigExample
+func Example(ctx context.Context, def config.Definition) error {
+```
+
+`//fconfig:ignore` skips that function. `//fconfig:ignore:` is the same.
+
+```go
+//fconfig:ignore
+func Example(ctx context.Context, def config.Definition) error {
+```
